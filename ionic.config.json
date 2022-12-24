@@ -1,0 +1,8 @@
+{
+  "name": "Cine App",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "351b31da"
+}
