@@ -25,9 +25,11 @@
         border-radius: 10px;
         margin-bottom: 5px;
     }
-    .tagcontainer{
+
+    .tagcontainer {
         margin-top: 15px;
     }
+
     .tags {
         background-color: #ccc;
         border-radius: 10px;
@@ -44,12 +46,10 @@
     }
 
     .action {
-
         display: flex;
-        justify-content: end    ;
+        justify-content: end;
         border-bottom: 1px solid #a3d9d5c0;
         padding-bottom: 15px;
-
     }
 
     button {
@@ -58,5 +58,101 @@
         background-color: white;
         color: #121212;
         border-radius: 6px;
+    }
+
+    ion-grid {
+        margin-top: 10px;
+        text-align: center;
+
+        ion-row:not(.saalName, .weekdays, .last) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.318);
+        }
+
+        .saalName {
+            color: #a3d9d5;
+            margin: 10px 0;
+        }
+    }
+
+    ion-icon {
+        font-size: 25px;
+    }
+}
+
+ion-modal {
+
+    .showcase {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: #777;
+        list-style-type: none;
+        display: flex;
+        justify-content: space-between;
+
+        .showcase li {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+        }
+
+        .showcase li small {
+            margin-left: 2px;
+        }
+    }
+
+    .container {
+        perspective: 1000px;
+        margin-bottom: 30px;
+
+        .screen {
+            background-color: #fff;
+            height: 135px;
+            width: 100%;
+            margin: 15px 0;
+            transform: rotateX(-45deg);
+            box-shadow: 0 3px 10px rgba(255, 255, 255, 0.7);
+        }
+    }
+
+    .row {
+        display: flex;
+        justify-content: center;
+    }
+
+    .seat {
+        background-color: #444451;
+        height: 18px;
+        width: 25px;
+        margin: 5px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
+    .seat.selected {
+        background-color: #a3d9d5;
+    }
+
+    .seat.occupied {
+        background-color: red;
+    }
+
+    .seat:nth-of-type(2) {
+        margin-right: 18px;
+    }
+
+    .seat:nth-last-of-type(2) {
+        margin-left: 18px;
+    }
+
+    .seat:not(.occupied):hover {
+        cursor: pointer;
+        transform: scale(1.2);
+    }
+
+    .showcase .seat:not(.occupied):hover {
+        cursor: default;
+        transform: scale(1);
     }
 }
