@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
 import { Subscription } from 'rxjs';
 
@@ -8,9 +9,12 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./profile.page.scss'],
 })
 export class ProfilePage implements OnInit {
-  @ViewChild(IonModal) modal!: IonModal;
+  @ViewChild('modal1') modal1!: IonModal;  
+  @ViewChild('modal2') modal2!: IonModal;
+
   currentTags = undefined;
-  isOpen: boolean = false;
+  isOpen: boolean[] = [];  
+  
   tags = [
     {
       id: 1,
@@ -38,14 +42,19 @@ export class ProfilePage implements OnInit {
   image2 = "assets/images/hellow.png";
   sub: Subscription = new Subscription;
   isToggled: boolean = false;
-  constructor() { 
+  constructor(private router: Router) { 
   }
 
   ngOnInit() {
   }
 
-  openDetails(){
-    this.isOpen = !this.isOpen;
+  openDetails(index: number) {
+    // Toggle the open state for the clicked item
+    this.isOpen[index] = !this.isOpen[index];
+  }
+
+  openFilm(filmId: number) {
+    this.router.navigate(['/filmoverview', filmId]);
   }
   
   toggleImage(){
@@ -58,11 +67,12 @@ export class ProfilePage implements OnInit {
   // }
 
   cancel() {
-    this.modal.dismiss(null, 'cancel');
+    this.modal1.dismiss(null, 'cancel');
+    this.modal2.dismiss(null, 'cancel');
   }
 
   confirm() {
-    this.modal.dismiss(null, 'confirm');
+    this.modal1.dismiss(null, 'confirm');
   }
 
   handleChange(ev: any) {

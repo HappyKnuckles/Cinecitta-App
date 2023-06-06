@@ -46,33 +46,52 @@
         margin-left: 3px;
     }
 }
-.ticketContainer{
-    border-bottom: 1px solid rgba(255, 255, 255, 0.318);
-    padding-bottom: 30px;
-    margin-top: 10px;
+.stats{
+    color: #121212;
 
-    &.last{
-        border-bottom: none;
+    ion-row{
+        padding: 15px 15px 0;
+        font-weight: 500;
     }
 }
 
-.recommendationContainer{
-    padding-bottom: 10px;
-    padding-top: 10px;
+.ticketoverview {
 
-   
-}
-.titel {
-    margin-bottom: 5px;
-    font-weight: 600;
-    border-top: 1px solid rgba(255, 255, 255, 0.318);
-    padding-top: 10px;
+    .ticketContainer {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.318);
+        padding-bottom: 30px;
+        margin-top: 10px;
 
-   &.first{
-        border: none;
+        &.last {
+            border-bottom: none;
+        }
+
+        .titel {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
     }
 }
-.tags {
+
+.recommendations {
+
+    .recommendationContainer {
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    .titel {
+        margin-bottom: 5px;
+        font-weight: 600;
+        border-top: 1px solid rgba(255, 255, 255, 0.318);
+        padding-top: 10px;
+
+        &.first {
+            border: none;
+        }
+    }
+
+    .tags {
         background-color: #ccc;
         border-radius: 10px;
         margin-right: 5px;
@@ -82,10 +101,16 @@
         height: 28px;
     }
 
-.match{
-    background-color: #a3d9d5;
-}
+    .match {
+        background-color: #a3d9d5;
+    }
 
-.description{
-    margin: 15px 0;
+    .description {
+        margin: 15px 0;
+    }
+
+    .bottomIcon {
+        font-size: 1.2em;
+        color: #7A7A7A;
+    }
 }
