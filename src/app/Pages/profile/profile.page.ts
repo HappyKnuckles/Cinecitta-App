@@ -9,6 +9,30 @@ import { Subscription } from 'rxjs';
 })
 export class ProfilePage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
+  currentTags = undefined;
+  isOpen: boolean = false;
+  tags = [
+    {
+      id: 1,
+      name: 'Horror',
+    },
+    {
+      id: 2,
+      name: 'Drama',
+    },
+    {
+      id: 3,
+      name: 'Komödie',
+    },
+    {
+      id: 4,
+      name: 'Schräg',
+    },
+    {
+      id: 5,
+      name: 'FSK18',
+    },
+  ];
 
   image = "assets/images/default-avatar.png";
   image2 = "assets/images/hellow.png";
@@ -20,6 +44,10 @@ export class ProfilePage implements OnInit {
   ngOnInit() {
   }
 
+  openDetails(){
+    this.isOpen = !this.isOpen;
+  }
+  
   toggleImage(){
     this.isToggled = !this.isToggled;
   }
@@ -35,5 +63,9 @@ export class ProfilePage implements OnInit {
 
   confirm() {
     this.modal.dismiss(null, 'confirm');
+  }
+
+  handleChange(ev: any) {
+    this.currentTags = ev.target.value;
   }
 }
