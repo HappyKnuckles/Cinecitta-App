@@ -1,0 +1,61 @@
+.thumbnail {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 10px;
+    border-radius: 100px;
+}
+
+.profilPic {
+    border-radius: 50%;
+    background-color: white;
+}
+
+#photoSelectIcon {
+    font-size: 28px;
+    position: relative;
+    top: -30px;
+    left: 68px;
+    background: white;
+    border-radius: 50%;
+    color: #0076FE;
+}
+
+.settingLinksGrid {
+    padding: 0;
+
+    ion-row {
+        padding: 3%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.318);
+    }
+
+    .blueIcon {
+        font-size: 25px;
+        color: #a3d9d5;
+    }
+
+    .bottomIcon {
+        font-size: 1.2em;
+        color: #7A7A7A;
+        vertical-align: -6px;
+    }
+
+    .settingLinkText {
+        font-size: 16px;
+        vertical-align: -4px;
+        font-weight: 500;
+        margin-left: 3px;
+    }
+}
+.ticketContainer{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.318);
+    padding-bottom: 30px;
+    margin-top: 10px;
+
+    &.last{
+        border-bottom: none;
+    }
+}
+.titel {
+    margin-bottom: 5px;
+    font-weight: 600;
+}

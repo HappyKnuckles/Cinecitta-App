@@ -25,9 +25,10 @@ export class FilmOverviewPage {
   }
 
   openModal() {
-    const modal = document.querySelector('ion-modal');
+    const modal = document.querySelector('#ticketreservation') as HTMLIonModalElement;
     modal!.present();
   }
+
   cancel() {
     this.modal.dismiss(null, 'cancel');
   }
