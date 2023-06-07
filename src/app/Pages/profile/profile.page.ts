@@ -47,7 +47,6 @@ export class ProfilePage implements OnInit {
 
   ngOnInit() {
   }
-
   openDetails(index: number) {
     // Toggle the open state for the clicked item
     this.isOpen[index] = !this.isOpen[index];
