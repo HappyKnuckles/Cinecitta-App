@@ -14,13 +14,27 @@
     <p style="text-align: center;">Hans Dieter</p>
   </div>
 
+  <ion-list>
+    <ion-item>
+      <ion-label position="floating">Username</ion-label>
+      <ion-input type="text" [(ngModel)]="username"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input type="password" [(ngModel)]="password"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" (click)="login(username, password)">Login</ion-button>
+
   <ion-grid class="settingLinksGrid">
     <ion-row style="margin-top: 30%" id="ticketoverview">
       <ion-col size="1">
         <ion-icon name="ticket-outline" class="blueIcon"></ion-icon>
       </ion-col>
       <ion-col size="10">
-        <span class="settingLinkText">Aktuelle Tickets</span>
+        <span class="settingLinkText" (click)="this.ngOnInit()">Aktuelle Tickets</span>
       </ion-col>
       <ion-col style="text-align: right">
         <ion-icon name="chevron-forward-outline" class="bottomIcon"></ion-icon>
@@ -79,7 +93,9 @@
       <ion-col style="text-align: end;">213</ion-col>
     </ion-row></div>
   </ion-grid>
-
+<ion-modal>
+  
+</ion-modal>
 
   <ion-modal trigger="ticketoverview" #modal1 class="ticketoverview">
     <ng-template>

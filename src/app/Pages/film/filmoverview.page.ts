@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { IonModal } from '@ionic/angular';
+import { IonContent, IonGrid, IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { firstValueFrom } from 'rxjs';
 import { ToastController } from '@ionic/angular';
@@ -12,7 +12,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FilmOverviewPage {
   @ViewChild(IonModal) modal!: IonModal;
-  films: any[] = [];
+  @ViewChild(IonContent, { static: false }) content!: IonContent;
+   films: any[] = [];
   selectedSeats: any[] = [];
   totalPrice: number = 0;
   message: string = '';
@@ -25,7 +26,49 @@ export class FilmOverviewPage {
 
   openTimes(index: number) {
     this.isOpen[index] = !this.isOpen[index];
+    if (this.isOpen[index]) {
+      setTimeout(() => {
+        this.scrollToGrid(index);
+      }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
+    }
   }
+
+  // scrollToGrid(index: number) {
+  //   const gridElement = document.getElementById(`gridRef-${index}`);
+  //   if (gridElement) {
+  //     const gridOffsetTop = gridElement.offsetTop;
+  //     const gridHeight = gridElement.offsetHeight;
+  //     const windowHeight = window.innerHeight;
+  //     const scrollPosition = gridOffsetTop - (windowHeight - gridHeight) / 2;
+  
+  //     this.content.scrollToPoint(0, scrollPosition, 500); // Adjust the duration (ms) as needed
+  //   }
+  // }
+  
+
+  async scrollToGrid(index: number) {
+    const gridElement: HTMLElement | null = document.querySelector(`#gridRef-${index}`);
+    if (gridElement) {
+      const scrollElement: HTMLElement = await this.content.getScrollElement();
+      const contentHeight = scrollElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const gridOffsetTop = gridElement.offsetTop;
+      const gridHeight = gridElement.offsetHeight;
+  
+      let scrollPosition;
+      if (gridHeight > windowHeight) {
+        scrollPosition = gridOffsetTop;
+      } else {
+        scrollPosition = gridOffsetTop - (windowHeight - gridHeight) / 2;
+        const maxScrollPosition = contentHeight - windowHeight;
+        scrollPosition = Math.max(0, Math.min(scrollPosition, maxScrollPosition));
+      }
+  
+      this.content.scrollToPoint(0, scrollPosition, 500); // Adjust the duration (ms) as needed
+    }
+  }
+  
+  
 
   async ngOnInit() {
     await this.loadFilmData();

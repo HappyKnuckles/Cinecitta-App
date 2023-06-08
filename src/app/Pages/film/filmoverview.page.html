@@ -6,49 +6,51 @@
 
 <ion-content [fullscreen]="true">
   <div class="content">
+
+    <!-- <ion-grid *ngFor="let film of films">
+      <div class="filmContainer">
+        <div class="border">
+          <ion-row>
+            <ion-img src="{{film.film_cover_src}}" style="width: 100px;"></ion-img>
+            <ion-col>{{film.film_beschreibung | extractText}}</ion-col></ion-row>
+        </div>
+      </div>
+
+    </ion-grid> -->
     <div class="filmContainer" *ngFor="let film of films; let i = index">
       <div class="border">
-        <div class="titel">
-          {{film.film_titel}}
-          <span *ngIf="film.film_ist_ov === '1'">
-            OV
-            <ion-img
-              class="OV"
-              src="assets/images/united-kingdom.png"
-            ></ion-img>
-          </span>
+        <div class="filmSpecific">
+          <div class="titel">
+            <!-- {{film.film_titel}} -->
+            <span *ngIf="film.film_ist_ov === '1'">
+              OV
+              <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
+            </span>
+          </div>
+          <img src="{{film.film_cover_src}}" style="height: 50vh" />
+          <span class="description">{{film.film_beschreibung | extractText}}</span>
+          <div class="action">
+            <button>Filminfos</button>
+            <button>Tickets</button>
+          </div>
         </div>
-        <img
-          src="https://images.unsplash.com/photo-1666919643134-d97687c1826c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"
-        />
-        <span class="description"
-          >{{film.film_beschreibung | extractText}}</span
-        >
-        <div class="action">
-          <button>Filminfos</button>
-          <button>Tickets</button>
-        </div>
-        <div class="separator"></div>
-        <div class="tagcontainer">
+        <!-- <div class="tagcontainer">
           <div class="tags">FSK12</div>
           <div class="tags">Drama</div>
           <div class="tags">123 Min</div>
-        </div>
-        <div
-          (click)="openTimes(i)"
-          style="display: flex; margin-top: 10px; justify-content: center"
-        >
+        </div> -->
+        <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
           <ion-icon *ngIf="!isOpen[i]" name="chevron-down"></ion-icon>
           <ion-icon *ngIf="isOpen[i]" name="chevron-up"></ion-icon>
         </div>
 
-        <ion-grid *ngIf="isOpen[i]">
+        <ion-grid *ngIf="isOpen[i]" [id]="'gridRef-' + i">
           <ion-row class="weekdays">
             <ion-col *ngFor="let weekday of film.film_wochentage">
               {{ weekday?.tag_text }}
             </ion-col>
           </ion-row>
-        
+
           <ng-container *ngFor="let theater of film.theater">
             <ion-row class="theaterRow">
               <ion-col><span class="theaterName">{{ theater.theater_name }}</span></ion-col>
@@ -61,8 +63,12 @@
                   </ion-row>
                   <ion-row>
                     <ion-col *ngFor="let weekday of film.film_wochentage">
-                      <ng-container *ngIf="leinwand.vorstellungen && leinwand.vorstellungen[weekday.tag_der_woche]">
-                        <div>{{ leinwand.vorstellungen[weekday.tag_der_woche].uhrzeit }}</div>
+                      <ng-container *ngIf="leinwand.vorstellungen">
+                        <div *ngFor="let vorstellung of leinwand.vorstellungen">
+                          <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche">
+                            <div class="times">{{ vorstellung.uhrzeit }}</div>
+                          </ng-container>
+                        </div>
                       </ng-container>
                     </ion-col>
                   </ion-row>
@@ -70,11 +76,11 @@
               </ion-row>
             </ng-container>
           </ng-container>
-          
-          
-          
+
+
+
         </ion-grid>
-        
+
 
         <ion-modal id="ticketreservation" (willDismiss)="onWillDismiss($event)">
           <ng-template>
@@ -85,9 +91,7 @@
                 </ion-buttons>
                 <ion-title>Platzwahl</ion-title>
                 <ion-buttons slot="end">
-                  <ion-button (click)="confirm()" [strong]="true"
-                    >Reservieren</ion-button
-                  >
+                  <ion-button (click)="confirm()" [strong]="true">Reservieren</ion-button>
                 </ion-buttons>
               </ion-toolbar>
             </ion-header>
@@ -109,220 +113,93 @@
               <div class="container">
                 <div class="screen"></div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(0)"
-                    [class.selected]="selectedSeats.includes(0)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(1)"
-                    [class.selected]="selectedSeats.includes(1)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(2)"
-                    [class.selected]="selectedSeats.includes(2)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(3)"
-                    [class.selected]="selectedSeats.includes(3)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(4)"
-                    [class.selected]="selectedSeats.includes(4)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(5)"
-                    [class.selected]="selectedSeats.includes(5)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(6)"
-                    [class.selected]="selectedSeats.includes(6)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(7)"
-                    [class.selected]="selectedSeats.includes(7)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(0)" [class.selected]="selectedSeats.includes(0)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(1)" [class.selected]="selectedSeats.includes(1)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(2)" [class.selected]="selectedSeats.includes(2)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(3)" [class.selected]="selectedSeats.includes(3)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(4)" [class.selected]="selectedSeats.includes(4)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(5)" [class.selected]="selectedSeats.includes(5)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(6)" [class.selected]="selectedSeats.includes(6)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(7)" [class.selected]="selectedSeats.includes(7)"></div>
                 </div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(8)"
-                    [class.selected]="selectedSeats.includes(8)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(9)"
-                    [class.selected]="selectedSeats.includes(9)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(10)"
-                    [class.selected]="selectedSeats.includes(10)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(8)" [class.selected]="selectedSeats.includes(8)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(9)" [class.selected]="selectedSeats.includes(9)"></div>
+                  <div class="seat" (click)="toggleSeatSelection(10)" [class.selected]="selectedSeats.includes(10)">
+                  </div>
                   <div class="seat occupied"></div>
                   <div class="seat occupied"></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(11)"
-                    [class.selected]="selectedSeats.includes(11)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(12)"
-                    [class.selected]="selectedSeats.includes(12)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(13)"
-                    [class.selected]="selectedSeats.includes(13)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(11)" [class.selected]="selectedSeats.includes(11)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(12)" [class.selected]="selectedSeats.includes(12)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(13)" [class.selected]="selectedSeats.includes(13)">
+                  </div>
                 </div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(14)"
-                    [class.selected]="selectedSeats.includes(14)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(15)"
-                    [class.selected]="selectedSeats.includes(15)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(16)"
-                    [class.selected]="selectedSeats.includes(16)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(17)"
-                    [class.selected]="selectedSeats.includes(17)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(18)"
-                    [class.selected]="selectedSeats.includes(18)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(19)"
-                    [class.selected]="selectedSeats.includes(19)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(14)" [class.selected]="selectedSeats.includes(14)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(15)" [class.selected]="selectedSeats.includes(15)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(16)" [class.selected]="selectedSeats.includes(16)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(17)" [class.selected]="selectedSeats.includes(17)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(18)" [class.selected]="selectedSeats.includes(18)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(19)" [class.selected]="selectedSeats.includes(19)">
+                  </div>
                   <div class="seat occupied"></div>
                   <div class="seat occupied"></div>
                 </div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(20)"
-                    [class.selected]="selectedSeats.includes(20)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(21)"
-                    [class.selected]="selectedSeats.includes(21)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(22)"
-                    [class.selected]="selectedSeats.includes(22)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(23)"
-                    [class.selected]="selectedSeats.includes(23)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(24)"
-                    [class.selected]="selectedSeats.includes(24)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(25)"
-                    [class.selected]="selectedSeats.includes(25)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(26)"
-                    [class.selected]="selectedSeats.includes(26)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(27)"
-                    [class.selected]="selectedSeats.includes(27)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(20)" [class.selected]="selectedSeats.includes(20)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(21)" [class.selected]="selectedSeats.includes(21)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(22)" [class.selected]="selectedSeats.includes(22)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(23)" [class.selected]="selectedSeats.includes(23)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(24)" [class.selected]="selectedSeats.includes(24)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(25)" [class.selected]="selectedSeats.includes(25)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(26)" [class.selected]="selectedSeats.includes(26)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(27)" [class.selected]="selectedSeats.includes(27)">
+                  </div>
                 </div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(28)"
-                    [class.selected]="selectedSeats.includes(28)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(29)"
-                    [class.selected]="selectedSeats.includes(29)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(30)"
-                    [class.selected]="selectedSeats.includes(30)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(28)" [class.selected]="selectedSeats.includes(28)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(29)" [class.selected]="selectedSeats.includes(29)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(30)" [class.selected]="selectedSeats.includes(30)">
+                  </div>
                   <div class="seat occupied"></div>
                   <div class="seat occupied"></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(33)"
-                    [class.selected]="selectedSeats.includes(33)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(34)"
-                    [class.selected]="selectedSeats.includes(34)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(35)"
-                    [class.selected]="selectedSeats.includes(35)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(33)" [class.selected]="selectedSeats.includes(33)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(34)" [class.selected]="selectedSeats.includes(34)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(35)" [class.selected]="selectedSeats.includes(35)">
+                  </div>
                 </div>
                 <div class="row">
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(36)"
-                    [class.selected]="selectedSeats.includes(36)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(37)"
-                    [class.selected]="selectedSeats.includes(37)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(38)"
-                    [class.selected]="selectedSeats.includes(38)"
-                  ></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(39)"
-                    [class.selected]="selectedSeats.includes(39)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(36)" [class.selected]="selectedSeats.includes(36)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(37)" [class.selected]="selectedSeats.includes(37)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(38)" [class.selected]="selectedSeats.includes(38)">
+                  </div>
+                  <div class="seat" (click)="toggleSeatSelection(39)" [class.selected]="selectedSeats.includes(39)">
+                  </div>
                   <div class="seat occupied"></div>
                   <div class="seat occupied"></div>
                   <div class="seat occupied"></div>
-                  <div
-                    class="seat"
-                    (click)="toggleSeatSelection(43)"
-                    [class.selected]="selectedSeats.includes(43)"
-                  ></div>
+                  <div class="seat" (click)="toggleSeatSelection(43)" [class.selected]="selectedSeats.includes(43)">
+                  </div>
                 </div>
               </div>
             </ion-content>

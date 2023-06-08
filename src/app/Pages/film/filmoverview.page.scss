@@ -6,12 +6,15 @@
     padding: 15px 0 15px;
 
     .border {
-        padding: 10px 10px;
+        padding: 10px 0;
         box-shadow: 0 4px 16px #a3d9d558;
         border: 1px solid #a3d9d5;
         border-radius: 7px;
         width: 90%;
         margin: 0 auto;
+    }
+    .filmSpecific{
+        padding: 0 10px;
     }
 
     .titel {
@@ -77,6 +80,16 @@
             color: #a3d9d5;
             margin: 10px 0;
         }
+
+        .times{
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .divider {
+            border-bottom: 1px solid white;
+            margin-bottom: 5px;
+          }
+
     }
 
     ion-icon {
