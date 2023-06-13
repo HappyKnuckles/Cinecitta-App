@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { IonContent, IonGrid, IonModal } from '@ionic/angular';
+import { ActionSheetController, IonContent, IonGrid, IonModal } from '@ionic/angular';
 import { OverlayEventDetail } from '@ionic/core/components';
 import { firstValueFrom } from 'rxjs';
 import { ToastController } from '@ionic/angular';
@@ -13,15 +13,18 @@ import { HttpClient } from '@angular/common/http';
 export class FilmOverviewPage {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-   films: any[] = [];
+  films: any[] = [];
   selectedSeats: any[] = [];
   totalPrice: number = 0;
   message: string = '';
   isOpen: boolean[] = [];
+  detailView: boolean = true;
+  showFull: boolean[] = [];
 
   constructor(
     private toastController: ToastController,
-    private http: HttpClient
+    private http: HttpClient,
+    private actionSheetCtrl: ActionSheetController
   ) {}
 
   openTimes(index: number) {
@@ -32,6 +35,31 @@ export class FilmOverviewPage {
       }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
     }
   }
+
+  
+  async presentActionSheet() {
+    const actionSheet = await this.actionSheetCtrl.create({
+      header: 'View auswählen',
+      buttons: [
+        {
+          text: this.detailView ? 'Kurzübersicht' : 'Detailübersicht',
+          handler: () => {
+            this.detailView = !this.detailView;
+          }
+        },
+        {
+          text: 'Abbrechen',
+          role: 'cancel',
+        },
+      ],
+    });
+  
+    await actionSheet.present();
+  }
+  hasFlagName(leinwand: any, name: string): boolean {
+    return leinwand.release_flags.some((flag: any) => flag.flag_name === name);
+  }
+  
 
   // scrollToGrid(index: number) {
   //   const gridElement = document.getElementById(`gridRef-${index}`);

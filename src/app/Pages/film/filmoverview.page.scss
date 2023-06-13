@@ -2,6 +2,15 @@
     //background: linear-gradient(#121212, #a3d9d529, #121212);
 }
 
+.actionSheet {
+    --background: none;
+    --background-activated: none;
+    float: right;
+
+    ion-icon{
+    color: #a3d9d5;}
+}
+
 .filmContainer {
     padding: 15px 0 15px;
 
@@ -13,7 +22,8 @@
         width: 90%;
         margin: 0 auto;
     }
-    .filmSpecific{
+
+    .filmSpecific {
         padding: 0 10px;
     }
 
@@ -22,7 +32,7 @@
         font-weight: 600;
     }
 
-    .OV{
+    .OV {
         width: 20px;
         vertical-align: bottom;
         display: inline-block;
@@ -81,14 +91,15 @@
             margin: 10px 0;
         }
 
-        .times{
+        .times {
             font-size: 14px;
             margin-bottom: 10px;
         }
+
         .divider {
             border-bottom: 1px solid white;
             margin-bottom: 5px;
-          }
+        }
 
     }
 
@@ -96,7 +107,7 @@
         font-size: 25px;
     }
 
-    .theaterName{
+    .theaterName {
         padding: 2px 5px;
         background: #ccc;
         border-radius: 5px;

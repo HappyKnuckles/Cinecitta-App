@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonModal } from '@ionic/angular';
@@ -83,39 +83,40 @@ export class ProfilePage implements OnInit {
   }
 
 
+  
   async loadTicketHistory() {
-    const isLoggedIn = await this.login(this.username, this.password); // Replace `username` and `password` with actual values
+    // Check if the ticket data is already stored
+    const storedTicketData = localStorage.getItem('ticketData');
+    if (storedTicketData) {
+      // Use the stored data instead of making a request
+      this.history = JSON.parse(storedTicketData);
+      console.log(this.history);
+      return; // Exit the function since data is already available
+    }
   
-    if (isLoggedIn) {
-      // Check if the films data is already stored
-      const storedTicketData = localStorage.getItem('ticketData');
-      if (storedTicketData) {
-        // Use the stored data instead of making a request
-        this.history = JSON.parse(storedTicketData);
-        console.log(this.history);
-        return; // Exit the function since data is already available
-      }
+    // Ticket data is not stored, make the request
+    const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=15&klasse=benutzer_transaktionen&com=liste_transaktionen&cli_mode=1';
+    const sessionCookie = 'PHPSESSID=98a7a6dc87e21751d72ae9327803d74e'; // Replace with the actual PHPSESSID cookie value
   
-      // Films data is not stored, make the request
-      const url =
-        'http://localhost:8080/https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=15&klasse=benutzer_transaktionen&com=liste_transaktionen&cli_mode=1';
-      try {
-        const response: any = await firstValueFrom(this.http.post(url, null));
-        console.log(response); // Log the response to inspect its structure
-        const ticketData = response?.daten?.items ?? [];
-        this.history = ticketData;
-        console.log(this.history);
+    const headers = new HttpHeaders({
+      'Cookie': sessionCookie,
+    });
   
-        // Store the films data in local storage for future use
-        localStorage.setItem('ticketData', JSON.stringify(ticketData));
-      } catch (error) {
-        console.error(error);
-      }
-    } else {
-      // User is not logged in, handle the appropriate action (e.g., show login prompt)
-      console.log('User is not logged in');
+    try {
+      const response: any = await firstValueFrom(this.http.post(url, null, { headers }));
+      console.log(response); // Log the response to inspect its structure
+      const ticketData = response?.daten?.items ?? [];
+      this.history = ticketData;
+      console.log(this.history);
+  
+      // Store the ticket data in local storage for future use
+      localStorage.setItem('ticketData', JSON.stringify(ticketData));
+    } catch (error) {
+      console.error(error);
     }
   }
+  
+  
   
 
   openDetails(index: number) {
