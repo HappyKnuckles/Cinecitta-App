@@ -96,14 +96,11 @@ export class ProfilePage implements OnInit {
   
     // Ticket data is not stored, make the request
     const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=15&klasse=benutzer_transaktionen&com=liste_transaktionen&cli_mode=1';
-    const sessionCookie = 'PHPSESSID=98a7a6dc87e21751d72ae9327803d74e'; // Replace with the actual PHPSESSID cookie value
   
-    const headers = new HttpHeaders({
-      'Cookie': sessionCookie,
-    });
+ 
   
     try {
-      const response: any = await firstValueFrom(this.http.post(url, null, { headers }));
+      const response: any = await firstValueFrom(this.http.post(url, null));
       console.log(response); // Log the response to inspect its structure
       const ticketData = response?.daten?.items ?? [];
       this.history = ticketData;
