@@ -114,14 +114,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   async loadFilmData() {
     // Check if the films data is already stored
-    // const storedFilmsData = localStorage.getItem('filmsData');
-    // if (storedFilmsData) {
-    //   // Use the stored data instead of making a request
-    //   this.films = JSON.parse(storedFilmsData);
-    //   await this.updateFilteredFilms();
-    //   console.log(this.films);
-    //   return; // Exit the function since data is already available
-    // }
+    const storedFilmsData = localStorage.getItem('filmsData');
+    if (storedFilmsData) {
+      // Use the stored data instead of making a request
+      this.films = JSON.parse(storedFilmsData);
+      await this.updateFilteredFilms();
+      console.log(this.films);
+      return; // Exit the function since data is already available
+    }
 
     // Films data is not stored, make the request
     const url =
