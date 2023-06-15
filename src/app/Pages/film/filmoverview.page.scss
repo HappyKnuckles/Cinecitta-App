@@ -2,6 +2,45 @@
     //background: linear-gradient(#121212, #a3d9d529, #121212);
 }
 
+.modal {
+
+    width: 85%;
+    height: 80%;
+    margin: auto;
+    border-radius: 7px;
+
+    ion-grid {
+        --ion-grid-columns: 4;
+    }
+
+    .tags {
+        background-color: #ccc;
+        border-radius: 7px;
+        padding: 5px 10px;
+        color: #121212;
+        font-size: 14px;
+    }
+
+    ion-row {
+        &:not(:first-child, .filterRow) {
+            border-top: 1px solid gray;
+            padding-top: 10px;
+        }
+    }
+
+    .filterRow {
+        padding-bottom: 10px;
+    }
+
+    ion-icon {
+        font-size: 25px;
+
+        &.open {
+            transform: translateY(-5px);
+        }
+    }
+}
+
 .actionSheet {
     --background: none;
     --background-activated: none;
@@ -12,9 +51,27 @@
     }
 }
 
+.search {
+    --padding-start: 15px;
+    position: relative;
+
+    ion-icon {
+        font-size: 20px;
+        color: #a3d9d5;
+    }
+
+    .filterBtn {
+        position: absolute;
+        right: 5%;
+        --border-radius: 7px;
+        height: 65%;
+        opacity: .8;
+    }
+}
+
 .filmContainer {
     padding: 0 0 30px;
-    position: relative;
+
 
     &.small {
         padding: 0 0 10px;
@@ -31,30 +88,33 @@
 
     .filmSpecific {
         padding: 0 10px;
+    }
 
-        .new-dreieck {
-            z-index: 10;
+    .new-dreieck {
+        z-index: 10;
+        position: absolute;
+        transform: translateY(-11px);
+        right: 5%;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-radius: 7px;
+        border-width: 0 40px 40px 0;
+        border-color: transparent #1d979f transparent transparent;
+        font-size: 10px;
+        opacity: .9;
+
+        &.small {
+            right: 6%;
+        }
+
+        .new {
+            transform: rotate(45deg);
+            color: #fff;
+            font-size: 12px;
+            top: 6px;
+            right: -38px;
             position: absolute;
-            top: 0px;
-            right: 19px;
-            width: 0;
-            height: 0;
-            -webkit-transform: rotate(360deg);
-            border-style: solid;
-            border-radius: 7px;
-            border-width: 0 40px 40px 0;
-            border-color: transparent #1d979f transparent transparent;
-            font-size: 10px;
-            opacity: .9;
-
-            .new {
-                transform: rotate(45deg);
-                color: #fff;
-                font-size: 12px;
-                top: 6px;
-                right: -38px;
-                position: absolute;
-            }
         }
     }
 
@@ -77,16 +137,6 @@
 
     .tagcontainer {
         margin-top: 15px;
-    }
-
-    .tags {
-        background-color: #ccc;
-        border-radius: 10px;
-        padding: 5px 10px;
-        display: inline-block;
-        margin-right: 5px;
-        color: #121212;
-        font-size: 14px;
     }
 
     .description {
@@ -114,10 +164,6 @@
     ion-grid {
         margin-top: 10px;
         text-align: center;
-
-        // ion-row:not(.saalName, .weekdays, .last, .theaterRow) {
-        //     border-bottom: 1px solid rgba(255, 255, 255, 0.318);
-        // }
 
         .saalName {
             color: #a3d9d5;

@@ -5,6 +5,8 @@ import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { ToastController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
+
+
 @Component({
   selector: 'app-tab2',
   templateUrl: 'filmoverview.page.html',
@@ -19,12 +21,62 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   totalPrice: number = 0;
   message: string = '';
   isOpen: boolean[] = [];
+  isModalOpen: boolean = false;
   detailView: boolean = true;
   showFull: boolean[] = [];
+  showAllTags: boolean[] = [];
   searchQuery = '';
   filteredFilms: any[] = [];
   private searchSubject: Subject<string> = new Subject<string>();
   sub: Subscription = new Subscription;
+
+  filters = ['Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen']
+
+  tageAuswahl = ['tage_auswahl-heute', 'tage_auswahl-morgen', 'tage_auswahl-amwe', 'tage_auswahl-naechstewoche', 'tage_auswahl-weiterenwochen'];
+
+  genresTag = [
+    { id: 165060, name: 'Action' },
+    { id: 165087, name: 'Animation' },
+    { id: 165579, name: 'Dokumentation' },
+    { id: 165122, name: 'Drama' },
+    { id: 165088, name: 'Family' },
+    { id: 165058, name: 'Fantasy' },
+    { id: 165110, name: 'Horror' },
+    { id: 165033, name: 'Komödie' },
+    { id: 165137, name: 'Romance' },
+    { id: 165059, name: 'Science Fiction' },
+    { id: 165156, name: 'Thriller' },
+    { id: 262715, name: 'Anime' },
+    { id: 843164, name: 'Arthouse' }
+  ];
+
+  leinwandHighlights = [
+    { id: 171984, name: 'Alle Kinos' },
+    { id: 168943, name: 'CINECITTA' },
+    { id: 1039, name: 'Deluxe' },
+    { id: 1040, name: 'Cinemagnum' },
+    { id: 185228, name: 'Open Air' },
+    { id: 121383, name: 'Meisengeige' },
+    { id: 122646, name: 'Metropolis' },
+    { id: 548180, name: 'Manhatten' },
+    { id: 1053804, name: 'Onyx LED' }
+  ];
+
+  extras = ['neustarts', 'vorverkauf'];
+
+  flags = [
+    { id: 104836, name: 'ATMOS' },
+    { id: 104831, name: '3D' },
+    { id: 104831, name: 'OV' },
+    { id: 104838, name: 'mit Untertitel' },
+    { id: 631455, name: 'D-BOX' }
+  ];
+
+  behindertenTags = [
+    { id: 1, name: 'Hörverstärkung' },
+    { id: 2, name: 'Audiodeskription' },
+    { id: 3, name: 'Untertitel für Hörgeschädigte' }
+  ];
 
   constructor(
     private toastController: ToastController,
@@ -39,6 +91,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         this.scrollToGrid(index);
       }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
     }
+  }
+
+  showTags(index: number){
+    this.showAllTags[index] = !this.showAllTags[index];
+  }
+
+  setOpen(isOpen: boolean) {
+    this.isModalOpen = isOpen;
   }
 
   async presentActionSheet() {
@@ -172,10 +232,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   cancel() {
     this.modal.dismiss(null, 'cancel');
+    this.setOpen(false);
   }
 
   confirm() {
     this.modal.dismiss(this.selectedSeats, 'confirm');
+    this.setOpen(false);
   }
 
   toggleSeatSelection(seatIndex: number) {
@@ -229,7 +291,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
 
 // const tage_auswahl = empty, tage_auswahl-heute, tage_auswahl-morgen, tage_auswahl-amwe, tage_auswahl-naechstewoche, tage_auswahl-weiterenwochen
-// const genres_tag = 165060(Action), 165087(Animation), 165579(Dokumentation), 165122(Drama), 165088(Family), 165058(Fantasy), 165110(Horror), 165033(Komödie), 165137(Romance), 165059(Science Fiction), 165156(Thriller), 262715(Anime), 843164(Arthouse), 
+// const genres_tag = 165060(Action), 165087(Animation), 165579(Dokumentation), 165122(Drama), 165088(Family), 165058(Fantasy), 165110(Horror), 165033(Komödie), 165137(Romance), 165059(Science Fiction), 165156(Thriller), 262715(Anime), 843164(Arthouse),
 // const leinwand_highlights = 171984(Alle Kinos), 168943(CINECITTA), 1039(Deluxe), 1040(Cinemagnum), 185228(Open Air), 121383(Meisengeige), 122646(Metropolis), 548180(Manhatten), 1053804(Onyx LED)
 // const extras = neustarts, vorverkauf
 // const flags = 104836(ATMOS), 104831(3D), 104831(OV), 104838(mit Untertitel), 631455(D-BOX)
