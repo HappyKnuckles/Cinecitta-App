@@ -2,68 +2,116 @@
   (ionBackdropTap)="cancel()"></ion-backdrop>
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> Aktuelle Filme </ion-title>
-    <div>
+    <div slot="start">
       <ion-button class="actionSheet" (click)="presentActionSheet()" slot="icon-only">
-        <ion-icon slot="end" name="ellipsis-vertical"></ion-icon></ion-button>
+        <ion-icon name="ellipsis-vertical"></ion-icon>
+      </ion-button>
+    </div>
+    <ion-title> Aktuelle Filme </ion-title>
+    <div slot="end">
+      <ion-button class="actionSheet" (click)="openSearch()">
+        <ion-icon name="search"></ion-icon>
+      </ion-button>
     </div>
   </ion-toolbar>
 
-  <ion-input #searchInput placeholder="Suche" [(ngModel)]="searchQuery" [clearInput]="true" class="search"
-    (ngModelChange)="onSearchChange($event)">
-    <ion-label style="padding-left: 15px;">
+  <ion-input #searchInput placeholder="Suche" [(ngModel)]="searchQuery" [@openClose]="!isSearchOpen ? true : false"
+    [clearInput]="true" class="search" (ngModelChange)="onSearchChange($event)">
+    <ion-label style="padding-left: 21px;">
       <ion-icon name="search"></ion-icon>
     </ion-label>
     <ion-button class="filterBtn" id="filter-modal" (click)="setOpen(true)"><ion-label>Filter</ion-label></ion-button>
   </ion-input>
 </ion-header>
 
-<ion-modal [isOpen]="isModalOpen" class="modal">
+<ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
   <ng-template>
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
-          <ion-button (click)="cancel()"><ion-icon name="chevron-back"></ion-icon></ion-button>
+          <ion-button (click)="setOpen(false)"><ion-icon name="chevron-back"></ion-icon></ion-button>
         </ion-buttons>
         <ion-title>Filter</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="confirm()" [strong]="true">Reset</ion-button>
+          <ion-button (click)="reset()" [strong]="true">Reset</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content style="--padding-top: 15px;">
       <ion-grid>
+
         <ng-container *ngFor="let filter of filters; let i = index;">
           <ion-row style="margin: 0 5px;" (click)="showTags(i)">
             <ion-col style="font-weight: 600;">{{ filter }}</ion-col>
-            <ion-col style="justify-content: end; display: flex;" >
-              <ion-icon class="open" [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
+            <ion-col style="justify-content: end; display: flex;">
+              <ion-icon *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'" class="open"
+                [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
             </ion-col>
+            <ion-select class="open" *ngIf="filter === 'Zeitraum'" interface="action-sheet"
+              [(ngModel)]="selectedFilters.tageAuswahl"
+              (ngModelChange)="toggleSelection(selectedFilters.tageAuswahl, 'tageAuswahl')"
+              placeholder="{{tageAuswahl[0].name}}">
+              <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id">
+                {{ wahl.name }}
+              </ion-select-option>
+            </ion-select>
+            <ion-select class="open" *ngIf="filter === 'Kinosaal'" interface="action-sheet"
+              [(ngModel)]="selectedFilters.leinwandHighlights"
+              (ngModelChange)="toggleSelection(selectedFilters.leinwandHighlights, 'leinwandHighlights')"
+              placeholder="{{leinwandHighlights[0].name}}">
+              <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id">
+                {{ highlight.name }}
+              </ion-select-option>
+            </ion-select>
           </ion-row>
-          <ion-row *ngIf="showAllTags[i]" class="filterRow">
-            <ion-col>
-              <ion-grid>
-                <ion-row *ngIf="filter === 'Genre'">
-                  <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px;"><ion-label
-                      class="tags">{{ genre.name }}</ion-label></ion-col>
-                </ion-row>
-                <ion-row *ngIf="filter === 'Kinosaal'">
-                  <ion-col size="auto" *ngFor="let highlight of leinwandHighlights" style="margin-top: 5px;"><ion-label
-                      class="tags">{{ highlight.name }}</ion-label></ion-col>
-                </ion-row>
-                <ion-row *ngIf="filter === 'Sound'">
-                  <ion-col size="auto" *ngFor="let flag of flags" style="margin-top: 5px;"><ion-label class="tags">{{
-                      flag.name }}</ion-label></ion-col>
-                </ion-row>
-                <ion-row *ngIf="filter === 'Barrierefreie Optionen'">
-                  <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags"
-                    style="margin-top: 5px;"><ion-label class="tags">{{ behindertenTag.name }}</ion-label></ion-col>
-                </ion-row>
-              </ion-grid>
-            </ion-col>
-          </ion-row>
+
+          <ng-container *ngIf="!showAllTags[i]">
+            <ion-row *ngIf="filter === 'Genre' && selectedFilters.genresTags.length > 0" class="filterRow">
+              <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px;">
+                <ion-label class="tags selected" *ngIf="isSelected(genre.id, 'genresTags')"
+                  [ngStyle]="{ backgroundColor: isSelected(genre.id, 'genresTags') ? '#a3d9d5' : '' }">{{ genre.name
+                  }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Sound' && selectedFilters.flags.length > 0" class="filterRow">
+              <ion-col size="auto" *ngFor="let flag of flags" style="margin-top: 5px;">
+                <ion-label class="tags selected" *ngIf="isSelected(flag.id, 'flags')">{{ flag.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Barrierefreie Optionen' && selectedFilters.behindertenTags.length > 0"
+              class="filterRow">
+              <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px;">
+                <ion-label class="tags selected" *ngIf="isSelected(behindertenTag.id, 'behindertenTags')">{{
+                  behindertenTag.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ng-container>
+
+          <ng-container *ngIf="showAllTags[i]">
+            <ion-row *ngIf="filter === 'Genre'" class="filterRow">
+              <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px;">
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(genre.id, 'genresTags') }"
+                  (click)="toggleSelection(genre.id, 'genresTags')">{{ genre.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Sound'" class="filterRow">
+              <ion-col size="auto" *ngFor="let flag of flags" style="margin-top: 5px;">
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(flag.id, 'flags') }"
+                  (click)="toggleSelection(flag.id, 'flags')">{{ flag.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Barrierefreie Optionen'" class="filterRow">
+              <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px;">
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(behindertenTag.id, 'behindertenTags') }"
+                  (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">{{ behindertenTag.name
+                  }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ng-container>
         </ng-container>
       </ion-grid>
+      <ion-button style="position: absolute; width: 90%; bottom: 5%; left: 4%; font-weight: 600;"
+        (click)="confirm()">Bestätigen ({{filteredFilms.length}})</ion-button>
     </ion-content>
   </ng-template>
 </ion-modal>
@@ -72,8 +120,8 @@
 
 <ion-content [fullscreen]="true">
   <div *ngIf="!detailView" class="content">
-    <ion-grid *ngFor="let film of filteredFilms; let i = index">
-      <div class="filmContainer small">
+    <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
+      <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row style="
               justify-content: center;
@@ -111,8 +159,8 @@
     </ion-grid>
   </div>
   <div *ngIf="detailView" class="content">
-    <div class="filmContainer" *ngFor="let film of filteredFilms; let i = index">
-      <div class="border">
+    <div class="filmContainer" *ngFor="let film of filteredFilms; let i = index; let first = first">
+      <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="filmSpecific">
           <span *ngIf="film.film_neu === 'NEU'">
             <div class="new-dreieck">
@@ -130,11 +178,6 @@
             <button>Tickets</button> -->
           </div>
         </div>
-        <!-- <div class="tagcontainer">
-          <div class="tags">FSK12</div>
-          <div class="tags">Drama</div>
-          <div class="tags">123 Min</div>
-        </div> -->
         <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
           <ion-icon *ngIf="!isOpen[i]" name="chevron-down"></ion-icon>
           <ion-icon *ngIf="isOpen[i]" name="chevron-up"></ion-icon>
