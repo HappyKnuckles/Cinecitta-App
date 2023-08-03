@@ -26,6 +26,7 @@
 
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
   <ng-template>
+
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
@@ -106,6 +107,23 @@
                   (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">{{ behindertenTag.name
                   }}</ion-label>
               </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Zeiten'" class="filterRow">
+              <div style="width: 100%;">
+                <div style="display: flex; justify-content: space-evenly;">
+                  <ion-button (click)="openStartTimePicker()" class="timePickerBtn">{{ startTime }}</ion-button>
+                  <ion-icon name="remove-outline" style="margin-top: 13px;"></ion-icon>
+                  <ion-button (click)="openEndTimePicker()" class="timePickerBtn">{{ endTime }}</ion-button>
+                </div>
+                <ion-datetime *ngIf="showStartTimePicker" presentation="time" locale="de-DE" [(ngModel)]="startTime"
+                  (ngModelChange)="onTimeChange()" hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2]"
+                  minuteValues="0" class="timePicker">
+                </ion-datetime>
+                <ion-datetime *ngIf="showEndTimePicker" presentation="time" locale="de-DE" [(ngModel)]="endTime"
+                  (ngModelChange)="onTimeChange()" hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]"
+                  minuteValues="0" class="timePicker">
+                </ion-datetime>
+              </div>
             </ion-row>
           </ng-container>
         </ng-container>
@@ -191,7 +209,7 @@
           </ion-row>
 
           <ng-container *ngFor="let theater of film.theater">
-            <ion-row class="theaterRow">
+            <ion-row class="theaterRow" *ngIf="hasScreenings(theater)">
               <ion-col><span class="theaterName">{{ theater.theater_name }}</span></ion-col>
             </ion-row>
             <ng-container *ngFor="let leinwand of theater.leinwaende">
@@ -205,7 +223,9 @@
                       <ng-container *ngIf="leinwand.vorstellungen">
                         <div *ngFor="let vorstellung of leinwand.vorstellungen">
                           <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche">
-                            <div [style.color]="vorstellung.deaktiviert ? 'grey' : ''" class="times">
+                            <div (click)="openExternalWebsite('https://cinecitta.' + vorstellung.href)"
+                              [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
+                              class="times">
                               {{ vorstellung.uhrzeit }}
                             </div>
                           </ng-container>

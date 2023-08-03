@@ -4,6 +4,7 @@ import { OverlayEventDetail } from '@ionic/core/components';
 import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { ToastController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 
@@ -25,6 +26,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild('searchInput', { static: false }) searchInput!: ElementRef;
+  showStartTimePicker: boolean = false;
+  showEndTimePicker: boolean = false;
+  startTime: string;
+  endTime: string;
   films: any[] = [];
   selectedSeats: any[] = [];
   totalPrice: number = 0;
@@ -45,10 +50,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     leinwandHighlights: [],
     extras: [],
     flags: [],
-    behindertenTags: []
+    behindertenTags: [],
   };
 
-  filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen']
+  filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen', 'Zeiten']
 
   tageAuswahl = [
     { id: '', name: 'Diese Woche' },
@@ -86,10 +91,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     { id: 548180, name: 'Manhatten' },
     { id: 1053804, name: 'Onyx LED' }
   ];
-  customActionSheetOptions = {
-    header: 'Colors',
-    subHeader: 'Select your favorite color',
-  };
+
   extras = ['neustarts', 'vorverkauf'];
 
   flags = [
@@ -109,8 +111,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   constructor(
     private toastController: ToastController,
     private http: HttpClient,
-    private actionSheetCtrl: ActionSheetController
-  ) { }
+    private actionSheetCtrl: ActionSheetController,
+    private inAppBrowser: InAppBrowser
+  ) {
+    this.startTime = '10:00';
+    this.endTime = '03:00';
+  }
 
   openTimes(index: number) {
     this.isOpen[index] = !this.isOpen[index];
@@ -119,6 +125,61 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         this.scrollToGrid(index);
       }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
     }
+  }
+
+  closeTimes() {
+    this.showStartTimePicker = false;
+    this.showEndTimePicker = false;
+    this.isModalOpen = true;
+  }
+
+  openExternalWebsite(url: string) {
+    const browser = this.inAppBrowser.create(url, '_blank');
+  }
+
+  openStartTimePicker() {
+    this.showStartTimePicker = !this.showStartTimePicker;
+  }
+
+  openEndTimePicker() {
+    this.showEndTimePicker = !this.showEndTimePicker;
+  }
+
+  async onTimeChange() {
+    let startHour = this.convertTimeToNumeric(this.startTime);
+    let endHour = this.convertTimeToNumeric(this.endTime);
+    const formatHour = (hour: number) => hour.toString().padStart(2, '0');
+
+    // Ensure endHour is always at least one hour higher than startHour
+    if (endHour <= startHour) {
+      endHour = (startHour + 1);
+
+      if (endHour > 23) {
+        endHour -= 24;
+      }
+      if (startHour > 23) {
+        startHour -= 24;
+      }
+      this.endTime = `${formatHour(endHour)}:00`;
+      this.startTime = `${formatHour(startHour)}:00`;
+    }
+    await this.loadFilmData();
+  }
+
+  convertTimeToNumeric(timeStr: string): number {
+    // Split the time string into hours and minutes
+    const [hoursStr] = timeStr.split(':');
+    const hours = parseInt(hoursStr, 10);
+
+    // Convert the time to numeric representation
+    let numericTime = hours;
+
+    // Special case: If the time is below 10 add 24
+    if (hours < 10) {
+      numericTime += 24;
+    }
+
+    return numericTime;
   }
 
   openSearch() {
@@ -131,6 +192,28 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
+  }
+
+  hasScreenings(theater: any): boolean {
+    for (const leinwand of theater.leinwaende) {
+      if (leinwand.vorstellungen) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getColor(belegung_ampel: string): string {
+    switch (belegung_ampel) {
+      case 'gelb':
+        return '#fc0';
+      case 'orange':
+        return '#f60';
+      case 'rot':
+        return '#c00';
+      default:
+        return ''; // If the value is not recognized, you can set a default color here
+    }
   }
 
   async presentActionSheet() {
@@ -226,12 +309,16 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (this.selectedFilters.tageAuswahl.length > 0) {
       formData.append('filter[tage_auswahl]', this.selectedFilters.tageAuswahl[0]);
     }
+
     this.selectedFilters.extras.forEach((extra: string) => formData.append('filter[extra][]', extra));
     this.selectedFilters.flags.forEach((id: number) => formData.append('filter[releasetypen_flags][]', id.toString()));
     this.selectedFilters.behindertenTags.forEach((id: number) => formData.append('filter[barrierefrei_tags][]', id.toString()));
 
-    // formData.append('filter[rangeslide][]', 'Zeit eins');
-    // formData.append('filter[rangeslide][]', 'Zeit zwei');
+    const startTimeNumeric = this.convertTimeToNumeric(this.startTime);
+    const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
+
+    formData.append('filter[rangeslider][]', String(startTimeNumeric));
+    formData.append('filter[rangeslider][]', String(endTimeNumeric));
 
     try {
       const response: any = await firstValueFrom(this.http.post(url, formData, { params }));
@@ -279,10 +366,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   async toggleSelection(id: any, filterType: string) {
     if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
-      // For Kinosaal tag
+      // For Kinosaal tag or other non-time filters
       this.selectedFilters[filterType] = [id];
-    } else {
-      // For other tags
+    }
+    else {
+      // For other time-related filters (if any)
       const index = this.selectedFilters[filterType].indexOf(id);
       if (index > -1) {
         // Remove the id if already selected
@@ -314,7 +402,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async cancel() {
+  cancel() {
     this.showAllTags = Array(this.filters.length).fill(false);
     this.showAllTags = this.showAllTags.map(_ => false);
     this.setOpen(false);
@@ -326,18 +414,23 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.setOpen(false);
   }
 
-  reset() {
-    // Store the current selection of the tag with ID 171984
-    const isSelected171984 = this.selectedFilters.leinwandHighlights.includes(171984);
+  async reset() {
 
     // Reset selected filters
     this.selectedFilters.genresTags = [];
-    this.selectedFilters.leinwandHighlights = isSelected171984 ? [171984] : [];
+    this.selectedFilters.leinwandHighlights = 171984;
+    this.selectedFilters.tageAuswahl = '';
     this.selectedFilters.extras = [];
     this.selectedFilters.flags = [];
     this.selectedFilters.behindertenTags = [];
+    this.startTime = '10:00';
+    this.endTime = '03:00';
 
     // Reset background color of tags
     this.showAllTags = this.showAllTags.map(_ => false);
+    this.closeTimes();
+    await this.loadFilmData();
+
   }
 }
+
