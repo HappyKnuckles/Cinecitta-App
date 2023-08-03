@@ -86,6 +86,13 @@
                   behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
+            <ion-row *ngIf="filter === 'Extras' && selectedFilters.extras.length > 0"
+              class="filterRow">
+              <ion-col size="auto" *ngFor="let extra of extras" style="margin-top: 5px;">
+                <ion-label class="tags selected" *ngIf="isSelected(extra.id, 'extras')">{{
+                  extra.name }}</ion-label>
+              </ion-col>
+            </ion-row>
           </ng-container>
 
           <ng-container *ngIf="showAllTags[i]">
@@ -106,6 +113,12 @@
                 <ion-label class="tags" [ngClass]="{ selected: isSelected(behindertenTag.id, 'behindertenTags') }"
                   (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">{{ behindertenTag.name
                   }}</ion-label>
+              </ion-col>
+            </ion-row>
+            <ion-row *ngIf="filter === 'Extras'" class="filterRow">
+              <ion-col size="auto" *ngFor="let extra of extras" style="margin-top: 5px;">
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(extra.id, 'extras') }"
+                  (click)="toggleSelection(extra.id, 'extras')">{{ extra.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Zeiten'" class="filterRow">

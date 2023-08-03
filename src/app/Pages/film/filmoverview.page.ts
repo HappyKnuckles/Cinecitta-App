@@ -53,7 +53,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     behindertenTags: [],
   };
 
-  filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen', 'Zeiten']
+  filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen', 'Extras', 'Zeiten']
 
   tageAuswahl = [
     { id: '', name: 'Diese Woche' },
@@ -92,7 +92,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     { id: 1053804, name: 'Onyx LED' }
   ];
 
-  extras = ['neustarts', 'vorverkauf'];
+  extras = [
+    { id: 'neustarts', name: 'Neustarts' },
+    { id: 'vorverkauf', name: 'Vorverkauf' }
+  ];
 
   flags = [
     { id: 104836, name: 'ATMOS' },
@@ -329,7 +332,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       await this.updateFilteredFilms();
       // console.log(this.filteredFilms);
       localStorage.setItem('filmsData', JSON.stringify(filmsData));
-
 
     } catch (error) {
       console.error(error);
