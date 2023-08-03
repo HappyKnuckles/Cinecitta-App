@@ -7,6 +7,7 @@ import { ExtractTextPipe } from 'src/app/Pipes/extract-text.pipe';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 import { FilmOverviewRoutingmodule } from './filmoverview-routing.module';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 @NgModule({
   imports: [
@@ -15,6 +16,9 @@ import { FilmOverviewRoutingmodule } from './filmoverview-routing.module';
     FormsModule,
     ExploreContainerComponentModule,
     FilmOverviewRoutingmodule
+  ],
+  providers: [
+    InAppBrowser
   ],
   declarations: [FilmOverviewPage,ExtractTextPipe]
 })
