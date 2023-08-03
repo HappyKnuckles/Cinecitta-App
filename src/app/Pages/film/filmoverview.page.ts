@@ -37,6 +37,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   isOpen: boolean[] = [];
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
+  isLoading: boolean = false;
   detailView: boolean = true;
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
@@ -266,7 +267,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.isLoading = true;
     await this.loadFilmData();
+    this.isLoading = false;
     this.sub = this.searchSubject.pipe(debounceTime(500)).subscribe(() => {
       this.updateFilteredFilms();
     });
@@ -346,6 +349,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   async updateFilteredFilms() {
     const excludedProperties = ['film_beschreibung', 'film_cover_src', 'film_favored', 'filminfo_href', 'film_system_id', 'system_id']; // Add more property names as needed
     if (this.searchQuery) {
+      this.isLoading = true;
       this.filteredFilms = this.films.filter(film =>
         Object.entries(film).some(([key, value]) => {
           if (excludedProperties.includes(key)) {
@@ -354,6 +358,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           return value && value.toString().toLowerCase().includes(this.searchQuery);
         })
       );
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 150);
     } else {
       this.filteredFilms = this.films;
     }
@@ -382,7 +389,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         this.selectedFilters[filterType].push(id);
       }
     }
+    this.isLoading = true;
     await this.loadFilmData();
+    this.isLoading = false;
+
   }
 
   isSelected(id: any, filterType: string): boolean {
@@ -411,13 +421,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async confirm() {
+    this.isLoading = true;
     await this.loadFilmData();
+    this.isLoading = false;
     this.showAllTags = this.showAllTags.map(_ => false);
     this.setOpen(false);
   }
 
   async reset() {
-
     // Reset selected filters
     this.selectedFilters.genresTags = [];
     this.selectedFilters.leinwandHighlights = 171984;
@@ -431,7 +442,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     // Reset background color of tags
     this.showAllTags = this.showAllTags.map(_ => false);
     this.closeTimes();
+
+    this.isLoading = true;
     await this.loadFilmData();
+    this.isLoading = false;
 
   }
 }

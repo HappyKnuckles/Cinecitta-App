@@ -1,5 +1,8 @@
 <ion-backdrop *ngIf="isModalOpen === true" style="opacity: 0.3; z-index: 11;"
   (ionBackdropTap)="cancel()"></ion-backdrop>
+  <div class="custom-loader-container" *ngIf="isLoading">
+    <ion-spinner name="lines" color="primary" class="custom-loader"></ion-spinner>
+  </div>
 <ion-header [translucent]="true">
   <ion-toolbar>
     <div slot="start">
@@ -16,7 +19,7 @@
   </ion-toolbar>
 
   <ion-input #searchInput placeholder="Suche" [(ngModel)]="searchQuery" [@openClose]="!isSearchOpen ? true : false"
-    [clearInput]="true" class="search" (ngModelChange)="onSearchChange($event)">
+    [clearOnEdit]="true" class="search" (ngModelChange)="onSearchChange($event)">
     <ion-label style="padding-left: 21px;">
       <ion-icon name="search"></ion-icon>
     </ion-label>
@@ -86,8 +89,7 @@
                   behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="filter === 'Extras' && selectedFilters.extras.length > 0"
-              class="filterRow">
+            <ion-row *ngIf="filter === 'Extras' && selectedFilters.extras.length > 0" class="filterRow">
               <ion-col size="auto" *ngFor="let extra of extras" style="margin-top: 5px;">
                 <ion-label class="tags selected" *ngIf="isSelected(extra.id, 'extras')">{{
                   extra.name }}</ion-label>
