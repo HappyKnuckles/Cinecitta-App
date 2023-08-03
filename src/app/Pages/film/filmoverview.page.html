@@ -1,8 +1,8 @@
 <ion-backdrop *ngIf="isModalOpen === true" style="opacity: 0.3; z-index: 11;"
   (ionBackdropTap)="cancel()"></ion-backdrop>
-  <div class="custom-loader-container" *ngIf="isLoading">
-    <ion-spinner name="lines" color="primary" class="custom-loader"></ion-spinner>
-  </div>
+<div class="custom-loader-container" *ngIf="isLoading">
+  <ion-spinner name="lines" color="primary" class="custom-loader"></ion-spinner>
+</div>
 <ion-header [translucent]="true">
   <ion-toolbar>
     <div slot="start">
@@ -143,9 +143,11 @@
           </ng-container>
         </ng-container>
       </ion-grid>
-      <ion-button style="position: absolute; width: 90%; bottom: 5%; left: 4%; font-weight: 600;"
-        (click)="confirm()">Bestätigen ({{filteredFilms.length}})</ion-button>
     </ion-content>
+    <ion-footer>
+      <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px;"
+        (click)="confirm()">Bestätigen ({{filteredFilms.length}})</ion-button>
+    </ion-footer>
   </ng-template>
 </ion-modal>
 
