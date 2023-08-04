@@ -145,7 +145,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   closeTimes() {
     this.showStartTimePicker = false;
     this.showEndTimePicker = false;
-    this.isModalOpen = true;
   }
 
   cancel() {

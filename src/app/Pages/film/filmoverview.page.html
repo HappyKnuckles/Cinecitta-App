@@ -73,8 +73,8 @@
             <ion-row *ngIf="filter === 'Genre' && selectedFilters.genresTags.length > 0" class="filterRow">
               <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px;">
                 <ion-label class="tags selected" *ngIf="isSelected(genre.id, 'genresTags')"
-                  [ngStyle]="{ backgroundColor: isSelected(genre.id, 'genresTags') ? '#a3d9d5' : '' }">{{ genre.name
-                  }}</ion-label>
+                  [ngStyle]="{ backgroundColor: isSelected(genre.id, 'genresTags') ? '#a3d9d5' : '' }">
+                  {{ genre.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Sound' && selectedFilters.flags.length > 0" class="filterRow">
@@ -85,14 +85,14 @@
             <ion-row *ngIf="filter === 'Barrierefreie Optionen' && selectedFilters.behindertenTags.length > 0"
               class="filterRow">
               <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px;">
-                <ion-label class="tags selected" *ngIf="isSelected(behindertenTag.id, 'behindertenTags')">{{
-                  behindertenTag.name }}</ion-label>
+                <ion-label class="tags selected" *ngIf="isSelected(behindertenTag.id, 'behindertenTags')">
+                  {{ behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Extras' && selectedFilters.extras.length > 0" class="filterRow">
               <ion-col size="auto" *ngFor="let extra of extras" style="margin-top: 5px;">
-                <ion-label class="tags selected" *ngIf="isSelected(extra.id, 'extras')">{{
-                  extra.name }}</ion-label>
+                <ion-label class="tags selected" *ngIf="isSelected(extra.id, 'extras')">
+                  {{ extra.name }}</ion-label>
               </ion-col>
             </ion-row>
           </ng-container>
@@ -113,8 +113,8 @@
             <ion-row *ngIf="filter === 'Barrierefreie Optionen'" class="filterRow">
               <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px;">
                 <ion-label class="tags" [ngClass]="{ selected: isSelected(behindertenTag.id, 'behindertenTags') }"
-                  (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">{{ behindertenTag.name
-                  }}</ion-label>
+                  (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">
+                  {{ behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Extras'" class="filterRow">
@@ -130,15 +130,19 @@
                   <ion-icon name="remove-outline" style="margin-top: 13px;"></ion-icon>
                   <ion-button (click)="openEndTimePicker()" class="timePickerBtn">{{ endTime }}</ion-button>
                 </div>
-                <ion-datetime *ngIf="showStartTimePicker" presentation="time" locale="de-DE" [(ngModel)]="startTime"
-                  (ngModelChange)="onTimeChange()" hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2]"
-                  minuteValues="0" class="timePicker">
-                </ion-datetime>
-                <ion-datetime *ngIf="showEndTimePicker" presentation="time" locale="de-DE" [(ngModel)]="endTime"
-                  (ngModelChange)="onTimeChange()" hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]"
-                  minuteValues="0" class="timePicker">
-                </ion-datetime>
               </div>
+              <ion-modal [isOpen]="showStartTimePicker" (click)="closeTimes()" class="timePickerModal">
+                <ion-datetime *ngIf="showStartTimePicker" size="cover" presentation="time" locale="de-DE"
+                  [(ngModel)]="startTime" (ngModelChange)="onTimeChange()"
+                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2]" minuteValues="0" class="timePicker">
+                </ion-datetime>
+              </ion-modal>
+              <ion-modal [isOpen]="showEndTimePicker" (click)="closeTimes()" class="timePickerModal">
+                <ion-datetime *ngIf="showEndTimePicker" size="cover" presentation="time" locale="de-DE"
+                  [(ngModel)]="endTime" (ngModelChange)="onTimeChange()"
+                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]" minuteValues="0" class="timePicker">
+                </ion-datetime>
+              </ion-modal>
             </ion-row>
           </ng-container>
         </ng-container>
@@ -150,6 +154,7 @@
     </ion-footer>
   </ng-template>
 </ion-modal>
+
 
 
 
@@ -209,8 +214,8 @@
           <img src="{{film.film_cover_src}}" style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
           <div class="action">
-            <!-- <button>Filminfos</button>
-            <button>Tickets</button> -->
+            <!-- <button (click)="openExternalWebsite('https://cinecitta.' + film.filminfo_href)">Filminfos</button>
+            <button (click)="openExternalWebsite('https://cinecitta.' + film.filminfo_href + '#tickets')">Tickets</button> -->
           </div>
         </div>
         <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
