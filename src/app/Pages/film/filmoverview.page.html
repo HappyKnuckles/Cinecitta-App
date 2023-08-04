@@ -159,6 +159,7 @@
 
 
 <ion-content [fullscreen]="true">
+  <ion-text *ngIf="filteredFilms.length === 0 && isLoading === false" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);">Keine Filme verfügbar</ion-text>
   <div *ngIf="!detailView" class="content">
     <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">

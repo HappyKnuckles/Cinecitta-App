@@ -4,6 +4,8 @@ import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AlertController } from '@ionic/angular';
+
 import * as Filtertags from './filtertags';
 
 @Component({
@@ -55,7 +57,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
-    private inAppBrowser: InAppBrowser
+    private inAppBrowser: InAppBrowser,
+    private alertController: AlertController
   ) { }
 
   async ngOnInit() {
@@ -92,6 +95,30 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       ],
     });
     await actionSheet.present();
+  }
+
+  async showNoMoviesPopup() {
+    const alert = await this.alertController.create({
+      header: 'No Movies Found',
+      message: 'There are no movies that match the selected filters.',
+      buttons: [
+        {
+          text: 'Close',
+          role: 'cancel',
+          handler: () => {
+            // Handle close action if needed
+          },
+        },
+        {
+          text: 'Reset Filters',
+          handler: () => {
+            this.reset(); // Call the reset function when "Reset Filters" is clicked
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
   openTimes(index: number) {
@@ -140,6 +167,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.isLoading = false;
     this.showAllTags = this.showAllTags.map(_ => false);
     this.setOpen(false);
+
+    if (this.films.length === 0) {
+      await this.showNoMoviesPopup();
+    }
   }
 
   closeTimes() {
@@ -240,7 +271,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.isLoading = false;
   }
 
-  async fetchFilmData(){
+  async fetchFilmData() {
     const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php';
     const params = {
       bereich: 'portal',
