@@ -214,11 +214,11 @@
           </div>
         </div>
         <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
-          <ion-icon *ngIf="!isOpen[i]" name="chevron-down"></ion-icon>
-          <ion-icon *ngIf="isOpen[i]" name="chevron-up"></ion-icon>
+          <ion-icon *ngIf="!isTimesOpen[i]" name="chevron-down"></ion-icon>
+          <ion-icon *ngIf="isTimesOpen[i]" name="chevron-up"></ion-icon>
         </div>
 
-        <ion-grid *ngIf="isOpen[i]" [id]="'gridRef-' + i">
+        <ion-grid *ngIf="isTimesOpen[i]" [id]="'gridRef-' + i">
           <ion-row class="weekdays">
             <ion-col *ngFor="let weekday of film.film_wochentage">
               {{ weekday?.tag_text }}
