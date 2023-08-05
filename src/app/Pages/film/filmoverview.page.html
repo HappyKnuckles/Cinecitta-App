@@ -1,8 +1,11 @@
-<ion-backdrop *ngIf="isModalOpen === true" style="opacity: 0.3; z-index: 11;"
-  (ionBackdropTap)="cancel()"></ion-backdrop>
-<div class="custom-loader-container" *ngIf="isLoading">
-  <ion-spinner name="lines" color="primary" class="custom-loader"></ion-spinner>
-</div>
+<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11;" (ionBackdropTap)="cancel()"></ion-backdrop>
+<ion-backdrop *ngIf="isLoading" style="opacity: 0.3; z-index: 11;"></ion-backdrop>
+<ion-spinner *ngIf="isLoading" name="lines" color="primary" class="custom-loader"></ion-spinner>
+<ion-text *ngIf="filteredFilms.length === 0 && isLoading === false"
+  style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 999;">
+  Keine Filme verfügbar
+</ion-text>
+
 <ion-header [translucent]="true">
   <ion-toolbar>
     <div slot="start">
@@ -29,7 +32,6 @@
 
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
   <ng-template>
-
     <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
@@ -159,7 +161,6 @@
 
 
 <ion-content [fullscreen]="true">
-  <ion-text *ngIf="filteredFilms.length === 0 && isLoading === false" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);">Keine Filme verfügbar</ion-text>
   <div *ngIf="!detailView" class="content">
     <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
