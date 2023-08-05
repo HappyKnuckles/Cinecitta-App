@@ -2,7 +2,7 @@
     //background: linear-gradient(#121212, #a3d9d529, #121212);
 }
 
-.custom-loader{
+.custom-loader {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -11,12 +11,14 @@
 }
 
 .timePickerModal {
-    --background: rgba(0, 0, 0, 0.3);
-}
+    --height: auto;
+    align-items: flex-end;
+    --backdrop-opacity: 0.3 !important;
+    --background: transparent;
 
-.timePicker {
-    position: absolute;
-    bottom: 0;
+    ion-datetime {
+        border-radius: 22px 22px 0 0;
+    }
 }
 
 .modal {
@@ -177,7 +179,7 @@
         border-bottom: 1px solid #a3d9d5c0;
         padding-bottom: 15px;
 
-        button{
+        button {
             box-shadow: 0 1px 16px #a3d9d558;
             border: 1px solid #a3d9d5;
             border-radius: 7px;
@@ -185,7 +187,7 @@
             padding: 12px;
             width: 80px;
 
-            &:first-child{
+            &:first-child {
                 margin-right: 5px;
             }
         }

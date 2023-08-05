@@ -78,6 +78,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      this.loadFilmData();
+      event.target.complete();
+    }, 100);
+  }
+
   async presentActionSheet() {
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'View auswählen',
