@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AlertController } from '@ionic/angular';
-
+// https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=101&klasse=vorstellungen&cli_mode=1&com=anzeigen_vorankuendigungen
+// API - Link für Filme die demnächst kommen
 import * as Filtertags from './filtertags';
 
 @Component({
