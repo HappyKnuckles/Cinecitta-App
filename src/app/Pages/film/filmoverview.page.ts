@@ -1,12 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonContent, IonGrid, IonModal } from '@ionic/angular';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { ActionSheetController, IonContent, IonGrid, IonInput, IonModal } from '@ionic/angular';
 import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AlertController } from '@ionic/angular';
-// https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=101&klasse=vorstellungen&cli_mode=1&com=anzeigen_vorankuendigungen
-// API - Link für Filme die demnächst kommen
 import * as Filtertags from './filtertags';
 
 @Component({
@@ -27,7 +25,7 @@ import * as Filtertags from './filtertags';
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-  @ViewChild('searchInput', { static: false }) searchInput!: ElementRef;
+  @ViewChild('searchInput', { static: false }) searchInput!: IonInput;
 
   showStartTimePicker: boolean = false;
   showEndTimePicker: boolean = false;
@@ -59,7 +57,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
     private inAppBrowser: InAppBrowser,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private renderer: Renderer2
   ) { }
 
   async ngOnInit() {
@@ -147,6 +146,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   openSearch() {
     this.isSearchOpen = !this.isSearchOpen;
+    this.searchInput.setFocus();
   }
 
   setOpen(isOpen: boolean) {

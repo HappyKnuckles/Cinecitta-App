@@ -5,7 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { NewsPage } from './newspage.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
+
 import { NewsPageRoutingModule } from './newspage-routing.module';
+import { ExtractTextModule } from 'src/app/Pipes/extract-text.module';
 
 @NgModule({
   imports: [
@@ -13,7 +15,8 @@ import { NewsPageRoutingModule } from './newspage-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    NewsPageRoutingModule
+    NewsPageRoutingModule,
+    ExtractTextModule
   ],
   declarations: [NewsPage]
 })
