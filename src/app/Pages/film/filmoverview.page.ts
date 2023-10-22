@@ -58,7 +58,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private inAppBrowser: InAppBrowser,
     private alertController: AlertController,
-    private renderer: Renderer2
   ) { }
 
   async ngOnInit() {

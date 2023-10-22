@@ -16,15 +16,22 @@ export class NewsPage {
   isLoading: boolean = false;
   constructor(
     private http: HttpClient,
-  ) {}
+  ) { }
 
 
-  async ngOnInit(){
+  async ngOnInit() {
     this.isLoading = true;
     await this.fechtNewFilms();
     this.isLoading = false;
   }
-  async fechtNewFilms(){
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      this.fechtNewFilms();
+      event.target.complete();
+    }, 100);
+  }
+
+  async fechtNewFilms() {
     const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php';
     const formData = new FormData();
     formData.append('filter[genres_tags_not][]', "185305")
@@ -35,8 +42,13 @@ export class NewsPage {
       cli_mode: '1',
       com: 'anzeigen_vorankuendigungen',
     };
-
-    const response: any = await firstValueFrom(this.http.post(url, formData, { params }));
-    this.newFilms = response?.daten?.items ?? [];
+    try {
+      this.isLoading = true;
+      const response: any = await firstValueFrom(this.http.post(url, formData, { params }));
+      this.newFilms = response?.daten?.items ?? [];
+    } catch (error) {
+      console.error(error);
+    } 
+    this.isLoading = false;
   }
 }
