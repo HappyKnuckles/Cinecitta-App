@@ -1,9 +1,8 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild } from '@angular/core';
-import { ActionSheetController, IonContent, IonGrid, IonInput, IonModal } from '@ionic/angular';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ActionSheetController, IonContent, IonInput, IonModal } from '@ionic/angular';
 import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import {  } from 'rxjs';
-import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
@@ -57,7 +56,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
-    private inAppBrowser: InAppBrowser,
     private alertController: AlertController,
   ) { }
 
@@ -158,9 +156,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   openExternalWebsite(url: string) {
-    const browser = this.inAppBrowser.create(url, '_blank');
+    const options = {
+      location: 'yes', // Show the location bar
+      zoom: 'yes', // Allow the user to zoom in and out
+      hardwareback: 'yes', // Allow the hardware back button on Android to go back
+      shouldPauseOnSuspend: 'no', // Should the browser's pause event be disabled?
+    };
+    const browser = InAppBrowser.create(url, '_blank');
   }
-
+  
   openStartTimePicker() {
     this.showStartTimePicker = !this.showStartTimePicker;
   }
