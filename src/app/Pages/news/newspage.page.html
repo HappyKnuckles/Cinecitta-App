@@ -39,15 +39,18 @@
               <ion-img style="margin-bottom: 5px;" src="{{film.film_cover_src}}"></ion-img>
               <span style="display:flex; justify-content: center; color: #a3d9d5;">{{film.film_centerstart_zeit}}</span>
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
+            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''" (click)="showFull[i] = true">
               {{ ((film.film_beschreibung | extractText).length > 125 ?
               ((film.film_beschreibung | extractText).slice(0, 125) + '...') : (film.film_beschreibung | extractText))
-              }}
+              }}<span *ngIf="film.film_beschreibung === ''"> {{film.kurztext}}</span>
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i]" (click)="showFull[i] = false">{{
+            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung !== ''" (click)="showFull[i] = false">{{
               film.film_beschreibung |
               extractText}}
             </ion-col> 
+          <ion-col class="description" size="8" *ngIf="film.film_beschreibung === ''">
+            {{film.film_kurztext}}
+          </ion-col>
           </ion-row>
         </div>
       </div>
