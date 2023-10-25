@@ -8,8 +8,6 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['newspage.page.scss']
 })
 
-// https://www.cinecitta.de/common/ajax.php?bereich=portal&modul_id=101&klasse=vorstellungen&cli_mode=1&com=anzeigen_vorankuendigungen
-// API - Link für Filme die demnächst kommen
 export class NewsPage {
   newFilms: any[] = [];
   showFull: boolean[] = [];
@@ -32,7 +30,7 @@ export class NewsPage {
   }
 
   async fechtNewFilms() {
-    const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php';
+    const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
     const formData = new FormData();
     formData.append('filter[genres_tags_not][]', "185305")
     const params = {

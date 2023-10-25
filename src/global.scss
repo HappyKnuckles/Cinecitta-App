@@ -29,3 +29,10 @@
 ion-title{
     color: #a3d9d5;
 }
+
+ion-toolbar{
+    height: 59px  !important;
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+}
