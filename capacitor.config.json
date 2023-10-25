@@ -2,5 +2,13 @@
 	"appId": "io.ionic.starter",
 	"appName": "Cine App",
 	"webDir": "www",
-	"bundledWebRuntime": false
+	"bundledWebRuntime": false,
+	"android": {
+		"server": {
+			"allowList": ["https://cors-anywhere.herokuapp.com", "https://www.cinecitta.de"]
+		},
+		"allowMixedContent": true,
+		"permissions": ["INTERNET"]  
+	  }
+	  
 }
