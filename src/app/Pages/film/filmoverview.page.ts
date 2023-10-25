@@ -285,8 +285,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async fetchFilmData() {
-    const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
-
+   // Prod const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
+    const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php';
     const params = {
       bereich: 'portal',
       modul_id: '101',

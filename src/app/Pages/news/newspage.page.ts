@@ -30,7 +30,9 @@ export class NewsPage {
   }
 
   async fechtNewFilms() {
-    const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
+   // Prod const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
+    const url = 'https://localhost:8100/https://www.cinecitta.de/common/ajax.php';
+
     const formData = new FormData();
     formData.append('filter[genres_tags_not][]', "185305")
     const params = {
