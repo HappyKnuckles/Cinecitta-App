@@ -3,8 +3,12 @@
 <ion-spinner *ngIf="isLoading" name="lines" color="primary" class="custom-loader"></ion-spinner>
 <ion-text *ngIf="filteredFilms.length === 0 && isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 999;">
-  Keine Filme verfügbar
+  Keine Filme verfügbar<!-- <div *ngIf="errorMessage">
+  {{ errorMessage }}
+</div> -->
 </ion-text>
+
+
 
 <ion-header [translucent]="true">
   <ion-toolbar>

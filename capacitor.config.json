@@ -11,7 +11,7 @@
 		"allowNavigation": [],
 		"allowedNavigations": [
 		  "https://cors-anywhere.herokuapp.com",
-		  "https://cinecitta.com/*"
+		  "https://cinecitta.de/*"
 		],
 		"allowMixedContent": true,
 		"permissions": ["INTERNET"],
@@ -19,8 +19,14 @@
 		  "geo:*",
 		  "mailto:*",
 		  "sms:*",
-		  "tel:*"
-		] 
+		  "tel:*",
+		  "http://*/*" ,
+    	  "https://*/*" 
+		],
+		"plugins": {
+			"InAppBrowser": {
+			  "appId": "io.ionic.starter"
+			}
 	  }
-	  
+	}  
 }
