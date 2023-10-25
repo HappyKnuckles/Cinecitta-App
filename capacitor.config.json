@@ -3,12 +3,24 @@
 	"appName": "Cine App",
 	"webDir": "www",
 	"bundledWebRuntime": false,
+	
 	"android": {
 		"server": {
 			"allowList": ["https://cors-anywhere.herokuapp.com", "https://www.cinecitta.de"]
 		},
+		"allowNavigation": [],
+		"allowedNavigations": [
+		  "https://cors-anywhere.herokuapp.com",
+		  "https://cinecitta.com/*"
+		],
 		"allowMixedContent": true,
-		"permissions": ["INTERNET"]  
+		"permissions": ["INTERNET"],
+		"allowedIntents": [
+		  "geo:*",
+		  "mailto:*",
+		  "sms:*",
+		  "tel:*"
+		] 
 	  }
 	  
 }
