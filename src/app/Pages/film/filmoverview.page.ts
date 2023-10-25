@@ -52,6 +52,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   extras = Filtertags.extras;
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
+  errorMessage: string = "";
 
   constructor(
     private http: HttpClient,
@@ -297,8 +298,19 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     // Append selected filters to the form data
     const formData = new FormData();
     this.appendSelectedFiltersToFormData(formData);
-
-    return await firstValueFrom(this.http.post(url, formData, { params }));
+    try{
+     return await firstValueFrom(this.http.post(url, formData, { params }));
+    }
+    catch (error) {
+      // Handle the error and optionally log it
+      console.error("An error occurred:", error);
+    
+      // You can store the error message in a variable and display it in your template
+      const errorMessage = "An error occurred: " + (error as Error).message;
+    
+      // Now, you can display the error message in your template, for example, by setting it in a component property
+      this.errorMessage = errorMessage;
+    }
   }
 
   appendSelectedFiltersToFormData(formData: FormData): void {

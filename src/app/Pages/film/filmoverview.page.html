@@ -5,6 +5,10 @@
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 999;">
   Keine Filme verfügbar
 </ion-text>
+<div *ngIf="errorMessage">
+  {{ errorMessage }}
+</div>
+
 
 <ion-header [translucent]="true">
   <ion-toolbar>
