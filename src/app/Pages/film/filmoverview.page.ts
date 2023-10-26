@@ -163,7 +163,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       hardwareback: 'yes', // Allow the hardware back button on Android to go back
       shouldPauseOnSuspend: 'no', // Should the browser's pause event be disabled?
     };
-    const browser = InAppBrowser.create(url, '_blank');
+    const browser = InAppBrowser.create(url);
   }
 
   openStartTimePicker() {
