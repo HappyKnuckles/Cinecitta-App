@@ -165,7 +165,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     };
     const browser = InAppBrowser.create(url, '_blank');
   }
-  
+
   openStartTimePicker() {
     this.showStartTimePicker = !this.showStartTimePicker;
   }
@@ -285,8 +285,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async fetchFilmData() {
-   // Prod const url = 'https://cors-anywhere.herokuapp.com/https://www.cinecitta.de/common/ajax.php';
-    const url = 'http://localhost:8080/https://www.cinecitta.de/common/ajax.php';
+    const url = "https://proxy-server-rho-pearl.vercel.app/api/server";
+
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append selected filters to the form data
+    this.appendSelectedFiltersToFormData(formData);
+
     const params = {
       bereich: 'portal',
       modul_id: '101',
@@ -295,23 +301,43 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       com: 'anzeigen_spielplan',
     };
 
-    // Append selected filters to the form data
-    const formData = new FormData();
-    this.appendSelectedFiltersToFormData(formData);
-    try{
-     return await firstValueFrom(this.http.post(url, formData, { params }));
-    }
-    catch (error) {
-      // Handle the error and optionally log it
-       console.error("An error occurred:", error);
-    
-      // You can store the error message in a variable and display it in your template
-      const errorMessage = "An error occurred: " + (error as Error).message;
-    
-      // Now, you can display the error message in your template, for example, by setting it in a component property
-      this.errorMessage = errorMessage;
+    try {
+      // Append the params as URL parameters
+      const fullURL = `${url}?${new URLSearchParams(params).toString()}`;
+
+      const formBody = this.formDataToUrlEncoded(formData); // Convert FormData to URL-encoded string
+
+      const response = await fetch(fullURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody,
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        // Handle HTTP errors
+        console.error("HTTP Error:", response.status, response.statusText);
+        throw new Error(`HTTP Error: ${response.status}`);
+      }
+    } catch (error) {
+      // Handle any other errors
+      console.error("An error occurred:", error);
       throw error;
     }
+  }
+
+  formDataToUrlEncoded(formData: any) {
+    const formBody = [];
+    for (let pair of formData.entries()) {
+      const encodedKey = encodeURIComponent(pair[0]);
+      const encodedValue = encodeURIComponent(pair[1]);
+      formBody.push(`${encodedKey}=${encodedValue}`);
+    }
+    return formBody.join("&");
   }
 
   appendSelectedFiltersToFormData(formData: FormData): void {
@@ -346,6 +372,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     formData.append('filter[rangeslider][]', String(startTimeNumeric));
     formData.append('filter[rangeslider][]', String(endTimeNumeric));
   }
+
 
   async updateFilteredFilms() {
     const excludedProperties = ['film_beschreibung', 'film_cover_src', 'film_favored', 'filminfo_href', 'film_system_id', 'system_id']; // Add more property names as needed
