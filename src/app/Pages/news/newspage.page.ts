@@ -1,5 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
+import { Browser } from '@capacitor/browser';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -29,6 +31,19 @@ export class NewsPage {
     }, 100);
   }
 
+  async openExternalWebsite(url: string) {
+    const options = {
+      toolbarColor: '#1d979f', // Customize the browser toolbar color
+    };
+    const finishedUrl = 'https://cinecitta.' + url;
+  
+    try {
+      await Browser.open({ url: finishedUrl, windowName: '_self', toolbarColor: options.toolbarColor });
+    } catch (error) {
+      console.error('Error opening external website: ' + error);
+    }
+  }
+  
   async fetchNewFilms() {
     const url = "https://proxy-server-rho-pearl.vercel.app/api/server";
   

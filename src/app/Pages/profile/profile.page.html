@@ -14,7 +14,7 @@
     <p style="text-align: center;">Hans Dieter</p>
   </div>
 
-  <!-- <ion-list>
+  <ion-list>
     <ion-item>
       <ion-label position="floating">Username</ion-label>
       <ion-input type="text" [(ngModel)]="username"></ion-input>
@@ -26,8 +26,8 @@
     </ion-item>
   </ion-list>
 
-  <ion-button expand="full" (click)="login(username, password)">Login</ion-button> -->
-
+  <ion-button expand="full" (click)="login(username, password)">Login</ion-button>
+  <ion-button (click)="loadTicketHistory()"></ion-button>
   <ion-grid class="settingLinksGrid">
     <ion-row style="margin-top: 30%" id="ticketoverview">
       <ion-col size="1">
@@ -80,22 +80,23 @@
       <ion-row style="font-size: 24px;" class="ion-justify-content-center">
         <ion-col size="1"><ion-icon name="stats-chart-outline"></ion-icon></ion-col>
         <ion-col size="auto" style="font-weight: 700;">Deine Statistiken:</ion-col></ion-row>
-    <ion-row>
-      <ion-col size="7">Filme in diesem Monat:</ion-col>
-      <ion-col style="text-align: end;">34</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="7">Filme in diesem Jahr:</ion-col>
-      <ion-col style="text-align: end;">124</ion-col>
-    </ion-row>
-    <ion-row>
-      <ion-col size="7">Filme insgesamt:</ion-col>
-      <ion-col style="text-align: end;">213</ion-col>
-    </ion-row></div>
+      <ion-row>
+        <ion-col size="7">Filme in diesem Monat:</ion-col>
+        <ion-col style="text-align: end;">34</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="7">Filme in diesem Jahr:</ion-col>
+        <ion-col style="text-align: end;">124</ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="7">Filme insgesamt:</ion-col>
+        <ion-col style="text-align: end;">213</ion-col>
+      </ion-row>
+    </div>
   </ion-grid>
-<ion-modal>
-  
-</ion-modal>
+  <ion-modal>
+
+  </ion-modal>
 
   <ion-modal trigger="ticketoverview" #modal1 class="ticketoverview">
     <ng-template>

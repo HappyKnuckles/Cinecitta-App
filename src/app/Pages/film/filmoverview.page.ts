@@ -6,6 +6,7 @@ import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
+import { Browser } from '@capacitor/browser';
 
 @Component({
   selector: 'app-tab2',
@@ -145,9 +146,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   openSearch() {
     this.isSearchOpen = !this.isSearchOpen;
-    this.searchInput.setFocus();
+    if (!this.isSearchOpen) {
+      this.searchInput.getInputElement().then(inputElement => {
+        inputElement.blur();
+      });
+    } else {
+      this.searchInput.setFocus();
+    }
   }
-
+  
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
   }
@@ -156,14 +163,17 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.showAllTags[index] = !this.showAllTags[index];
   }
 
-  openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string) {
     const options = {
-      location: 'yes', // Show the location bar
-      zoom: 'yes', // Allow the user to zoom in and out
-      hardwareback: 'yes', // Allow the hardware back button on Android to go back
-      shouldPauseOnSuspend: 'no', // Should the browser's pause event be disabled?
+      toolbarColor: '#1d979f', // Customize the browser toolbar color
     };
-    const browser = InAppBrowser.create(url);
+    const finishedUrl = 'https://cinecitta.' + url;
+  
+    try {
+      await Browser.open({ url: finishedUrl, windowName: '_self', toolbarColor: options.toolbarColor });
+    } catch (error) {
+      console.error('Error opening external website: ' + error);
+    }
   }
 
   openStartTimePicker() {

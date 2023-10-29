@@ -249,7 +249,7 @@
             </ion-row>
             <ng-container *ngFor="let leinwand of theater.leinwaende">
               <ion-row>
-                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">
+                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">                        
                   <ion-row class="saalName">
                     <ion-col>{{ leinwand.leinwand_name }}</ion-col>
                   </ion-row>
@@ -258,7 +258,7 @@
                       <ng-container *ngIf="leinwand.vorstellungen">
                         <div *ngFor="let vorstellung of leinwand.vorstellungen">
                           <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche">
-                            <div (click)="openExternalWebsite('https://cinecitta.' + vorstellung.href)"
+                            <div (click)="openExternalWebsite(vorstellung.href)"
                               [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
                               class="times">
                               {{ vorstellung.uhrzeit }}
