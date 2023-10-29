@@ -195,7 +195,7 @@
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <ion-img src="{{film.film_cover_src}}"></ion-img>
+              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"></ion-img>
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
               {{ ((film.film_beschreibung | extractText).length > 125 ?
@@ -227,8 +227,8 @@
           <img src="{{film.film_cover_src}}" style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
           <div class="action">
-            <!-- <button (click)="openExternalWebsite('https://cinecitta.' + film.filminfo_href)">Filminfos</button>
-            <button (click)="openExternalWebsite('https://cinecitta.' + film.filminfo_href + '#tickets')">Tickets</button> -->
+            <button (click)="openExternalWebsite(film.filminfo_href)">Filminfos</button>
+            <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button>
           </div>
         </div>
         <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
