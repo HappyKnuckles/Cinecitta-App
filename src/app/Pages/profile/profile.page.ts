@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Browser } from '@capacitor/browser';
 import { IonModal } from '@ionic/angular';
 import { Subscription, firstValueFrom } from 'rxjs';
 
@@ -61,6 +62,30 @@ export class ProfilePage implements OnInit {
     await this.getCinecittaAndManhattanFilms();
   } 
 
+  handleRefresh(event: any) {
+    setTimeout(() => {
+      this.loadTicketHistory();
+      event.target.complete();
+    }, 100);
+  }
+  
+  async openExternalWebsite(url: string) {
+    const options = {
+      toolbarColor: '#1d979f', // Customize the browser toolbar color
+    };
+    const finishedUrl = 'https://cinecitta.' + url;
+
+    try {
+      await Browser.open({
+        url: finishedUrl,
+        windowName: '_self',
+        toolbarColor: options.toolbarColor,
+      });
+    } catch (error) {
+      console.error('Error opening external website: ' + error);
+    }
+  }
+  
   async login(username: string, password: string): Promise<boolean> {
     const url = 'https://proxy-server-rho-pearl.vercel.app/api/server';
     const formData = new URLSearchParams();

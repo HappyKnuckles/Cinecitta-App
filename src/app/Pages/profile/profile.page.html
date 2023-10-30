@@ -5,6 +5,7 @@
 </ion-header>
 
 <ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
   <div style="padding-top: 3%; padding-bottom: 3%">
     <ion-thumbnail class="thumbnail">
       <ion-img
@@ -118,6 +119,93 @@
     </div>
   </ion-grid>
 
+ 
+
+  <ion-modal trigger="ticketoverview" #modal1 class="ticketoverview">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">
+              <ion-icon name="chevron-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Deine Tickets</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-img *ngIf="cinecittaFilms.length > 0"
+              src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/cinecitta.svg"
+              style="width: 100px; margin: 20px 10px 0 10px"
+              alt="CINECITTA'">
+        </ion-img>
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of cinecittaFilms; let last = last">
+          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen' -->
+            <ion-row class="titel">
+              <ion-col size="6">{{tickets.buchung_film_titel}}</ion-col>
+              <ion-col size="4">{{tickets.buchung_vorstellung_start_datum}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col></ion-col>
+              <ion-col style="position: absolute">
+                <ion-thumbnail style="--size: 70px">
+                  <ion-img
+                  [src]="'https://www.cinecitta.de/' + tickets.film_bild" (click)="openExternalWebsite(tickets.buchung_film_href)">
+                  </ion-img>
+                </ion-thumbnail>
+              </ion-col>
+              <ion-col>Kino:</ion-col>
+              <ion-col>Reihe:</ion-col>
+              <ion-col>Platz:</ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-start">
+              <ion-col></ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+        <ion-img *ngIf="manhattanFilms.length > 0"
+          src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/manhattan.svg"
+          style="width: 120px; margin: 10px 20px 0 15px"
+          alt="Manhattan">
+        </ion-img>
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of manhattanFilms; let last = last">
+          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen'"-->
+            <ion-row class="titel">
+              <ion-col size="6">{{tickets.buchung_film_titel}}</ion-col>
+              <ion-col size="4">{{tickets.buchung_vorstellung_start_datum}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col></ion-col>
+              <ion-col style="position: absolute">
+                <ion-thumbnail style="--size: 70px">
+                  <ion-img
+                  [src]="'https://www.cinecitta.de/' + tickets.film_bild" (click)="openExternalWebsite(tickets.buchung_film_href)">
+                  </ion-img>
+                </ion-thumbnail>
+              </ion-col>
+              <ion-col>Kino:</ion-col>
+              <ion-col>Reihe:</ion-col>
+              <ion-col>Platz:</ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-start">
+              <ion-col></ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  
+
   <ion-modal trigger="ticketHistory" #modal0>
     <ng-template>
       <ion-header>
@@ -141,9 +229,8 @@
               margin-bottom: 10px;
               color: #a3d9d5;">
             {{tickets.buchung_film_titel}}</ion-row>
-          <ion-row>
-            {{tickets.buchung_vorstellung_start_datum}}
-            {{tickets.buchung_vorstellung_start_zeit}}
+          <ion-row style="justify-content: center; transform: translateY(-10px); font-size: 15px;">
+            {{tickets.buchung_vorstellung_start_datum}} {{tickets.buchung_vorstellung_start_zeit}}
           </ion-row>
           <ion-row>
             <ion-col size="4">
@@ -171,88 +258,7 @@
     </ng-template>
   </ion-modal>
 
-  <ion-modal trigger="ticketoverview" #modal1 class="ticketoverview">
-    <ng-template>
-      <ion-header>
-        <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-button (click)="cancel()">
-              <ion-icon name="chevron-back"></ion-icon>
-            </ion-button>
-          </ion-buttons>
-          <ion-title>Deine Tickets</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <ion-img *ngIf="cinecittaFilms.length > 0"
-              src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/cinecitta.svg"
-              style="width: 100px; margin: 20px 10px 0 10px"
-              alt="CINECITTA'">
-        </ion-img>
-        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of cinecittaFilms; let last = last">
-          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen' -->
-            <ion-row class="titel">
-              <ion-col size="7">{{tickets.buchung_film_titel}}</ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_start_datum}}</ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col></ion-col>
-              <ion-col style="position: absolute">
-                <ion-thumbnail style="--size: 70px">
-                  <ion-img
-                  [src]="'https://www.cinecitta.de/' + tickets.film_bild">
-                  </ion-img>
-                </ion-thumbnail>
-              </ion-col>
-              <ion-col>Kino:</ion-col>
-              <ion-col>Reihe:</ion-col>
-              <ion-col>Platz:</ion-col>
-            </ion-row>
-            <ion-row class="ion-align-items-start">
-              <ion-col></ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
-              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
-              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
-            </ion-row>
-          </div>
-        </ion-grid>
-        <ion-img *ngIf="manhattanFilms.length > 0"
-          src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/manhattan.svg"
-          style="width: 120px; margin: 10px 20px 0 15px"
-          alt="Manhattan">
-        </ion-img>
-        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of manhattanFilms; let last = last">
-          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen'"-->
-            <ion-row class="titel">
-              <ion-col size="7">{{tickets.buchung_film_titel}}</ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_start_datum}}</ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col></ion-col>
-              <ion-col style="position: absolute">
-                <ion-thumbnail style="--size: 70px">
-                  <ion-img
-                  [src]="'https://www.cinecitta.de/' + tickets.film_bild">
-                  </ion-img>
-                </ion-thumbnail>
-              </ion-col>
-              <ion-col>Kino:</ion-col>
-              <ion-col>Reihe:</ion-col>
-              <ion-col>Platz:</ion-col>
-            </ion-row>
-            <ion-row class="ion-align-items-start">
-              <ion-col></ion-col>
-              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
-              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
-              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
-            </ion-row>
-          </div>
-        </ion-grid>
-      </ion-content>
-    </ng-template>
-  </ion-modal>
+
 
   <ion-modal trigger="recommendations" #modal2 class="recommendations">
     <ng-template>
