@@ -7,14 +7,29 @@
 <ion-content>
   <div style="padding-top: 3%; padding-bottom: 3%">
     <ion-thumbnail class="thumbnail">
-      <ion-img *ngIf="!isToggled" (click)="toggleImage()" class="profilPic" [src]="image"></ion-img>
-      <ion-img *ngIf="isToggled" (click)="toggleImage()" class="profilPic" [src]="image2"></ion-img>
-      <ion-icon *ngIf="!isToggled" (click)="toggleImage()" name="add-circle" id="photoSelectIcon"></ion-icon>
+      <ion-img
+        *ngIf="!isToggled"
+        (click)="toggleImage()"
+        class="profilPic"
+        [src]="image">
+      </ion-img>
+      <ion-img
+        *ngIf="isToggled"
+        (click)="toggleImage()"
+        class="profilPic"
+        [src]="image2">
+      </ion-img>
+      <ion-icon
+        *ngIf="!isToggled"
+        (click)="toggleImage()"
+        name="add-circle"
+        id="photoSelectIcon">
+      </ion-icon>
     </ion-thumbnail>
-    <p style="text-align: center;">Hans Dieter</p>
+    <p style="text-align: center">Hans Dieter</p>
   </div>
 
-  <ion-list>
+  <!-- <ion-list>
     <ion-item>
       <ion-label position="floating">Username</ion-label>
       <ion-input type="text" [(ngModel)]="username"></ion-input>
@@ -27,14 +42,15 @@
   </ion-list>
 
   <ion-button expand="full" (click)="login(username, password)">Login</ion-button>
-  <ion-button (click)="loadTicketHistory()"></ion-button>
+  <ion-button (click)="loadTicketHistory()"></ion-button>-->
+
   <ion-grid class="settingLinksGrid">
-    <ion-row style="margin-top: 30%" id="ticketoverview">
+    <ion-row style="margin-top: 15%" id="ticketoverview">
       <ion-col size="1">
         <ion-icon name="ticket-outline" class="blueIcon"></ion-icon>
       </ion-col>
       <ion-col size="10">
-        <span class="settingLinkText" (click)="loadTicketHistory()">Aktuelle Tickets</span>
+        <span class="settingLinkText">Aktuelle Tickets</span>
       </ion-col>
       <ion-col style="text-align: right">
         <ion-icon name="chevron-forward-outline" class="bottomIcon"></ion-icon>
@@ -42,7 +58,11 @@
     </ion-row>
     <ion-row id="recommendations">
       <ion-col size="1">
-        <ion-icon name="thumbs-up-outline" class="blueIcon" style="font-size: 20px; margin-left: 2px"></ion-icon>
+        <ion-icon
+          name="thumbs-up-outline"
+          class="blueIcon"
+          style="font-size: 20px; margin-left: 2px">
+        </ion-icon>
       </ion-col>
       <ion-col size="10">
         <span class="settingLinkText">Empfehlungen</span>
@@ -55,7 +75,7 @@
       <ion-col size="1">
         <ion-icon name="receipt-outline" class="blueIcon"></ion-icon>
       </ion-col>
-      <ion-col size="10">
+      <ion-col size="10" id="ticketHistory">
         <span class="settingLinkText">Buchungsverlauf</span>
       </ion-col>
       <ion-col style="text-align: right">
@@ -75,27 +95,80 @@
     </ion-row>
   </ion-grid>
 
-  <ion-grid style="height: 30vh; background-color: #a3d9d5;">
+  <ion-grid style="height: 30vh; background-color: #a3d9d5">
     <div class="stats">
-      <ion-row style="font-size: 24px;" class="ion-justify-content-center">
-        <ion-col size="1"><ion-icon name="stats-chart-outline"></ion-icon></ion-col>
-        <ion-col size="auto" style="font-weight: 700;">Deine Statistiken:</ion-col></ion-row>
+      <ion-row style="font-size: 24px" class="ion-justify-content-center">
+        <ion-col size="1">
+          <ion-icon name="stats-chart-outline"></ion-icon>
+        </ion-col>
+        <ion-col size="auto" style="font-weight: 700">Deine Statistiken:</ion-col>
+      </ion-row>
       <ion-row>
         <ion-col size="7">Filme in diesem Monat:</ion-col>
-        <ion-col style="text-align: end;">34</ion-col>
+        <ion-col style="text-align: end">{{filmsInCurrentMonth.length}}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="7">Filme in diesem Jahr:</ion-col>
-        <ion-col style="text-align: end;">124</ion-col>
+        <ion-col style="text-align: end">{{filmsInCurrentYear.length}}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="7">Filme insgesamt:</ion-col>
-        <ion-col style="text-align: end;">213</ion-col>
+        <ion-col style="text-align: end">{{history.length}}</ion-col>
       </ion-row>
     </div>
   </ion-grid>
-  <ion-modal>
 
+  <ion-modal trigger="ticketHistory" #modal0>
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="cancel()">
+              <ion-icon name="chevron-back"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Dein Ticketverlauf</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-grid *ngFor="let tickets of history">
+          <ion-row
+            style="
+              justify-content: center;
+              text-align: center;
+              font-size: 17px;
+              font-weight: 700;
+              margin-bottom: 10px;
+              color: #a3d9d5;">
+            {{tickets.buchung_film_titel}}</ion-row>
+          <ion-row>
+            {{tickets.buchung_vorstellung_start_datum}}
+            {{tickets.buchung_vorstellung_start_zeit}}
+          </ion-row>
+          <ion-row>
+            <ion-col size="4">
+              <ion-img
+                [src]="'https://www.cinecitta.de/' + tickets.film_bild">
+              </ion-img>
+            </ion-col>
+            <ion-col>
+            <ion-row>
+              {{tickets.buchung_vorstellung_leinwand}}
+            </ion-row>
+            <ion-row>
+              {{tickets.buchung_sitz_reihe}}
+            </ion-row>
+            <ion-row>
+              {{tickets.buchung_sitz_plaetze}}
+            </ion-row>
+            <ion-row>
+              {{tickets.buchung_tickets_anzahl}}
+            </ion-row>
+          </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-content>
+    </ng-template>
   </ion-modal>
 
   <ion-modal trigger="ticketoverview" #modal1 class="ticketoverview">
@@ -111,23 +184,25 @@
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-grid style="margin: 10px">
-          <ion-row>
-            <ion-img src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/cinecitta.svg"
-              style="width: 100px; margin: 10px 0" alt="CINECITTA'"></ion-img>
-          </ion-row>
-          <div class="ticketContainer">
+        <ion-img *ngIf="cinecittaFilms.length > 0"
+              src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/cinecitta.svg"
+              style="width: 100px; margin: 20px 10px 0 10px"
+              alt="CINECITTA'">
+        </ion-img>
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of cinecittaFilms; let last = last">
+          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen' -->
             <ion-row class="titel">
-              <ion-col size="7">Guardians of the Galaxy Vol.3</ion-col>
-              <ion-col>12.12.23</ion-col>
-              <ion-col>20:30</ion-col>
+              <ion-col size="7">{{tickets.buchung_film_titel}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_datum}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col></ion-col>
               <ion-col style="position: absolute">
                 <ion-thumbnail style="--size: 70px">
                   <ion-img
-                    src="https://images.unsplash.com/photo-1666919643134-d97687c1826c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"></ion-img>
+                  [src]="'https://www.cinecitta.de/' + tickets.film_bild">
+                  </ion-img>
                 </ion-thumbnail>
               </ion-col>
               <ion-col>Kino:</ion-col>
@@ -136,23 +211,31 @@
             </ion-row>
             <ion-row class="ion-align-items-start">
               <ion-col></ion-col>
-              <ion-col>11</ion-col>
-              <ion-col>13</ion-col>
-              <ion-col>12, 13, 15</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
             </ion-row>
           </div>
-          <div class="ticketContainer last">
+        </ion-grid>
+        <ion-img *ngIf="manhattanFilms.length > 0"
+          src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/manhattan.svg"
+          style="width: 120px; margin: 10px 20px 0 15px"
+          alt="Manhattan">
+        </ion-img>
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of manhattanFilms; let last = last">
+          <div class="ticketContainer" [class.last]="last"> <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen'"-->
             <ion-row class="titel">
-              <ion-col size="7">Arielle die Meerjungfrau</ion-col>
-              <ion-col>12.12.23</ion-col>
-              <ion-col>14:30</ion-col>
+              <ion-col size="7">{{tickets.buchung_film_titel}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_datum}}</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col></ion-col>
               <ion-col style="position: absolute">
                 <ion-thumbnail style="--size: 70px">
                   <ion-img
-                    src="https://images.unsplash.com/photo-1666919643134-d97687c1826c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"></ion-img>
+                  [src]="'https://www.cinecitta.de/' + tickets.film_bild">
+                  </ion-img>
                 </ion-thumbnail>
               </ion-col>
               <ion-col>Kino:</ion-col>
@@ -161,38 +244,9 @@
             </ion-row>
             <ion-row class="ion-align-items-start">
               <ion-col></ion-col>
-              <ion-col>Cinemagnum</ion-col>
-              <ion-col>4</ion-col>
-              <ion-col>12</ion-col>
-            </ion-row>
-          </div>
-          <ion-row>
-            <ion-img src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/manhattan.svg"
-              style="width: 120px; margin: 10px 0 10px 5px" alt="CINECITTA'"></ion-img>
-          </ion-row>
-          <div class="ticketContainer last">
-            <ion-row class="titel">
-              <ion-col size="7">The Avengers: Age of Ultron</ion-col>
-              <ion-col>12.07.23</ion-col>
-              <ion-col>20:30</ion-col>
-            </ion-row>
-            <ion-row>
-              <ion-col></ion-col>
-              <ion-col style="position: absolute">
-                <ion-thumbnail style="--size: 70px">
-                  <ion-img
-                    src="https://images.unsplash.com/photo-1666919643134-d97687c1826c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80"></ion-img>
-                </ion-thumbnail>
-              </ion-col>
-              <ion-col>Kino:</ion-col>
-              <ion-col>Reihe:</ion-col>
-              <ion-col>Platz:</ion-col>
-            </ion-row>
-            <ion-row class="ion-align-items-start">
-              <ion-col></ion-col>
-              <ion-col>11</ion-col>
-              <ion-col>13</ion-col>
-              <ion-col>1</ion-col>
+              <ion-col>{{tickets.buchung_vorstellung_leinwand}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_reihe}}</ion-col>
+              <ion-col>{{tickets.buchung_sitz_plaetze}}</ion-col>
             </ion-row>
           </div>
         </ion-grid>
@@ -209,7 +263,9 @@
               <ion-icon name="chevron-back"></ion-icon>
             </ion-button>
           </ion-buttons>
-          <ion-title style="padding-inline: 0;">Deine Filmempfehlungen</ion-title>
+          <ion-title style="padding-inline: 0">
+            Deine Filmempfehlungen
+          </ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
@@ -224,8 +280,16 @@
           <ion-row class="titel first">
             <ion-col>The Avengers Age of Ultron</ion-col>
             <ion-col (click)="openDetails(0)" style="text-align: right">
-              <ion-icon *ngIf="!isOpen[0]" name="chevron-down" class="bottomIcon"></ion-icon>
-              <ion-icon *ngIf="isOpen[0]" name="chevron-up" class="bottomIcon"></ion-icon>
+              <ion-icon
+                *ngIf="!isOpen[0]"
+                name="chevron-down"
+                class="bottomIcon"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="isOpen[0]"
+                name="chevron-up"
+                class="bottomIcon"
+              ></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[0]">
@@ -235,24 +299,38 @@
               <ion-col class="tags">Drama</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              <ion-col class="description"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
                 maxime doloremque a quisquam unde perspiciatis at iusto aliquid
                 porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
+                >Zum Film:</ion-col
+              >
               <ion-col style="text-align: right">
-                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
+                <ion-icon
+                  name="arrow-forward-outline"
+                  class="bottomIcon"
+                ></ion-icon>
               </ion-col>
             </ion-row>
           </div>
           <ion-row class="titel">
             <ion-col>13 Exorcism</ion-col>
             <ion-col (click)="openDetails(1)" style="text-align: right">
-              <ion-icon *ngIf="!isOpen[1]" name="chevron-down" class="bottomIcon"></ion-icon>
-              <ion-icon *ngIf="isOpen[1]" name="chevron-up" class="bottomIcon"></ion-icon>
+              <ion-icon
+                *ngIf="!isOpen[1]"
+                name="chevron-down"
+                class="bottomIcon"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="isOpen[1]"
+                name="chevron-up"
+                class="bottomIcon"
+              ></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[1]">
@@ -262,24 +340,38 @@
               <ion-col class="tags">Schräg</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              <ion-col class="description"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
                 maxime doloremque a quisquam unde perspiciatis at iusto aliquid
                 porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row (click)="openFilm(1)">
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
+                >Zum Film:</ion-col
+              >
               <ion-col style="text-align: right">
-                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
+                <ion-icon
+                  name="arrow-forward-outline"
+                  class="bottomIcon"
+                ></ion-icon>
               </ion-col>
             </ion-row>
           </div>
           <ion-row class="titel">
             <ion-col>Arielle die Meerjungfrau</ion-col>
             <ion-col (click)="openDetails(2)" style="text-align: right">
-              <ion-icon *ngIf="!isOpen[2]" name="chevron-down" class="bottomIcon"></ion-icon>
-              <ion-icon *ngIf="isOpen[2]" name="chevron-up" class="bottomIcon"></ion-icon>
+              <ion-icon
+                *ngIf="!isOpen[2]"
+                name="chevron-down"
+                class="bottomIcon"
+              ></ion-icon>
+              <ion-icon
+                *ngIf="isOpen[2]"
+                name="chevron-up"
+                class="bottomIcon"
+              ></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[2]">
@@ -289,16 +381,22 @@
               <ion-col class="tags match">Drama</ion-col>
             </ion-row>
             <ion-row>
-              <ion-col class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              <ion-col class="description"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
                 maxime doloremque a quisquam unde perspiciatis at iusto aliquid
                 porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
+                >Zum Film:</ion-col
+              >
               <ion-col style="text-align: right">
-                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
+                <ion-icon
+                  name="arrow-forward-outline"
+                  class="bottomIcon"
+                ></ion-icon>
               </ion-col>
             </ion-row>
           </div>
