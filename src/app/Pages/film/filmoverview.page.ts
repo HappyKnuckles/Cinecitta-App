@@ -1,9 +1,20 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActionSheetController, IonContent, IonInput, IonModal } from '@ionic/angular';
+import {
+  ActionSheetController,
+  IonContent,
+  IonInput,
+  IonModal,
+} from '@ionic/angular';
 import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
 import { Browser } from '@capacitor/browser';
@@ -16,13 +27,10 @@ import { Browser } from '@capacitor/browser';
     trigger('openClose', [
       state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
       state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
-      transition('false <=> true', [
-        animate('400ms ease-in-out')
-      ])
-    ])
-  ]
+      transition('false <=> true', [animate('400ms ease-in-out')]),
+    ]),
+  ],
 })
-
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
@@ -39,12 +47,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
   isLoading: boolean = false;
-  detailView: boolean = true;
+  detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
   searchQuery = '';
   private searchSubject: Subject<string> = new Subject<string>();
-  sub: Subscription = new Subscription;
+  sub: Subscription = new Subscription();
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -53,13 +61,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   extras = Filtertags.extras;
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
-  errorMessage: string = "";
+  errorMessage: string = '';
 
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
-    private alertController: AlertController,
-  ) { }
+    private alertController: AlertController
+  ) {}
 
   async ngOnInit() {
     this.isLoading = true;
@@ -86,28 +94,58 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async presentActionSheet() {
+    const buttons = [];
+
+    if (!this.detailView[0]) {
+      buttons.push({
+        text: 'Detailübersicht',
+        handler: () => {
+          this.detailView[0] = true;
+          this.detailView[1] = false;
+          this.detailView[2] = false;
+        },
+      });
+    }
+
+    if (!this.detailView[1]) {
+      buttons.push({
+        text: 'Kurzübersicht',
+        handler: () => {
+          this.detailView[0] = false;
+          this.detailView[1] = true;
+          this.detailView[2] = false;
+        },
+      });
+    }
+
+    if (!this.detailView[2]) {
+      buttons.push({
+        text: 'Miniübersicht',
+        handler: () => {
+          this.detailView[0] = false;
+          this.detailView[1] = false;
+          this.detailView[2] = true;
+        },
+      });
+    }
+
+    buttons.push({
+      text: 'Abbrechen',
+      role: 'cancel',
+    });
+
     const actionSheet = await this.actionSheetCtrl.create({
       header: 'View auswählen',
-      buttons: [
-        {
-          text: this.detailView ? 'Kurzübersicht' : 'Detailübersicht',
-          handler: () => {
-            this.detailView = !this.detailView;
-          }
-        },
-        {
-          text: 'Abbrechen',
-          role: 'cancel',
-        },
-      ],
+      buttons: buttons,
     });
+
     await actionSheet.present();
   }
 
   async showNoMoviesPopup() {
     const alert = await this.alertController.create({
-      header: 'No Movies Found',
-      message: 'There are no movies that match the selected filters.',
+      header: 'Keine Filme gefunden',
+      message: 'Mit den ausgewählten Filtern sind keine Filme verfügbar',
       buttons: [
         {
           text: 'Close',
@@ -147,14 +185,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   openSearch() {
     this.isSearchOpen = !this.isSearchOpen;
     if (!this.isSearchOpen) {
-      this.searchInput.getInputElement().then(inputElement => {
+      this.searchInput.getInputElement().then((inputElement) => {
         inputElement.blur();
       });
     } else {
       this.searchInput.setFocus();
     }
   }
-  
+
   setOpen(isOpen: boolean) {
     this.isModalOpen = isOpen;
   }
@@ -168,9 +206,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       toolbarColor: '#1d979f', // Customize the browser toolbar color
     };
     const finishedUrl = 'https://cinecitta.' + url;
-  
+
     try {
-      await Browser.open({ url: finishedUrl, windowName: '_self', toolbarColor: options.toolbarColor });
+      await Browser.open({
+        url: finishedUrl,
+        windowName: '_self',
+        toolbarColor: options.toolbarColor,
+      });
     } catch (error) {
       console.error('Error opening external website: ' + error);
     }
@@ -188,7 +230,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.isLoading = true;
     await this.loadFilmData();
     this.isLoading = false;
-    this.showAllTags = this.showAllTags.map(_ => false);
+    this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
 
     if (this.films.length === 0) {
@@ -203,7 +245,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   cancel() {
     this.showAllTags = Array(this.filters.length).fill(false);
-    this.showAllTags = this.showAllTags.map(_ => false);
+    this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
   }
 
@@ -219,7 +261,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.endTime = '03:00';
 
     // Reset background color of tags
-    this.showAllTags = this.showAllTags.map(_ => false);
+    this.showAllTags = this.showAllTags.map((_) => false);
     this.closeTimes();
 
     this.isLoading = true;
@@ -254,7 +296,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async scrollToGrid(index: number) {
-    const gridElement: HTMLElement | null = document.querySelector(`#gridRef-${index}`);
+    const gridElement: HTMLElement | null = document.querySelector(
+      `#gridRef-${index}`
+    );
     if (gridElement) {
       const scrollElement: HTMLElement = await this.content.getScrollElement();
       const contentHeight = scrollElement.scrollHeight;
@@ -268,7 +312,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       } else {
         scrollPosition = gridOffsetTop - (windowHeight - gridHeight) / 2;
         const maxScrollPosition = contentHeight - windowHeight;
-        scrollPosition = Math.max(0, Math.min(scrollPosition, maxScrollPosition));
+        scrollPosition = Math.max(
+          0,
+          Math.min(scrollPosition, maxScrollPosition)
+        );
       }
 
       this.content.scrollToPoint(0, scrollPosition, 500); // Adjust the duration (ms) as needed
@@ -295,7 +342,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async fetchFilmData() {
-    const url = "https://proxy-server-rho-pearl.vercel.app/api/server";
+    const url = 'https://proxy-server-rho-pearl.vercel.app/api/server';
 
     // Create a FormData object
     const formData = new FormData();
@@ -330,12 +377,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         return data;
       } else {
         // Handle HTTP errors
-        console.error("HTTP Error:", response.status, response.statusText);
+        console.error('HTTP Error:', response.status, response.statusText);
         throw new Error(`HTTP Error: ${response.status}`);
       }
     } catch (error) {
       // Handle any other errors
-      console.error("An error occurred:", error);
+      console.error('An error occurred:', error);
       throw error;
     }
   }
@@ -347,7 +394,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       const encodedValue = encodeURIComponent(pair[1]);
       formBody.push(`${encodedKey}=${encodedValue}`);
     }
-    return formBody.join("&");
+    return formBody.join('&');
   }
 
   appendSelectedFiltersToFormData(formData: FormData): void {
@@ -365,7 +412,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       );
     }
     if (this.selectedFilters.tageAuswahl.length > 0) {
-      formData.append('filter[tage_auswahl]', this.selectedFilters.tageAuswahl[0]);
+      formData.append(
+        'filter[tage_auswahl]',
+        this.selectedFilters.tageAuswahl[0]
+      );
     }
     this.selectedFilters.extras.forEach((extra: string) =>
       formData.append('filter[extra][]', extra)
@@ -383,17 +433,25 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     formData.append('filter[rangeslider][]', String(endTimeNumeric));
   }
 
-
   async updateFilteredFilms() {
-    const excludedProperties = ['film_beschreibung', 'film_cover_src', 'film_favored', 'filminfo_href', 'film_system_id', 'system_id']; // Add more property names as needed
+    const excludedProperties = [
+      'film_beschreibung',
+      'film_cover_src',
+      'film_favored',
+      'filminfo_href',
+      'film_system_id',
+      'system_id',
+    ]; // Add more property names as needed
     if (this.searchQuery) {
       this.isLoading = true;
-      this.filteredFilms = this.films.filter(film =>
+      this.filteredFilms = this.films.filter((film) =>
         Object.entries(film).some(([key, value]) => {
           if (excludedProperties.includes(key)) {
             return false; // Exclude the property from filtering
           }
-          return value && value.toString().toLowerCase().includes(this.searchQuery);
+          return (
+            value && value.toString().toLowerCase().includes(this.searchQuery)
+          );
         })
       );
       setTimeout(() => {
@@ -408,8 +466,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
       // For Kinosaal tag or other non-time filters
       this.selectedFilters[filterType] = [id];
-    }
-    else {
+    } else {
       // For other time-related filters (if any)
       const index = this.selectedFilters[filterType].indexOf(id);
       if (index > -1) {
@@ -451,7 +508,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
     // Ensure endHour is always at least one hour higher than startHour
     if (endHour <= startHour) {
-      endHour = (startHour + 1);
+      endHour = startHour + 1;
 
       if (endHour > 23) {
         endHour -= 24;
@@ -480,4 +537,3 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     return numericTime;
   }
 }
-

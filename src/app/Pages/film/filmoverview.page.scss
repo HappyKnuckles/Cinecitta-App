@@ -81,6 +81,7 @@
     --padding-start: 15px;
     position: relative;
     pointer-events: auto;
+    height: 50px;
 
     ion-icon {
         font-size: 20px;
@@ -99,6 +100,13 @@
 .filmContainer {
     padding: 0 0 30px;
 
+    &.mini{
+        padding: 0 0 5px;
+
+        .border{
+            padding: 3px 0;
+        }
+    }
 
     &.small {
         padding: 0 0 10px;
@@ -132,7 +140,12 @@
         opacity: .9;
 
         &.small {
-            right: 6%;
+            right: 24px;
+        }
+
+        &.mini{
+            right: 24px;
+            transform: translateY(-4px);
         }
 
         .new {
@@ -219,12 +232,12 @@
     }
 
     .theaterName {
-        padding: 2px 5px;
+        padding: 3px 5px;
         background: #ccc;
         border-radius: 5px;
         margin: 0 10px 10px 0;
         font-weight: 700;
-        color: #fff;
+        color: #333;
         text-transform: uppercase;
         display: table-cell;
     }

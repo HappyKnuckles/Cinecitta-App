@@ -27,7 +27,7 @@
               font-weight: 700;
               margin-bottom: 10px;
               color: #a3d9d5;">
-             <span>{{film.film_titel}}
+             <span style="padding: 0 5px;">{{film.film_titel}}
               <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null">
                   Rang {{film.filmchart_platzierung_aktuell}}
               </ng-container>
@@ -48,12 +48,14 @@
               }}<span *ngIf="film.film_beschreibung === ''"> {{film.kurztext}}</span>
             </ion-col>
             <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung !== ''" (click)="showFull[i] = false">{{
-              film.film_beschreibung |
-              extractText}}
+              film.film_beschreibung | extractText}}
             </ion-col> 
-          <ion-col class="description" size="8" *ngIf="film.film_beschreibung === ''">
-            {{film.film_kurztext}}
-          </ion-col>
+            <ion-col class="description" size="8" *ngIf="film.film_beschreibung === ''">
+              {{film.film_kurztext}}
+            </ion-col>
+            <!-- <ion-col class="description" size="8" *ngIf="film.film_beschreibung === '' && film.film_kurztext === ''">
+              {{film.film_synopsis | extractText}}
+            </ion-col> -->
           </ion-row>
         </div>
       </div>

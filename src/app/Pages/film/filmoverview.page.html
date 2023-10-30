@@ -1,4 +1,4 @@
-<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11;" (ionBackdropTap)="cancel()"></ion-backdrop>
+<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%;" (ionBackdropTap)="cancel()"></ion-backdrop>
 <ion-backdrop *ngIf="isLoading" style="opacity: 0.3; z-index: 11;"></ion-backdrop>
 <ion-spinner *ngIf="isLoading" name="lines" color="primary" class="custom-loader"></ion-spinner>
 <ion-text *ngIf="filteredFilms.length === 0 && isLoading === false"
@@ -171,7 +171,7 @@
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
   </ion-refresher>
-  <div *ngIf="!detailView" class="content">
+  <div *ngIf="detailView[1]" class="content">
     <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
@@ -211,7 +211,7 @@
       </div>
     </ion-grid>
   </div>
-  <div *ngIf="detailView" class="content">
+  <div *ngIf="detailView[0]" class="content">
     <div class="filmContainer" *ngFor="let film of filteredFilms; let i = index; let first = first">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="filmSpecific">
@@ -276,4 +276,35 @@
       </div>
     </div>
   </div>
+  <div *ngIf="detailView[2]" class="content">
+    <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
+      <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
+        <div class="border">
+          <ion-row>
+            <span *ngIf="film.film_neu === 'NEU'" style="margin-left: 5px;">
+              <div class="new-dreieck mini">
+                <div class="new">NEU</div>
+              </div>
+            </span>
+          </ion-row>
+          <ion-row>
+            <ion-col size="1">
+              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" style="width: 10vw;"></ion-img>
+            </ion-col>
+            <ion-col style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding: 0 30px;
+            color: #a3d9d5;">{{film.film_titel}}</ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </ion-grid>
+  </div>
+
 </ion-content>
