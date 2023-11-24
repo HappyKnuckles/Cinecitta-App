@@ -40,6 +40,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   showEndTimePicker: boolean = false;
   startTime = '10:00';
   endTime = '03:00';
+  formattedEndTime: string = "";
   films: any[] = [];
   filteredFilms: any[] = [];
   message = '';
@@ -73,6 +74,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.isLoading = true;
     await this.loadFilmData();
     this.isLoading = false;
+    await this.onTimeChange();
     this.sub = this.searchSubject.pipe(debounceTime(500)).subscribe(() => {
       this.updateFilteredFilms();
     });
@@ -505,6 +507,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     let startHour = this.convertTimeToNumeric(this.startTime);
     let endHour = this.convertTimeToNumeric(this.endTime);
     const formatHour = (hour: number) => hour.toString().padStart(2, '0');
+    this.formattedEndTime = `${formatHour(endHour)}:00`;
 
     // Ensure endHour is always at least one hour higher than startHour
     if (endHour <= startHour) {

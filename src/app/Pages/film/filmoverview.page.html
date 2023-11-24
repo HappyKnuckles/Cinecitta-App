@@ -256,7 +256,7 @@
                     <ion-col *ngFor="let weekday of film.film_wochentage">
                       <ng-container *ngIf="leinwand.vorstellungen">
                         <div *ngFor="let vorstellung of leinwand.vorstellungen">
-                          <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche">
+                          <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
                             <div (click)="openExternalWebsite(vorstellung.href)"
                               [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
                               class="times">
