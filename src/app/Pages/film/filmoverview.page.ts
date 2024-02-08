@@ -15,6 +15,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { Keyboard, KeyboardResize, KeyboardResizeOptions } from '@capacitor/keyboard';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
 import { Browser } from '@capacitor/browser';
@@ -67,8 +68,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
-    private alertController: AlertController
-  ) {}
+    private alertController: AlertController,
+  ) {
+    KeyboardResize.None;
+  }
 
   async ngOnInit() {
     this.isLoading = true;
