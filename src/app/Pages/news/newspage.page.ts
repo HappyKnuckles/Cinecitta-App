@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
 import { Browser } from '@capacitor/browser';
 import { firstValueFrom } from 'rxjs';
 
@@ -24,6 +23,7 @@ export class NewsPage {
     await this.fetchNewFilms();
     this.isLoading = false;
   }
+  
   handleRefresh(event: any) {
     setTimeout(() => {
       this.fetchNewFilms();

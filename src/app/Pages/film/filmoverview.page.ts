@@ -5,9 +5,7 @@ import {
   IonInput,
   IonModal,
 } from '@ionic/angular';
-import { Subject, Subscription, debounceTime, firstValueFrom } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser';
+import { Subject, Subscription, debounceTime } from 'rxjs';
 import {
   animate,
   state,
@@ -15,7 +13,7 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Keyboard, KeyboardResize, KeyboardResizeOptions } from '@capacitor/keyboard';
+import { KeyboardResize } from '@capacitor/keyboard';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
 import { Browser } from '@capacitor/browser';
@@ -66,7 +64,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   errorMessage: string = '';
 
   constructor(
-    private http: HttpClient,
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
   ) {
