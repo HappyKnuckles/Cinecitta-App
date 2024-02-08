@@ -6,29 +6,6 @@
   "plugins": {
     "Keyboard": {
       "resize": "none"
-    },
-    "InAppBrowser": {
-      "appId": "io.ionic.starter"
-    },
-    "android": {
-      "server": {
-        "allowList": ["https://cors-anywhere.herokuapp.com", "https://www.cinecitta.de"]
-      },
-      "allowNavigation": [],
-      "allowedNavigations": [
-        "https://cors-anywhere.herokuapp.com",
-        "https://cinecitta.de/*"
-      ],
-      "allowMixedContent": true,
-      "permissions": ["INTERNET"],
-      "allowedIntents": [
-        "geo:*",
-        "mailto:*",
-        "sms:*",
-        "tel:*",
-        "http://*/*",
-        "https://*/*"
-      ]
     }
   }
 }
