@@ -17,6 +17,7 @@ import { KeyboardResize } from '@capacitor/keyboard';
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from './filtertags';
 import { Browser } from '@capacitor/browser';
+import { SearchComponent } from 'src/app/common/search/search.component';
 
 @Component({
   selector: 'app-tab2',
@@ -30,10 +31,10 @@ import { Browser } from '@capacitor/browser';
     ]),
   ],
 })
-export class FilmOverviewPage implements OnInit, OnDestroy {
+export class FilmOverviewPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
-  @ViewChild('searchInput', { static: false }) searchInput!: IonInput;
+  @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
 
   showStartTimePicker: boolean = false;
   showEndTimePicker: boolean = false;
@@ -50,9 +51,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
-  searchQuery = '';
-  private searchSubject: Subject<string> = new Subject<string>();
-  sub: Subscription = new Subscription();
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -62,6 +60,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
   errorMessage: string = '';
+  excluded = [
+    'film_beschreibung',
+    'film_cover_src',
+    'film_favored',
+    'filminfo_href',
+    'film_system_id',
+    'system_id',
+  ];
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
@@ -75,17 +81,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.loadFilmData();
     this.isLoading = false;
     await this.onTimeChange();
-    this.sub = this.searchSubject.pipe(debounceTime(500)).subscribe(() => {
-      this.updateFilteredFilms();
-    });
     // Set default selected value for tageAuswahl
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     // Set default selected value for leinwandHighlights
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
   }
 
   handleRefresh(event: any) {
@@ -186,12 +185,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   openSearch() {
     this.isSearchOpen = !this.isSearchOpen;
-    if (!this.isSearchOpen) {
-      this.searchInput.getInputElement().then((inputElement) => {
-        inputElement.blur();
-      });
+    if (this.isSearchOpen) {
+      this.searchInput.focusInput();
     } else {
-      this.searchInput.setFocus();
+      this.searchInput.blurInput();
     }
   }
 
@@ -324,23 +321,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  onSearchChange(searchValue: string) {
-    this.searchQuery = searchValue.trim().toLowerCase();
-    this.searchSubject.next(this.searchQuery);
-  }
-
   async loadFilmData() {
-    this.isLoading = true;
     try {
       const response: any = await this.fetchFilmData();
       this.films = response?.daten?.items ?? [];
       this.filteredFilms = this.films;
-      await this.updateFilteredFilms();
       localStorage.setItem('filmsData', JSON.stringify(this.films));
     } catch (error) {
       console.error(error);
     }
-    this.isLoading = false;
   }
 
   async fetchFilmData() {
@@ -433,35 +422,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
     formData.append('filter[rangeslider][]', String(startTimeNumeric));
     formData.append('filter[rangeslider][]', String(endTimeNumeric));
-  }
-
-  async updateFilteredFilms() {
-    const excludedProperties = [
-      'film_beschreibung',
-      'film_cover_src',
-      'film_favored',
-      'filminfo_href',
-      'film_system_id',
-      'system_id',
-    ]; // Add more property names as needed
-    if (this.searchQuery) {
-      this.isLoading = true;
-      this.filteredFilms = this.films.filter((film) =>
-        Object.entries(film).some(([key, value]) => {
-          if (excludedProperties.includes(key)) {
-            return false; // Exclude the property from filtering
-          }
-          return (
-            value && value.toString().toLowerCase().includes(this.searchQuery)
-          );
-        })
-      );
-      setTimeout(() => {
-        this.isLoading = false;
-      }, 150);
-    } else {
-      this.filteredFilms = this.films;
-    }
   }
 
   async toggleSelection(id: any, filterType: string) {

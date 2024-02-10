@@ -28,14 +28,9 @@
       </ion-button>
     </div>
   </ion-toolbar>
-
-  <ion-input #searchInput placeholder="Suche" [(ngModel)]="searchQuery" [@openClose]="!isSearchOpen ? true : false"
-    [clearOnEdit]="true" class="search" (ngModelChange)="onSearchChange($event)">
-    <ion-label style="padding-left: 21px;">
-      <ion-icon name="search"></ion-icon>
-    </ion-label>
-    <ion-button class="filterBtn" id="filter-modal" (click)="setOpen(true)"><ion-label>Filter</ion-label></ion-button>
-  </ion-input>
+  <div [@openClose]="!isSearchOpen ? true : false">
+    <app-search (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [allFilms]="films" [excludedProperties]="excluded" (newFilmsChange)="filteredFilms = $event"></app-search>
+  </div>  
 </ion-header>
 
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
