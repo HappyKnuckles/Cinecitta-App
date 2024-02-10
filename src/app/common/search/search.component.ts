@@ -3,11 +3,19 @@ import { IonInput } from '@ionic/angular';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { FilmoverviewModule } from '../../Pages/film/filmoverview.module';
 import { FilmOverviewPage } from '../../Pages/film/filmoverview.page';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
+  animations: [
+    trigger('openClose', [
+      state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
+      state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
+      transition('false <=> true', [animate('400ms ease-in-out')]),
+    ]),
+  ],
 })
 export class SearchComponent implements OnInit {
 
@@ -24,15 +32,18 @@ export class SearchComponent implements OnInit {
     this.sub.unsubscribe();
   }
 
-  @Input() allFilms: any[] = [];
+  @Input({required: true}) allFilms: any[] = [];
   @Input() excludedProperties: any[] = [];
   @Input() showFilterButton: boolean = false;
+  @Input({required: true}) isOpen: boolean = false;
+
   @Output() newFilmsChange = new EventEmitter<any[]>();
+  @Output() setOpenEvent = new EventEmitter<boolean>();
   @ViewChild('searchInput') searchInput?: IonInput; // Use optional chaining
+
   private searchSubject = new Subject<string>();
   searchQuery: string = '';
   sub: Subscription = new Subscription;
-  @Output() setOpenEvent = new EventEmitter<boolean>();
 
   // Method to emit the setOpenEvent
   emitSetOpen(isOpen: boolean) {

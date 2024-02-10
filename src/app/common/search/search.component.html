@@ -1,4 +1,4 @@
-<ion-input class="search" #searchInput placeholder="Search" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" [clearOnEdit]="true">
+<ion-input class="search" #searchInput placeholder="Search" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" [clearOnEdit]="true" [@openClose]="!isOpen ? true : false">
   <ion-label style="padding-left: 21px;">
     <ion-icon name="search"></ion-icon>
   </ion-label>

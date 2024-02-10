@@ -1,4 +1,5 @@
-<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%;" (ionBackdropTap)="cancel()"></ion-backdrop>
+<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%;"
+  (ionBackdropTap)="cancel()"></ion-backdrop>
 <ion-backdrop *ngIf="isLoading" style="opacity: 0.3; z-index: 11;"></ion-backdrop>
 <ion-spinner *ngIf="isLoading" name="lines" color="primary" class="custom-loader"></ion-spinner>
 <ion-text *ngIf="filteredFilms.length === 0 && isLoading === false"
@@ -28,9 +29,8 @@
       </ion-button>
     </div>
   </ion-toolbar>
-  <div [@openClose]="!isSearchOpen ? true : false">
-    <app-search (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [allFilms]="films" [excludedProperties]="excluded" (newFilmsChange)="filteredFilms = $event"></app-search>
-  </div>  
+  <app-search [isOpen]="isSearchOpen" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [allFilms]="films"
+    [excludedProperties]="excluded" (newFilmsChange)="filteredFilms = $event"></app-search>
 </ion-header>
 
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
@@ -244,7 +244,7 @@
             </ion-row>
             <ng-container *ngFor="let leinwand of theater.leinwaende">
               <ion-row>
-                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">                        
+                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">
                   <ion-row class="saalName">
                     <ion-col>{{ leinwand.leinwand_name }}</ion-col>
                   </ion-row>
@@ -252,7 +252,8 @@
                     <ion-col *ngFor="let weekday of film.film_wochentage">
                       <ng-container *ngIf="leinwand.vorstellungen">
                         <div *ngFor="let vorstellung of leinwand.vorstellungen">
-                          <ng-container *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
+                          <ng-container
+                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
                             <div (click)="openExternalWebsite(vorstellung.href)"
                               [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
                               class="times">
@@ -273,7 +274,8 @@
   </div>
   <div *ngIf="detailView[2]" class="content">
     <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
-      <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
+      <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'"
+        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
             <span *ngIf="film.film_neu === 'NEU'" style="margin-left: 5px;">
@@ -284,7 +286,8 @@
           </ion-row>
           <ion-row>
             <ion-col size="1">
-              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" style="width: 10vw;"></ion-img>
+              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
+                style="width: 10vw;"></ion-img>
             </ion-col>
             <ion-col style="
             display: flex;

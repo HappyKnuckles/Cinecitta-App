@@ -9,14 +9,7 @@ import { SearchComponent } from 'src/app/common/search/search.component';
 @Component({
   selector: 'app-tab3',
   templateUrl: 'newspage.page.html',
-  styleUrls: ['newspage.page.scss'],
-  animations: [
-    trigger('openClose', [
-      state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
-      state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
-      transition('false <=> true', [animate('400ms ease-in-out')]),
-    ]),
-  ]
+  styleUrls: ['newspage.page.scss']
 })
 
 export class NewsPage {

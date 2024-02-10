@@ -22,15 +22,9 @@ import { SearchComponent } from 'src/app/common/search/search.component';
 @Component({
   selector: 'app-tab2',
   templateUrl: 'filmoverview.page.html',
-  styleUrls: ['filmoverview.page.scss'],
-  animations: [
-    trigger('openClose', [
-      state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
-      state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
-      transition('false <=> true', [animate('400ms ease-in-out')]),
-    ]),
-  ],
+  styleUrls: ['filmoverview.page.scss']
 })
+
 export class FilmOverviewPage implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
