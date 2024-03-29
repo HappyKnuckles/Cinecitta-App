@@ -1,8 +1,8 @@
 {
   "name": "cine-app",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "version": "1.0.0",
+  "author": "Nicolas Hoffmann",
+  "homepage": "https://github.com/HappyKnuckles/Cine-App",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -46,6 +46,7 @@
     "@angular/compiler": "16.2.7",
     "@angular/compiler-cli": "16.2.7",
     "@angular/language-service": "16.2.7",
+    "@capacitor/assets": "^3.0.4",
     "@capacitor/cli": "4.8.1",
     "@ionic/angular-toolkit": "6.1.0",
     "@types/jasmine": "4.0.3",
@@ -67,5 +68,5 @@
     "ts-node": "8.3.0",
     "typescript": "4.9.3"
   },
-  "description": "An Ionic project"
+  "description": "App for Cinecitta"
 }
