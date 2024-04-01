@@ -1,26 +1,19 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   ActionSheetController,
   IonContent,
-  IonInput,
   IonModal,
 } from '@ionic/angular';
-import { Subject, Subscription, debounceTime } from 'rxjs';
-import {
-  animate,
-  state,
-  style,
-  transition,
-  trigger,
-} from '@angular/animations';
-import { KeyboardResize } from '@capacitor/keyboard';
 import { AlertController } from '@ionic/angular';
-import * as Filtertags from './filtertags';
-import { Browser } from '@capacitor/browser';
+import * as Filtertags from '../../models/filtertags';
 import { SearchComponent } from 'src/app/common/search/search.component';
+import { Film, Leinwand, Theater } from '../../models/filmModel';
+import { ViewType } from '../../models/viewEnum';
+import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
+import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 
 @Component({
-  selector: 'app-tab2',
+  selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss']
 })
@@ -35,9 +28,8 @@ export class FilmOverviewPage implements OnInit {
   startTime = '10:00';
   endTime = '03:00';
   formattedEndTime: string = "";
-  films: any[] = [];
-  filteredFilms: any[] = [];
-  message = '';
+  films: Film[] = [];
+  message: string = '';
   isTimesOpen: boolean[] = [];
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
@@ -54,36 +46,29 @@ export class FilmOverviewPage implements OnInit {
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
   errorMessage: string = '';
-  excluded = [
-    'film_beschreibung',
-    'film_cover_src',
-    'film_favored',
-    'filminfo_href',
-    'film_system_id',
-    'system_id',
-  ];
+  excluded = Filtertags.excludedFilmValues;
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
+    private website: OpenWebsiteService,
+    private filmGetter: FilmDataService
   ) {
-    KeyboardResize.None;
   }
 
   async ngOnInit() {
-    this.isLoading = true;
-    await this.loadFilmData();
-    this.isLoading = false;
+    this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
-    // Set default selected value for tageAuswahl
+  }
+
+  private setDefaultSelectedFilterValues() {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
-    // Set default selected value for leinwandHighlights
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
   handleRefresh(event: any) {
-    setTimeout(() => {
-      this.loadFilmData();
+    setTimeout(async () => {
+      await this.loadFilmData();
       event.target.complete();
     }, 100);
   }
@@ -93,7 +78,7 @@ export class FilmOverviewPage implements OnInit {
 
     if (!this.detailView[0]) {
       buttons.push({
-        text: 'Detailübersicht',
+        text: ViewType.Detail,
         handler: () => {
           this.detailView[0] = true;
           this.detailView[1] = false;
@@ -104,7 +89,7 @@ export class FilmOverviewPage implements OnInit {
 
     if (!this.detailView[1]) {
       buttons.push({
-        text: 'Kurzübersicht',
+        text: ViewType.Kurz,
         handler: () => {
           this.detailView[0] = false;
           this.detailView[1] = true;
@@ -115,7 +100,7 @@ export class FilmOverviewPage implements OnInit {
 
     if (!this.detailView[2]) {
       buttons.push({
-        text: 'Miniübersicht',
+        text: ViewType.Mini,
         handler: () => {
           this.detailView[0] = false;
           this.detailView[1] = false;
@@ -143,14 +128,15 @@ export class FilmOverviewPage implements OnInit {
       message: 'Mit den ausgewählten Filtern sind keine Filme verfügbar',
       buttons: [
         {
-          text: 'Close',
+          text: 'Schließen',
           role: 'cancel',
           handler: () => {
             // Handle close action if needed
           },
         },
         {
-          text: 'Reset Filters',
+          text: 'Filter löschen',
+          role: 'confirm',
           handler: () => {
             this.reset(); // Call the reset function when "Reset Filters" is clicked
           },
@@ -168,13 +154,6 @@ export class FilmOverviewPage implements OnInit {
         this.scrollToGrid(index);
       }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
     }
-  }
-
-  openModal() {
-    const modal = document.querySelector(
-      '#ticketreservation'
-    ) as HTMLIonModalElement;
-    modal!.present();
   }
 
   openSearch() {
@@ -195,17 +174,8 @@ export class FilmOverviewPage implements OnInit {
   }
 
   async openExternalWebsite(url: string) {
-    const options = {
-      toolbarColor: '#1d979f', // Customize the browser toolbar color
-    };
-    const finishedUrl = 'https://cinecitta.' + url;
-
     try {
-      await Browser.open({
-        url: finishedUrl,
-        windowName: '_self',
-        toolbarColor: options.toolbarColor,
-      });
+      await this.website.openExternalWebsite(url);
     } catch (error) {
       console.error('Error opening external website: ' + error);
     }
@@ -220,9 +190,7 @@ export class FilmOverviewPage implements OnInit {
   }
 
   async confirm() {
-    this.isLoading = true;
     await this.loadFilmData();
-    this.isLoading = false;
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
 
@@ -257,12 +225,10 @@ export class FilmOverviewPage implements OnInit {
     this.showAllTags = this.showAllTags.map((_) => false);
     this.closeTimes();
 
-    this.isLoading = true;
     await this.loadFilmData();
-    this.isLoading = false;
   }
 
-  hasScreenings(theater: any): boolean {
+  hasScreenings(theater: Theater): boolean {
     for (const leinwand of theater.leinwaende) {
       if (leinwand.vorstellungen) {
         return true;
@@ -271,7 +237,7 @@ export class FilmOverviewPage implements OnInit {
     return false;
   }
 
-  hasFlagName(leinwand: any, name: string): boolean {
+  hasFlagName(leinwand: Leinwand, name: string): boolean {
     return leinwand.release_flags.some((flag: any) => flag.flag_name === name);
   }
 
@@ -317,72 +283,21 @@ export class FilmOverviewPage implements OnInit {
 
   async loadFilmData() {
     try {
-      const response: any = await this.fetchFilmData();
+      this.isLoading = true;
+      const formData = this.appendSelectedFiltersToFormData();
+      const response = await this.filmGetter.fetchFilmData(formData);
       this.films = response?.daten?.items ?? [];
-      this.filteredFilms = this.films;
       localStorage.setItem('filmsData', JSON.stringify(this.films));
     } catch (error) {
       console.error(error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
-  async fetchFilmData() {
-    const url = 'https://proxy-server-rho-pearl.vercel.app/api/server';
-
-    // Create a FormData object
+  appendSelectedFiltersToFormData(): FormData {
     const formData = new FormData();
 
-    // Append selected filters to the form data
-    this.appendSelectedFiltersToFormData(formData);
-
-    const params = {
-      bereich: 'portal',
-      modul_id: '101',
-      klasse: 'vorstellungen',
-      cli_mode: '1',
-      com: 'anzeigen_spielplan',
-    };
-
-    try {
-      // Append the params as URL parameters
-      const fullURL = `${url}?${new URLSearchParams(params).toString()}`;
-
-      const formBody = this.formDataToUrlEncoded(formData); // Convert FormData to URL-encoded string
-
-      const response = await fetch(fullURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: formBody,
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        // Handle HTTP errors
-        console.error('HTTP Error:', response.status, response.statusText);
-        throw new Error(`HTTP Error: ${response.status}`);
-      }
-    } catch (error) {
-      // Handle any other errors
-      console.error('An error occurred:', error);
-      throw error;
-    }
-  }
-
-  formDataToUrlEncoded(formData: any) {
-    const formBody = [];
-    for (let pair of formData.entries()) {
-      const encodedKey = encodeURIComponent(pair[0]);
-      const encodedValue = encodeURIComponent(pair[1]);
-      formBody.push(`${encodedKey}=${encodedValue}`);
-    }
-    return formBody.join('&');
-  }
-
-  appendSelectedFiltersToFormData(formData: FormData): void {
     formData.append('get_filter_aktiv', 'false');
     formData.append('filter[ovfilme]', '0');
 
@@ -416,6 +331,8 @@ export class FilmOverviewPage implements OnInit {
     const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
     formData.append('filter[rangeslider][]', String(startTimeNumeric));
     formData.append('filter[rangeslider][]', String(endTimeNumeric));
+
+    return formData;
   }
 
   async toggleSelection(id: any, filterType: string) {
@@ -433,9 +350,7 @@ export class FilmOverviewPage implements OnInit {
         this.selectedFilters[filterType].push(id);
       }
     }
-    this.isLoading = true;
     await this.loadFilmData();
-    this.isLoading = false;
   }
 
   isSelected(id: any, filterType: string): boolean {

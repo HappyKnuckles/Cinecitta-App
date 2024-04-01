@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Browser } from '@capacitor/browser';
 import { IonModal } from '@ionic/angular';
 import { Subscription, firstValueFrom } from 'rxjs';
+import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 
 @Component({
   selector: 'app-profile',
@@ -53,7 +54,8 @@ export class ProfilePage implements OnInit {
   image2 = 'assets/images/hellow.png';
   sub: Subscription = new Subscription();
   isToggled: boolean = false;
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private router: Router, private http: HttpClient, private website: OpenWebsiteService,
+    ) {}
 
   async ngOnInit() {
     await this.loadTicketHistory();
@@ -70,17 +72,8 @@ export class ProfilePage implements OnInit {
   }
   
   async openExternalWebsite(url: string) {
-    const options = {
-      toolbarColor: '#1d979f', // Customize the browser toolbar color
-    };
-    const finishedUrl = 'https://cinecitta.' + url;
-
     try {
-      await Browser.open({
-        url: finishedUrl,
-        windowName: '_self',
-        toolbarColor: options.toolbarColor,
-      });
+      await this.website.openExternalWebsite(url);
     } catch (error) {
       console.error('Error opening external website: ' + error);
     }

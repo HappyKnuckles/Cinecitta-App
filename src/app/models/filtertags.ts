@@ -73,4 +73,28 @@ export const selectedFilters: any = {
     { id: 2, name: 'Audiodeskription' },
     { id: 3, name: 'Untertitel für Hörgeschädigte' },
   ];
+
+  export const excludedFilmValues = [
+    'film_beschreibung',
+    'film_cover_src',
+    'film_favored',
+    'filminfo_href',
+    'film_system_id',
+    'system_id',
+  ]
+
+  export const excludedNewFilmValues = [
+    'film_beschreibung',
+    'film_cover_src',
+    'film_favored',
+    'filminfo_href',
+    'film_system_id',
+    'system_id',
+    'film_synopsis',
+    'bild_beschreibung',
+    'bild_name',
+    'film_teasertext',
+    'system_name',
+    'film_kurztext'
+  ]
   

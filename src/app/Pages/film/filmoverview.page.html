@@ -2,7 +2,7 @@
   (ionBackdropTap)="cancel()"></ion-backdrop>
 <ion-backdrop *ngIf="isLoading" style="opacity: 0.3; z-index: 11;"></ion-backdrop>
 <ion-spinner *ngIf="isLoading" name="lines" color="primary" class="custom-loader"></ion-spinner>
-<ion-text *ngIf="filteredFilms.length === 0 && isLoading === false"
+<ion-text *ngIf="films.length === 0 && isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); z-index: 999;">
   Keine Filme verfügbar<!-- <div *ngIf="errorMessage">
   {{ errorMessage }}
@@ -30,7 +30,7 @@
     </div>
   </ion-toolbar>
   <app-search [isOpen]="isSearchOpen" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [allFilms]="films"
-    [excludedProperties]="excluded" (newFilmsChange)="filteredFilms = $event"></app-search>
+    [excludedProperties]="excluded" (newFilmsChange)="films = $event"></app-search>
 </ion-header>
 
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
@@ -155,7 +155,7 @@
     </ion-content>
     <ion-footer>
       <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px;"
-        (click)="confirm()">Bestätigen ({{filteredFilms.length}})
+        (click)="confirm()">Bestätigen ({{films.length}})
       </ion-button>
     </ion-footer>
   </ng-template>
@@ -166,8 +166,75 @@
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
+  <div *ngIf="detailView[0]" class="content">
+    <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
+      <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
+        <div class="filmSpecific">
+          <span *ngIf="film.film_neu === 'NEU'">
+            <div class="new-dreieck">
+              <div class="new">NEU</div>
+            </div>
+          </span>
+          <div *ngIf="film.film_ist_ov === '1'" class="titel">
+            OV
+            <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
+          </div>
+          <img src="{{film.film_cover_src}}" style="height: 50vh" />
+          <span class="description">{{film.film_beschreibung | extractText}}</span>
+          <!-- <div class="action">
+            <button (click)="openExternalWebsite(film.filminfo_href)">Filminfos</button>
+            <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button>
+          </div> -->
+        </div>
+        <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
+          <ion-icon *ngIf="!isTimesOpen[i]" name="chevron-down"></ion-icon>
+          <ion-icon *ngIf="isTimesOpen[i]" name="chevron-up"></ion-icon>
+        </div>
+
+        <ion-grid *ngIf="isTimesOpen[i]" [id]="'gridRef-' + i">
+          <ion-row class="weekdays">
+            <ion-col *ngFor="let weekday of film.film_wochentage">
+              {{ weekday?.tag_text }}
+            </ion-col>
+          </ion-row>
+
+          <ng-container *ngFor="let theater of film.theater">
+            <ion-row class="theaterRow" *ngIf="hasScreenings(theater)">
+              <ion-col><span class="theaterName">{{ theater.theater_name }}</span></ion-col>
+            </ion-row>
+            <ng-container *ngFor="let leinwand of theater.leinwaende">
+              <ion-row>
+                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">
+                  <ion-row class="saalName">
+                    <ion-col>{{ leinwand.leinwand_name }}</ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col *ngFor="let weekday of film.film_wochentage">
+                      <ng-container *ngIf="leinwand.vorstellungen">
+                        <div *ngFor="let vorstellung of leinwand.vorstellungen">
+                          <ng-container
+                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
+                            <div (click)="openExternalWebsite(vorstellung.href!)"
+                              [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
+                              class="times">
+                              {{ vorstellung.uhrzeit }}
+                            </div>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ng-container>
+          </ng-container>
+        </ion-grid>
+      </div>
+    </div>
+  </div>
+
   <div *ngIf="detailView[1]" class="content">
-    <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
+    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row style="
@@ -206,74 +273,9 @@
       </div>
     </ion-grid>
   </div>
-  <div *ngIf="detailView[0]" class="content">
-    <div class="filmContainer" *ngFor="let film of filteredFilms; let i = index; let first = first">
-      <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
-        <div class="filmSpecific">
-          <span *ngIf="film.film_neu === 'NEU'">
-            <div class="new-dreieck">
-              <div class="new">NEU</div>
-            </div>
-          </span>
-          <div *ngIf="film.film_ist_ov === '1'" class="titel">
-            OV
-            <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
-          </div>
-          <img src="{{film.film_cover_src}}" style="height: 50vh" />
-          <span class="description">{{film.film_beschreibung | extractText}}</span>
-          <div class="action">
-            <button (click)="openExternalWebsite(film.filminfo_href)">Filminfos</button>
-            <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button>
-          </div>
-        </div>
-        <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
-          <ion-icon *ngIf="!isTimesOpen[i]" name="chevron-down"></ion-icon>
-          <ion-icon *ngIf="isTimesOpen[i]" name="chevron-up"></ion-icon>
-        </div>
 
-        <ion-grid *ngIf="isTimesOpen[i]" [id]="'gridRef-' + i">
-          <ion-row class="weekdays">
-            <ion-col *ngFor="let weekday of film.film_wochentage">
-              {{ weekday?.tag_text }}
-            </ion-col>
-          </ion-row>
-
-          <ng-container *ngFor="let theater of film.theater">
-            <ion-row class="theaterRow" *ngIf="hasScreenings(theater)">
-              <ion-col><span class="theaterName">{{ theater.theater_name }}</span></ion-col>
-            </ion-row>
-            <ng-container *ngFor="let leinwand of theater.leinwaende">
-              <ion-row>
-                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">
-                  <ion-row class="saalName">
-                    <ion-col>{{ leinwand.leinwand_name }}</ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col *ngFor="let weekday of film.film_wochentage">
-                      <ng-container *ngIf="leinwand.vorstellungen">
-                        <div *ngFor="let vorstellung of leinwand.vorstellungen">
-                          <ng-container
-                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
-                            <div (click)="openExternalWebsite(vorstellung.href)"
-                              [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
-                              class="times">
-                              {{ vorstellung.uhrzeit }}
-                            </div>
-                          </ng-container>
-                        </div>
-                      </ng-container>
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-              </ion-row>
-            </ng-container>
-          </ng-container>
-        </ion-grid>
-      </div>
-    </div>
-  </div>
   <div *ngIf="detailView[2]" class="content">
-    <ion-grid *ngFor="let film of filteredFilms; let i = index; let first = first" style="padding-top: 0;">
+    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'"
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
