@@ -16,7 +16,7 @@
       </ion-button>
     </div>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" [allFilms]="newFilms" [excludedProperties]="excluded"
+  <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded"
     (newFilmsChange)="newFilms = $event"></app-search>
 </ion-header>
 

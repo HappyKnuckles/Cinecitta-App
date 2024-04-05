@@ -29,7 +29,7 @@
       </ion-button>
     </div>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [allFilms]="films"
+  <app-search [isOpen]="isSearchOpen" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [formData]="formData"
     [excludedProperties]="excluded" (newFilmsChange)="films = $event"></app-search>
 </ion-header>
 

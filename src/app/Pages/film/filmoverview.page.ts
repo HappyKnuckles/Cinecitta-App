@@ -25,6 +25,7 @@ export class FilmOverviewPage implements OnInit {
 
   showStartTimePicker: boolean = false;
   showEndTimePicker: boolean = false;
+  formData: any;
   startTime = '10:00';
   endTime = '03:00';
   formattedEndTime: string = "";
@@ -284,8 +285,8 @@ export class FilmOverviewPage implements OnInit {
   async loadFilmData() {
     try {
       this.isLoading = true;
-      const formData = this.appendSelectedFiltersToFormData();
-      const response = await this.filmGetter.fetchFilmData(formData);
+      this.formData = this.appendSelectedFiltersToFormData();
+      const response = await this.filmGetter.fetchFilmData(this.formData);
       this.films = response?.daten?.items ?? [];
       localStorage.setItem('filmsData', JSON.stringify(this.films));
     } catch (error) {
