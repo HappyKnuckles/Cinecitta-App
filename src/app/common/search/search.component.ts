@@ -115,4 +115,9 @@ export class SearchComponent implements OnInit {
     this.searchQuery = searchValue.trim().toLowerCase();
     this.searchSubject.next(this.searchQuery);
   }
+
+  clearInput(){
+    this.searchQuery = '';
+    this.searchSubject.next(this.searchQuery);
+  }
 }

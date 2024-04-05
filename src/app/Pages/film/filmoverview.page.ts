@@ -69,7 +69,8 @@ export class FilmOverviewPage implements OnInit {
 
   handleRefresh(event: any) {
     setTimeout(async () => {
-      await this.loadFilmData();
+      await this.loadFilmData();    
+      this.searchInput.clearInput();
       event.target.complete();
     }, 100);
   }

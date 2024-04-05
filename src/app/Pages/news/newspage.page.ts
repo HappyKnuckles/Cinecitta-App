@@ -33,6 +33,7 @@ export class NewsPage {
   handleRefresh(event: any) {
     setTimeout(async () => {
       await this.fetchNewFilms();
+      this.searchInput.clearInput();
       event.target.complete();
     }, 100);
   }
