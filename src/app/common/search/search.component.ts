@@ -1,6 +1,5 @@
 import {
   Component,
-  ElementRef,
   EventEmitter,
   Input,
   OnInit,
@@ -22,7 +21,6 @@ import {
   animate,
 } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { Film, newFilm } from 'src/app/models/filmModel';
 
 @Component({
   selector: 'app-search',
@@ -49,10 +47,8 @@ export class SearchComponent implements OnInit {
     if (this.isNewFilms) {
       this.allFilms = await this.filmData.fetchNewFilms();
     } else {
-      const result = await this.filmData.fetchFilmData(this.formData);
-      this.allFilms = result?.daten?.items ?? [];
+      this.allFilms = await this.filmData.fetchFilmData(this.formData);
     }
-    console.log(this.allFilms);
   }
 
   ngOnDestroy() {

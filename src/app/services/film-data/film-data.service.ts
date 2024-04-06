@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { Film, Leinwand, Theater } from 'src/app/models/filmModel';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class FilmDataService {
     cli_mode: '1',
     com: '',
   };
+  filmData: Film[] = [];
 
   constructor(private http: HttpClient,
   ) { }
@@ -60,11 +62,47 @@ export class FilmDataService {
 
       if (response.ok) {
         const data = await response.json();
-        return data;
+        this.filmData = data?.daten.items;
+        await this.deleteLeinwandEntriesWithOVFlag();
+        return this.filmData;
       } else {
         // Handle HTTP errors
         throw new Error(`HTTP Error: ${response.status}`);
       }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteLeinwandEntriesWithOVFlag() {
+    try {
+      // Track film titles that appear more than once
+      const doubleFilms: Set<string> = new Set();
+      const filmTitles: string[] = [];
+
+      this.filmData.forEach((film: Film) => {
+        if (filmTitles.includes(film.film_titel)) {
+          doubleFilms.add(film.film_titel);
+        } else {
+          filmTitles.push(film.film_titel);
+        }
+      });
+
+      // Delete leinwand entries for films appearing more than once and have different film_ist_ov values
+      this.filmData.forEach((film: Film) => {
+        if (doubleFilms.has(film.film_titel) && film.film_ist_ov === '0') {
+          film.theater.forEach((theater: Theater) => {
+            const leinwaende = theater.leinwaende.filter((leinwand: Leinwand) =>
+              leinwand.release_flags && !leinwand.release_flags.some((flag: { flag_name: string; }) => flag.flag_name === 'OV')
+            );
+
+            theater.leinwaende = leinwaende;
+          });
+        }
+      });
+
+      // Return the modified films array
+      return this.filmData;
     } catch (error) {
       throw error;
     }

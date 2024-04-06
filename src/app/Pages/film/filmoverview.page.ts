@@ -69,7 +69,7 @@ export class FilmOverviewPage implements OnInit {
 
   handleRefresh(event: any) {
     setTimeout(async () => {
-      await this.loadFilmData();    
+      await this.loadFilmData();
       this.searchInput.clearInput();
       event.target.complete();
     }, 100);
@@ -287,9 +287,7 @@ export class FilmOverviewPage implements OnInit {
     try {
       this.isLoading = true;
       this.formData = this.appendSelectedFiltersToFormData();
-      const response = await this.filmGetter.fetchFilmData(this.formData);
-      this.films = response?.daten?.items ?? [];
-      localStorage.setItem('filmsData', JSON.stringify(this.films));
+      this.films = await this.filmGetter.fetchFilmData(this.formData);
     } catch (error) {
       console.error(error);
     } finally {

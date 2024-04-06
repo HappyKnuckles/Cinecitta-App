@@ -204,9 +204,9 @@
             </ion-row>
             <ng-container *ngFor="let leinwand of theater.leinwaende">
               <ion-row>
-                <ion-col *ngIf="film.film_ist_ov === '1' || !hasFlagName(leinwand, 'OV')">
+                <ion-col>
                   <ion-row class="saalName">
-                    <ion-col>{{ leinwand.leinwand_name }}</ion-col>
+                    <ion-col>{{ leinwand.leinwand_name }} <span *ngIf="hasFlagName(leinwand, 'mU')">mU</span></ion-col>
                   </ion-row>
                   <ion-row>
                     <ion-col *ngFor="let weekday of film.film_wochentage">
