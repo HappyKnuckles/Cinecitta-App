@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   ActionSheetController,
   IonContent,
@@ -11,6 +11,8 @@ import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
+import { LoadingService } from 'src/app/services/loader/loading.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-filmoverview',
@@ -18,7 +20,7 @@ import { FilmDataService } from 'src/app/services/film-data/film-data.service';
   styleUrls: ['filmoverview.page.scss']
 })
 
-export class FilmOverviewPage implements OnInit {
+export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
@@ -31,10 +33,11 @@ export class FilmOverviewPage implements OnInit {
   formattedEndTime: string = "";
   films: Film[] = [];
   message: string = '';
+  isLoading: boolean = false;
+  private loadingSubscription: Subscription;
   isTimesOpen: boolean[] = [];
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
-  isLoading: boolean = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
@@ -53,13 +56,21 @@ export class FilmOverviewPage implements OnInit {
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
-    private filmGetter: FilmDataService
+    private filmGetter: FilmDataService,
+    private loadingService: LoadingService
   ) {
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
+      this.isLoading = isLoading;
+    });
   }
 
   async ngOnInit() {
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
+  }
+
+  ngOnDestroy() {
+    this.loadingSubscription.unsubscribe();
   }
 
   private setDefaultSelectedFilterValues() {
@@ -285,13 +296,13 @@ export class FilmOverviewPage implements OnInit {
 
   async loadFilmData() {
     try {
-      this.isLoading = true;
+      this.loadingService.setLoading(true); 
       this.formData = this.appendSelectedFiltersToFormData();
       this.films = await this.filmGetter.fetchFilmData(this.formData);
     } catch (error) {
       console.error(error);
     } finally {
-      this.isLoading = false;
+      this.loadingService.setLoading(false);
     }
   }
 
