@@ -51,8 +51,8 @@ export interface Film {
     film_vorverkauf_zeit_nicht_erreicht?: string;
     vorstellungen_anzahl_tage: Record<string, number>;
     vorstellungen_anzahl_tage_max?: number;
+    trailer_href?: string;
 }
-
 
 export interface newFilm {
     film_id: string;

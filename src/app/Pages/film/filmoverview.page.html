@@ -179,6 +179,10 @@
             OV
             <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
           </div>
+          <video controls style="height: 50vh; width: 85vw;">
+            <source src="{{film.trailer_href}}" >
+          Your browser does not support the video tag.
+          </video>
           <img src="{{film.film_cover_src}}" style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
           <!-- <div class="action">

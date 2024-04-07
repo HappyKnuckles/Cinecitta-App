@@ -11,6 +11,7 @@ import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
+import { WebscraperService } from 'src/app/services/webscraper.service';
 
 @Component({
   selector: 'app-filmoverview',
@@ -53,7 +54,8 @@ export class FilmOverviewPage implements OnInit {
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
-    private filmGetter: FilmDataService
+    private filmGetter: FilmDataService,
+    private webScrapingService: WebscraperService
   ) {
   }
 
@@ -62,6 +64,20 @@ export class FilmOverviewPage implements OnInit {
     await this.onTimeChange();
   }
 
+  private async updateTrailerUrls() {
+    for (const film of this.films) {
+      const trailerUrl = await this.webScrapingService.scrapeTrailerUrl(film.filminfo_href);
+      if (trailerUrl) {
+        console.log(trailerUrl)
+        // Assign the formatted URL to the trailer_href property
+        film.trailer_href = trailerUrl;
+        
+      }
+    }
+ 
+  }
+
+  
   private setDefaultSelectedFilterValues() {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;

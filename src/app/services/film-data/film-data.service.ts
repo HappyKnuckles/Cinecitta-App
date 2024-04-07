@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Film, Leinwand, Theater } from 'src/app/models/filmModel';
+import { WebscraperService } from '../webscraper.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
-  constructor(private http: HttpClient,
+  constructor(private http: HttpClient,     private webScrapingService: WebscraperService
+
   ) { }
 
   async fetchNewFilms() {
@@ -62,8 +64,10 @@ export class FilmDataService {
 
       if (response.ok) {
         const data = await response.json();
-        this.filmData = data?.daten.items;
+        this.filmData = data?.daten?.items;
         await this.deleteLeinwandEntriesWithOVFlag();
+        await this.updateTrailerUrls();
+        console.log(this.filmData)
         return this.filmData;
       } else {
         // Handle HTTP errors
@@ -72,6 +76,18 @@ export class FilmDataService {
     } catch (error) {
       throw error;
     }
+  }
+  private async updateTrailerUrls() {
+    for (const film of this.filmData) {
+      const trailerUrl = await this.webScrapingService.scrapeTrailerUrl(film.filminfo_href);
+      if (trailerUrl) {
+        console.log(trailerUrl)
+        // Assign the formatted URL to the trailer_href property
+        film.trailer_href = trailerUrl;
+        
+      }
+    }
+ 
   }
 
   async deleteLeinwandEntriesWithOVFlag() {
