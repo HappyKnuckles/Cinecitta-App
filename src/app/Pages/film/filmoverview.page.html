@@ -182,6 +182,7 @@
             <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button>
           </div> -->
         </div>
+        <!-- maybe überabeiten open per film id -->
         <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
           <ion-icon *ngIf="!isTimesOpen[i]" name="chevron-down"></ion-icon>
           <ion-icon *ngIf="isTimesOpen[i]" name="chevron-up"></ion-icon>

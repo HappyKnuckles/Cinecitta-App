@@ -59,7 +59,7 @@ export class NewsPage {
     }
   }
 
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
     } catch (error) {
@@ -67,7 +67,7 @@ export class NewsPage {
     }
   }
 
-  async fetchNewFilms() {
+  async fetchNewFilms(): Promise<void> {
     this.loadingService.setLoading(true);
     try {
       this.newFilms = await this.filmGetter.fetchNewFilms();

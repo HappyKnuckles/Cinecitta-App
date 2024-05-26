@@ -8,7 +8,7 @@ export class OpenWebsiteService {
 
   constructor() { }
 
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     const options = {
       toolbarColor: '#1d979f', // Customize the browser toolbar color
     };

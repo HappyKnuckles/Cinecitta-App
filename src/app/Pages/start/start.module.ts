@@ -6,6 +6,7 @@ import { StartPage } from './start.page';
 import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 import { StartPageRoutingModule } from './start-routing.module';
+import { FilmSelectModule } from 'src/app/common/film-select/film-select.module';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { StartPageRoutingModule } from './start-routing.module';
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
-    StartPageRoutingModule
+    StartPageRoutingModule,
+    FilmSelectModule
   ],
   declarations: [StartPage]
 })

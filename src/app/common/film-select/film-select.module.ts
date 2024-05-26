@@ -1,12 +1,12 @@
 // shared.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchComponent } from './search.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { FilmSelectComponent } from './film-select.component';
 @NgModule({
   declarations: [
-    SearchComponent
+    FilmSelectComponent
   ],
   imports: [
     CommonModule,
@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   ],
   exports: [
-    SearchComponent
+    FilmSelectComponent
   ]
 })
-export class SearchModule { }
+export class FilmSelectModule { }

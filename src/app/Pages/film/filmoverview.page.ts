@@ -12,7 +12,8 @@ import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Component({
   selector: 'app-filmoverview',
@@ -51,13 +52,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage: string = '';
   excluded = Filtertags.excludedFilmValues;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
     private filmGetter: FilmDataService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private router: Router
   ) {
     this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
       this.isLoading = isLoading;
@@ -65,6 +68,17 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+
+    // so lassen?
+    this.subscription.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: any) => {
+          if (event.url.includes('/tabs/film')) {
+            this.isSearchOpen = true;
+          }
+        })
+    );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
   }
@@ -73,12 +87,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.loadingSubscription.unsubscribe();
   }
 
-  private setDefaultSelectedFilterValues() {
+  private setDefaultSelectedFilterValues(): void {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
-  handleRefresh(event: any) {
+  handleRefresh(event: any): void {
     setTimeout(async () => {
       await this.loadFilmData();
       this.searchInput.clearInput();
@@ -86,7 +100,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }, 100);
   }
 
-  async presentActionSheet() {
+  async presentActionSheet(): Promise<void> {
     const buttons = [];
 
     if (!this.detailView[0]) {
@@ -135,7 +149,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await actionSheet.present();
   }
 
-  async showNoMoviesPopup() {
+  async showNoMoviesPopup(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Keine Filme gefunden',
       message: 'Mit den ausgewählten Filtern sind keine Filme verfügbar',
@@ -160,7 +174,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  openTimes(index: number) {
+  openTimes(index: number): void {
     this.isTimesOpen[index] = !this.isTimesOpen[index];
     if (this.isTimesOpen[index]) {
       setTimeout(() => {
@@ -169,7 +183,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  openSearch() {
+  openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
       this.searchInput.focusInput();
@@ -178,15 +192,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  setOpen(isOpen: boolean) {
+  setOpen(isOpen: boolean): void {
     this.isModalOpen = isOpen;
   }
 
-  showTags(index: number) {
+  showTags(index: number): void {
     this.showAllTags[index] = !this.showAllTags[index];
   }
 
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
     } catch (error) {
@@ -194,15 +208,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  openStartTimePicker() {
+  openStartTimePicker(): void {
     this.showStartTimePicker = !this.showStartTimePicker;
   }
 
-  openEndTimePicker() {
+  openEndTimePicker(): void {
     this.showEndTimePicker = !this.showEndTimePicker;
   }
 
-  async confirm() {
+  async confirm(): Promise<void> {
     await this.loadFilmData();
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
@@ -212,18 +226,18 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  closeTimes() {
+  closeTimes(): void {
     this.showStartTimePicker = false;
     this.showEndTimePicker = false;
   }
 
-  cancel() {
+  cancel(): void {
     this.showAllTags = Array(this.filters.length).fill(false);
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
   }
 
-  async reset() {
+  async reset(): Promise<void> {
     // Reset selected filters
     this.selectedFilters.genresTags = [];
     this.selectedFilters.leinwandHighlights = 171984;
@@ -267,7 +281,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async scrollToGrid(index: number) {
+  async scrollToGrid(index: number): Promise<void> {
     const gridElement: HTMLElement | null = document.querySelector(
       `#gridRef-${index}`
     );
@@ -294,7 +308,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async loadFilmData() {
+  async loadFilmData(): Promise<void> {
     try {
       this.loadingService.setLoading(true); 
       this.formData = this.appendSelectedFiltersToFormData();
@@ -346,7 +360,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     return formData;
   }
 
-  async toggleSelection(id: any, filterType: string) {
+  async toggleSelection(id: any, filterType: string): Promise<void> {
     if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
       // For Kinosaal tag or other non-time filters
       this.selectedFilters[filterType] = [id];
@@ -383,7 +397,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async onTimeChange() {
+  async onTimeChange(): Promise<void> {
     let startHour = this.convertTimeToNumeric(this.startTime);
     let endHour = this.convertTimeToNumeric(this.endTime);
     const formatHour = (hour: number) => hour.toString().padStart(2, '0');

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Film, Leinwand, Theater } from 'src/app/models/filmModel';
+import { Film, Leinwand, Theater, newFilm } from 'src/app/models/filmModel';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class FilmDataService {
   constructor(private http: HttpClient,
   ) { }
 
-  async fetchNewFilms() {
+  async fetchNewFilms(): Promise<newFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen'
     const formData = new URLSearchParams();
     formData.append('filter[genres_tags_not][]', '185305');
@@ -44,7 +44,7 @@ export class FilmDataService {
     }
   }
 
-  async fetchFilmData(formData: FormData) {
+  async fetchFilmData(formData?: FormData): Promise<Film[]> {
     this.params.com = "anzeigen_spielplan"
     try {
       // Append the params as URL parameters
@@ -74,7 +74,7 @@ export class FilmDataService {
     }
   }
 
-  async deleteLeinwandEntriesWithOVFlag() {
+  async deleteLeinwandEntriesWithOVFlag(): Promise<Film[]> {
     try {
       // Track film titles that appear more than once
       const doubleFilms: Set<string> = new Set();
@@ -108,7 +108,7 @@ export class FilmDataService {
     }
   }
 
-  formDataToUrlEncoded(formData: any) {
+  formDataToUrlEncoded(formData: any): string {
     const formBody = [];
     for (let pair of formData.entries()) {
       const encodedKey = encodeURIComponent(pair[0]);
