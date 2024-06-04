@@ -19,18 +19,11 @@ export class StartPage implements AfterViewInit {
   @ViewChild('filmSelect3') filmSelectComponent3!: FilmSelectComponent;
   @ViewChild('filmSelect4') filmSelectComponent4!: FilmSelectComponent;
   private loadingSubscription: Subscription;
-  genreTopFilms: Film[] = [];
   isLoading: boolean = false;
   genres = Filtertags.genresTag;
   flags = Filtertags.flags;
   leinwandHighlights = Filtertags.leinwandHighlights;
   extras = Filtertags.extras;
-
-  topFilms: { [key: string]: any[] } = {
-    genre: [],
-    flag: [],
-    leinwand: []
-  };
 
   constructor(
     private loadingService: LoadingService,

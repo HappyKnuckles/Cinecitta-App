@@ -52,22 +52,29 @@ export class SearchComponent implements OnInit {
   searchQuery: string = '';
   sub: Subscription = new Subscription();
 
-  constructor(private filmData: FilmDataService, private filmRouter: FilmRoutService) { }
+  constructor(
+    private filmData: FilmDataService,
+    private filmRouter: FilmRoutService
+  ) {}
 
   async ngOnInit() {
-    this.sub.add(this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(() => {
-        this.filterFilms();
-      }));
+    this.sub.add(
+      this.searchSubject
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe(() => {
+          this.filterFilms();
+        })
+    );
 
     if (this.isNewFilms) {
       this.allFilms = await this.filmData.fetchNewFilms();
     } else {
-      this.sub.add(this.filmRouter.currentFilmTitle.pipe(debounceTime(350)).subscribe(title => {
-        this.onSearchChange(title);
-      }));
       this.allFilms = await this.filmData.fetchFilmData(this.formData);
+      this.sub.add(
+        this.filmRouter.currentFilmTitle.subscribe((title) => {
+          this.onSearchChange(title);
+        })
+      );
     }
   }
 
@@ -88,7 +95,7 @@ export class SearchComponent implements OnInit {
           if (this.excludedProperties.includes(key)) {
             return false;
           }
-          console.log(this.searchQuery)
+          console.log(this.searchQuery);
           return (
             value &&
             value

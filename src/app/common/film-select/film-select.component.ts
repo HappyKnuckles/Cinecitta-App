@@ -61,7 +61,7 @@ export class FilmSelectComponent implements OnInit {
 
     const uniqueFilms = Array.from(filmMap.values());
 
-    return uniqueFilms.sort((a, b) => (b.vorstellungen_anzahl_tage_max ?? 0) - (a.vorstellungen_anzahl_tage_max ?? 0)).slice(0, 10);
+    return uniqueFilms.sort((a, b) => (b.vorstellungen_anzahl_tage_max ?? 0) - (a.vorstellungen_anzahl_tage_max ?? 0)).slice(0, 7);
   }
 
 

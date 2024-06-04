@@ -1,6 +1,6 @@
 <ion-grid class="border"> 
    <ion-row>
-    <ion-col>Top 10</ion-col>
+    <ion-col>Top {{topFilms.length}}</ion-col>
     <ion-col *ngIf="showSelect">
       <ion-select  [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
         <ion-select-option *ngFor="let item of items" [value]="item.id">
@@ -10,7 +10,8 @@
     </ion-col>
   </ion-row>
   <ion-row *ngFor="let film of topFilms; let i = index" (click)="onFilmClick(film)">
-    <ion-col size="2">{{i+1}}.</ion-col>
+    <ion-col size="1">{{i+1}}.</ion-col>    
+    <ion-col size="2"><img src="{{film.film_cover_src}}" style="height: 70px;"></ion-col>
     <ion-col><a>{{film.film_titel}}</a></ion-col>
   </ion-row>
 </ion-grid>

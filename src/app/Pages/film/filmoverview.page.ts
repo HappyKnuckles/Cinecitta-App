@@ -158,14 +158,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           text: 'Schließen',
           role: 'cancel',
           handler: () => {
-            // Handle close action if needed
           },
         },
         {
           text: 'Filter löschen',
           role: 'confirm',
           handler: () => {
-            this.reset(); // Call the reset function when "Reset Filters" is clicked
+            this.reset(); 
           },
         },
       ],
@@ -179,7 +178,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (this.isTimesOpen[index]) {
       setTimeout(() => {
         this.scrollToGrid(index);
-      }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
+      }, 300); 
     }
   }
 
@@ -277,7 +276,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       case 'rot':
         return '#c00';
       default:
-        return ''; // If the value is not recognized, you can set a default color here
+        return '';
     }
   }
 
@@ -304,7 +303,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         );
       }
 
-      this.content.scrollToPoint(0, scrollPosition, 500); // Adjust the duration (ms) as needed
+      this.content.scrollToPoint(0, scrollPosition, 500); 
     }
   }
 

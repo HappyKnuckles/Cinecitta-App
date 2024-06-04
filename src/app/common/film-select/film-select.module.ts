@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { FilmSelectComponent } from './film-select.component';
+import { ExtractTextModule } from 'src/app/Pipes/extract-text.module';
 @NgModule({
   declarations: [
     FilmSelectComponent
@@ -11,7 +12,8 @@ import { FilmSelectComponent } from './film-select.component';
   imports: [
     CommonModule,
     IonicModule,
-    FormsModule
+    FormsModule,
+    ExtractTextModule
   ],
   exports: [
     FilmSelectComponent

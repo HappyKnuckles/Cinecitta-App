@@ -10,7 +10,7 @@ export class OpenWebsiteService {
 
   async openExternalWebsite(url: string): Promise<void> {
     const options = {
-      toolbarColor: '#1d979f', // Customize the browser toolbar color
+      toolbarColor: '#1d979f',
     };
     const finishedUrl = 'https://cinecitta.' + url;
 
