@@ -62,5 +62,10 @@ export class FilmSelectComponent {
     return uniqueFilms.sort((a, b) => (b.vorstellungen_anzahl_tage_max ?? 0) - (a.vorstellungen_anzahl_tage_max ?? 0)).slice(0, 7);
   }
 
+  getTimeinHoursMinutes(time: string): string {
+    const hours = Math.floor(Number(time) / 60);
+    const minutes = Number(time) % 60;
+    return `${hours}h ${minutes}min`;
+  }
 
 }

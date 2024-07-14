@@ -176,10 +176,10 @@
             <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
           </div>
           
-          <video *ngIf="film.trailerUrl !== undefined" controls style="height: 50vh; width: 85vw;">
+          <video *ngIf="film.trailerUrl !== undefined && showTrailer[i]" controls style="height: 50vh; width: 85vw;">
             <source src="{{film.trailerUrl}}" >
           </video>
-          <img src="{{film.film_cover_src}}" style="height: 50vh" />
+          <img *ngIf="!showTrailer[i]" src="{{film.film_cover_src}}" (click)="showTrailers(i)" style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
           <!-- <div class="action">
             <button (click)="openExternalWebsite(film.filminfo_href)">Filminfos</button>

@@ -43,6 +43,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
+  showTrailer: boolean[] = [];  
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -191,6 +192,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     } else {
       this.searchInput.blurInput();
     }
+  }
+
+  showTrailers(index: number): void {
+    this.showTrailer[index] = !this.showTrailer[index];
   }
 
   setOpen(isOpen: boolean): void {
