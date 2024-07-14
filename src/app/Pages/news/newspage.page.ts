@@ -5,6 +5,8 @@ import { OpenWebsiteService } from 'src/app/services/website/open-website.servic
 import { newFilm } from '../../models/filmModel';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import * as Filtertags from '../../models/filtertags';
+import { LoadingService } from 'src/app/services/loader/loading.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-newspage',
   templateUrl: 'newspage.page.html',
@@ -15,19 +17,29 @@ export class NewsPage {
   newFilms: newFilm[] = [];
   showFull: boolean[] = [];
   isLoading: boolean = false;
+  private loadingSubscription: Subscription;
   isSearchOpen: boolean = false;
   excluded = Filtertags.excludedFilmValues;
-  
+
 
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
 
   constructor(
     private website: OpenWebsiteService,
-    private filmGetter: FilmDataService
-  ) { }
+    private filmGetter: FilmDataService,
+    private loadingService: LoadingService
+  ) {
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
+      this.isLoading = isLoading;
+    });
+  }
 
   async ngOnInit() {
     await this.fetchNewFilms();
+  }
+
+  ngOnDestroy() {
+    this.loadingSubscription.unsubscribe();
   }
 
   handleRefresh(event: any) {
@@ -47,7 +59,7 @@ export class NewsPage {
     }
   }
 
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
     } catch (error) {
@@ -55,14 +67,14 @@ export class NewsPage {
     }
   }
 
-  async fetchNewFilms() {
-    this.isLoading = true;
+  async fetchNewFilms(): Promise<void> {
+    this.loadingService.setLoading(true);
     try {
       this.newFilms = await this.filmGetter.fetchNewFilms();
     } catch (error) {
       console.error(error);
     } finally {
-      this.isLoading = false;
+      this.loadingService.setLoading(false);
     }
   }
 }

@@ -1,14 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Film, Leinwand, Theater } from 'src/app/models/filmModel';
+import { Film, Leinwand, Theater, newFilm } from 'src/app/models/filmModel';
 import { WebscraperService } from '../webscraper.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FilmDataService {
-  url: string = "https://proxy-server-rho-pearl.vercel.app/api/server";
+  url: string = 'https://proxy-server-rho-pearl.vercel.app/api/server';
   params = {
     bereich: 'portal',
     modul_id: '101',
@@ -18,18 +18,18 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
-  constructor(private http: HttpClient,     private webScrapingService: WebscraperService
+  constructor(private http: HttpClient, private webScrapingService: WebscraperService
 
   ) { }
 
-  async fetchNewFilms() {
-    this.params.com = 'anzeigen_vorankuendigungen'
+  async fetchNewFilms(): Promise<newFilm[]> {
+    this.params.com = 'anzeigen_vorankuendigungen';
     const formData = new URLSearchParams();
     formData.append('filter[genres_tags_not][]', '185305');
     // formData.append('filter[extra][]', 'vorverkauf');
 
     const headers = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded', // Set the content type to URL-encoded
+      'Content-Type': 'application/x-www-form-urlencoded',
     });
 
     try {
@@ -46,13 +46,15 @@ export class FilmDataService {
     }
   }
 
-  async fetchFilmData(formData: FormData) {
-    this.params.com = "anzeigen_spielplan"
+  async fetchFilmData(formData?: FormData): Promise<Film[]> {
+    this.params.com = 'anzeigen_spielplan';
     try {
       // Append the params as URL parameters
-      const fullURL = `${this.url}?${new URLSearchParams(this.params).toString()}`;
+      const fullURL = `${this.url}?${new URLSearchParams(
+        this.params
+      ).toString()}`;
 
-      const formBody = this.formDataToUrlEncoded(formData); // Convert FormData to URL-encoded string
+      const formBody = this.formDataToUrlEncoded(formData);
 
       const response = await fetch(fullURL, {
         method: 'POST',
@@ -77,7 +79,7 @@ export class FilmDataService {
       throw error;
     }
   }
-
+  
   private async updateFilmData() {
     const filmPromises = this.filmData.map(async (film: { filminfo_href: any; }) => {
       if (film.filminfo_href !== undefined) {
@@ -106,8 +108,12 @@ export class FilmDataService {
       this.filmData.forEach((film: Film) => {
         if (doubleFilms.has(film.film_titel) && film.film_ist_ov === '0') {
           film.theater.forEach((theater: Theater) => {
-            const leinwaende = theater.leinwaende.filter((leinwand: Leinwand) =>
-              leinwand.release_flags && !leinwand.release_flags.some((flag: { flag_name: string; }) => flag.flag_name === 'OV')
+            const leinwaende = theater.leinwaende.filter(
+              (leinwand: Leinwand) =>
+                leinwand.release_flags &&
+                !leinwand.release_flags.some(
+                  (flag: { flag_name: string }) => flag.flag_name === 'OV'
+                )
             );
 
             theater.leinwaende = leinwaende;
@@ -115,14 +121,13 @@ export class FilmDataService {
         }
       });
 
-      // Return the modified films array
       return this.filmData;
     } catch (error) {
       throw error;
     }
   }
 
-  formDataToUrlEncoded(formData: any) {
+  formDataToUrlEncoded(formData: any): string {
     const formBody = [];
     for (let pair of formData.entries()) {
       const encodedKey = encodeURIComponent(pair[0]);

@@ -60,7 +60,7 @@ export class ProfilePage implements OnInit {
   async ngOnInit() {
     await this.loadTicketHistory();
     await this.getFilmsForCurrentMonthAndYear();
-    await this.getFutureFilms();
+    this.getFutureFilms();
     await this.getCinecittaAndManhattanFilms();
   } 
 
@@ -71,7 +71,7 @@ export class ProfilePage implements OnInit {
     }, 100);
   }
   
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
     } catch (error) {
@@ -119,7 +119,7 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  async getCinecittaAndManhattanFilms(){
+  getCinecittaAndManhattanFilms(): void{
     this.manhattanFilms = this.history.filter((ticket) => {
       return ticket.buchung_vorstellung_theater_id !== 382;
     })
@@ -129,13 +129,13 @@ export class ProfilePage implements OnInit {
     })
   }
 
-  async getFutureFilms() {
+  getFutureFilms(): void {
     this.futureFilms = this.history.filter((ticket) => {
       return ticket.transaktion_zeitlich !== 'vergangen';
     });
   }
   
-  async getFilmsForCurrentMonthAndYear() {
+  getFilmsForCurrentMonthAndYear(): void {
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth() + 1; // Months are zero-based
     const currentYear = currentDate.getFullYear();
@@ -153,7 +153,7 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  async loadTicketHistory() {
+  async loadTicketHistory(): Promise<void> {
     // Retrieve cookies from local storage
 
     // Check if cookies were saved
@@ -196,16 +196,16 @@ export class ProfilePage implements OnInit {
     }
   }
 
-  openDetails(index: number) {
+  openDetails(index: number): void {
     // Toggle the open state for the clicked item
     this.isOpen[index] = !this.isOpen[index];
   }
 
-  openFilm(filmId: number) {
+  openFilm(filmId: number): void {
     this.router.navigate(['/filmoverview', filmId]);
   }
 
-  toggleImage() {
+  toggleImage(): void {
     this.isToggled = !this.isToggled;
   }
 
@@ -214,17 +214,17 @@ export class ProfilePage implements OnInit {
   //   modal!.present();
   // }
 
-  cancel() {
+  cancel(): void {
     this.modal1.dismiss(null, 'cancel');
     this.modal2.dismiss(null, 'cancel');
     this.modal0.dismiss(null, 'cancel');
   }
 
-  confirm() {
+  confirm(): void {
     this.modal1.dismiss(null, 'confirm');
   }
 
-  handleChange(ev: any) {
+  handleChange(ev: any): void {
     this.currentTags = ev.target.value;
   }
 }

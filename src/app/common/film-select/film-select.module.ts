@@ -1,20 +1,22 @@
 // shared.module.ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SearchComponent } from './search.component';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { FilmSelectComponent } from './film-select.component';
+import { ExtractTextModule } from 'src/app/Pipes/extract-text.module';
 @NgModule({
   declarations: [
-    SearchComponent
+    FilmSelectComponent
   ],
   imports: [
     CommonModule,
     IonicModule,
-    FormsModule
+    FormsModule,
+    ExtractTextModule
   ],
   exports: [
-    SearchComponent
+    FilmSelectComponent
   ]
 })
-export class SearchModule { }
+export class FilmSelectModule { }

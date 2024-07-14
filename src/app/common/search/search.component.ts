@@ -21,6 +21,8 @@ import {
   animate,
 } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
+import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
+import { title } from 'process';
 
 @Component({
   selector: 'app-search',
@@ -35,26 +37,6 @@ import { FilmDataService } from 'src/app/services/film-data/film-data.service';
   ],
 })
 export class SearchComponent implements OnInit {
-  constructor(private filmData: FilmDataService) {}
-
-  async ngOnInit() {
-    // Subscribe to searchSubject and debounce the input events
-    this.sub = this.searchSubject
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe(() => {
-        this.filterFilms();
-      });
-    if (this.isNewFilms) {
-      this.allFilms = await this.filmData.fetchNewFilms();
-    } else {
-      this.allFilms = await this.filmData.fetchFilmData(this.formData);
-    }
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
-  }
-
   @Input() formData!: FormData;
   @Input() isNewFilms: boolean = false;
   @Input() excludedProperties: any[] = [];
@@ -63,14 +45,43 @@ export class SearchComponent implements OnInit {
 
   @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
-  @ViewChild('searchInput') searchInput?: IonInput; // Use optional chaining
+  @ViewChild('searchInput') searchInput?: IonInput;
 
   allFilms: any[] = [];
   private searchSubject = new Subject<string>();
   searchQuery: string = '';
   sub: Subscription = new Subscription();
 
-  // Method to emit the setOpenEvent
+  constructor(
+    private filmData: FilmDataService,
+    private filmRouter: FilmRoutService
+  ) {}
+
+  async ngOnInit() {
+    this.sub.add(
+      this.searchSubject
+        .pipe(debounceTime(300), distinctUntilChanged())
+        .subscribe(() => {
+          this.filterFilms();
+        })
+    );
+
+    if (this.isNewFilms) {
+      this.allFilms = await this.filmData.fetchNewFilms();
+    } else {
+      this.allFilms = await this.filmData.fetchFilmData(this.formData);
+      this.sub.add(
+        this.filmRouter.currentFilmTitle.subscribe((title) => {
+          this.onSearchChange(title);
+        })
+      );
+    }
+  }
+
+  ngOnDestroy() {
+    this.sub.unsubscribe();
+  }
+
   emitSetOpen(isOpen: boolean) {
     this.setOpenEvent.emit(isOpen);
   }
@@ -84,6 +95,7 @@ export class SearchComponent implements OnInit {
           if (this.excludedProperties.includes(key)) {
             return false;
           }
+          console.log(this.searchQuery);
           return (
             value &&
             value
@@ -112,7 +124,7 @@ export class SearchComponent implements OnInit {
     this.searchSubject.next(this.searchQuery);
   }
 
-  clearInput(){
+  clearInput() {
     this.searchQuery = '';
     this.searchSubject.next(this.searchQuery);
   }

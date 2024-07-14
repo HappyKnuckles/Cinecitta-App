@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import {
   ActionSheetController,
   IonContent,
@@ -11,6 +11,9 @@ import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
+import { LoadingService } from 'src/app/services/loader/loading.service';
+import { Subscription, filter } from 'rxjs';
+import { NavigationEnd, Router } from '@angular/router';
 import { WebscraperService } from 'src/app/services/webscraper.service';
 
 @Component({
@@ -19,7 +22,7 @@ import { WebscraperService } from 'src/app/services/webscraper.service';
   styleUrls: ['filmoverview.page.scss']
 })
 
-export class FilmOverviewPage implements OnInit {
+export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
@@ -32,10 +35,11 @@ export class FilmOverviewPage implements OnInit {
   formattedEndTime: string = "";
   films: Film[] = [];
   message: string = '';
+  isLoading: boolean = false;
+  private loadingSubscription: Subscription;
   isTimesOpen: boolean[] = [];
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
-  isLoading: boolean = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
@@ -49,27 +53,48 @@ export class FilmOverviewPage implements OnInit {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage: string = '';
   excluded = Filtertags.excludedFilmValues;
+  private subscription: Subscription = new Subscription();
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
     private filmGetter: FilmDataService,
+    private loadingService: LoadingService,
+    private router: Router,
     private webScrapingService: WebscraperService
   ) {
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
+      this.isLoading = isLoading;
+    });
   }
 
   async ngOnInit() {
+
+    // so lassen?
+    this.subscription.add(
+      this.router.events
+        .pipe(filter(event => event instanceof NavigationEnd))
+        .subscribe((event: any) => {
+          if (event.url.includes('/tabs/film')) {
+            this.isSearchOpen = true;
+          }
+        })
+    );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
   }
 
-  private setDefaultSelectedFilterValues() {
+  ngOnDestroy() {
+    this.loadingSubscription.unsubscribe();
+  }
+
+  private setDefaultSelectedFilterValues(): void {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
-  handleRefresh(event: any) {
+  handleRefresh(event: any): void {
     setTimeout(async () => {
       await this.loadFilmData();
       this.searchInput.clearInput();
@@ -77,7 +102,7 @@ export class FilmOverviewPage implements OnInit {
     }, 100);
   }
 
-  async presentActionSheet() {
+  async presentActionSheet(): Promise<void> {
     const buttons = [];
 
     if (!this.detailView[0]) {
@@ -126,7 +151,7 @@ export class FilmOverviewPage implements OnInit {
     await actionSheet.present();
   }
 
-  async showNoMoviesPopup() {
+  async showNoMoviesPopup(): Promise<void> {
     const alert = await this.alertController.create({
       header: 'Keine Filme gefunden',
       message: 'Mit den ausgewählten Filtern sind keine Filme verfügbar',
@@ -135,14 +160,13 @@ export class FilmOverviewPage implements OnInit {
           text: 'Schließen',
           role: 'cancel',
           handler: () => {
-            // Handle close action if needed
           },
         },
         {
           text: 'Filter löschen',
           role: 'confirm',
           handler: () => {
-            this.reset(); // Call the reset function when "Reset Filters" is clicked
+            this.reset(); 
           },
         },
       ],
@@ -151,16 +175,16 @@ export class FilmOverviewPage implements OnInit {
     await alert.present();
   }
 
-  openTimes(index: number) {
+  openTimes(index: number): void {
     this.isTimesOpen[index] = !this.isTimesOpen[index];
     if (this.isTimesOpen[index]) {
       setTimeout(() => {
         this.scrollToGrid(index);
-      }, 300); // Adjust the delay as needed to ensure the grid is rendered before scrolling
+      }, 300); 
     }
   }
 
-  openSearch() {
+  openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
       this.searchInput.focusInput();
@@ -169,15 +193,15 @@ export class FilmOverviewPage implements OnInit {
     }
   }
 
-  setOpen(isOpen: boolean) {
+  setOpen(isOpen: boolean): void {
     this.isModalOpen = isOpen;
   }
 
-  showTags(index: number) {
+  showTags(index: number): void {
     this.showAllTags[index] = !this.showAllTags[index];
   }
 
-  async openExternalWebsite(url: string) {
+  async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
     } catch (error) {
@@ -185,15 +209,15 @@ export class FilmOverviewPage implements OnInit {
     }
   }
 
-  openStartTimePicker() {
+  openStartTimePicker(): void {
     this.showStartTimePicker = !this.showStartTimePicker;
   }
 
-  openEndTimePicker() {
+  openEndTimePicker(): void {
     this.showEndTimePicker = !this.showEndTimePicker;
   }
 
-  async confirm() {
+  async confirm(): Promise<void> {
     await this.loadFilmData();
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
@@ -203,18 +227,18 @@ export class FilmOverviewPage implements OnInit {
     }
   }
 
-  closeTimes() {
+  closeTimes(): void {
     this.showStartTimePicker = false;
     this.showEndTimePicker = false;
   }
 
-  cancel() {
+  cancel(): void {
     this.showAllTags = Array(this.filters.length).fill(false);
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
   }
 
-  async reset() {
+  async reset(): Promise<void> {
     // Reset selected filters
     this.selectedFilters.genresTags = [];
     this.selectedFilters.leinwandHighlights = 171984;
@@ -254,11 +278,11 @@ export class FilmOverviewPage implements OnInit {
       case 'rot':
         return '#c00';
       default:
-        return ''; // If the value is not recognized, you can set a default color here
+        return '';
     }
   }
 
-  async scrollToGrid(index: number) {
+  async scrollToGrid(index: number): Promise<void> {
     const gridElement: HTMLElement | null = document.querySelector(
       `#gridRef-${index}`
     );
@@ -281,19 +305,19 @@ export class FilmOverviewPage implements OnInit {
         );
       }
 
-      this.content.scrollToPoint(0, scrollPosition, 500); // Adjust the duration (ms) as needed
+      this.content.scrollToPoint(0, scrollPosition, 500); 
     }
   }
 
-  async loadFilmData() {
+  async loadFilmData(): Promise<void> {
     try {
-      this.isLoading = true;
+      this.loadingService.setLoading(true); 
       this.formData = this.appendSelectedFiltersToFormData();
       this.films = await this.filmGetter.fetchFilmData(this.formData);
     } catch (error) {
       console.error(error);
     } finally {
-      this.isLoading = false;
+      this.loadingService.setLoading(false);
     }
   }
 
@@ -337,7 +361,7 @@ export class FilmOverviewPage implements OnInit {
     return formData;
   }
 
-  async toggleSelection(id: any, filterType: string) {
+  async toggleSelection(id: any, filterType: string): Promise<void> {
     if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
       // For Kinosaal tag or other non-time filters
       this.selectedFilters[filterType] = [id];
@@ -374,7 +398,7 @@ export class FilmOverviewPage implements OnInit {
     }
   }
 
-  async onTimeChange() {
+  async onTimeChange(): Promise<void> {
     let startHour = this.convertTimeToNumeric(this.startTime);
     let endHour = this.convertTimeToNumeric(this.endTime);
     const formatHour = (hour: number) => hour.toString().padStart(2, '0');
