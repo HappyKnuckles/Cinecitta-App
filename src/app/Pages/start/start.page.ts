@@ -52,11 +52,11 @@ export class StartPage implements AfterViewInit {
     this.loadingService.setLoading(true);
     try {
       await Promise.all([
-        this.filmSelectComponent0.ngOnInit(),
-        this.filmSelectComponent1.ngOnInit(),
-        this.filmSelectComponent2.ngOnInit(),
-        this.filmSelectComponent3.ngOnInit(),
-        this.filmSelectComponent4.ngOnInit(),
+        this.filmSelectComponent0.loadData(),
+        this.filmSelectComponent1.loadData(),
+        this.filmSelectComponent2.loadData(),
+        this.filmSelectComponent3.loadData(),
+        this.filmSelectComponent4.loadData(),
       ]);
     }
     catch (error) {

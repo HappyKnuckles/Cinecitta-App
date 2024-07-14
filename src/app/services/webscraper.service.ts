@@ -132,6 +132,4 @@ export class WebscraperService {
       true
     );
   }
-
-
 }

@@ -1,15 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Film } from 'src/app/models/filmModel';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { LoadingService } from 'src/app/services/loader/loading.service';
 
 @Component({
   selector: 'app-film-select',
   templateUrl: './film-select.component.html',
   styleUrls: ['./film-select.component.scss'],
 })
-export class FilmSelectComponent implements OnInit {
+export class FilmSelectComponent {
   @Input() items!: any[];
   @Input() showSelect!: boolean;
   @Input() filterType!: string;
@@ -20,7 +18,7 @@ export class FilmSelectComponent implements OnInit {
   constructor(private filmGetter: FilmDataService) {
   }
 
-  async ngOnInit() {
+  async loadData() {
     if (this.items && this.items.length > 0) {
       this.selectedItem = this.items[0].id;
       await this.getFilmsByFilter(this.selectedItem);
