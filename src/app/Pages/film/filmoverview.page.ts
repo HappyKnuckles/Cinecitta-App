@@ -176,6 +176,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
+  // TODO Open by film Name not index
   openTimes(index: number): void {
     this.isTimesOpen[index] = !this.isTimesOpen[index];
     if (this.isTimesOpen[index]) {
@@ -194,6 +195,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
+  // TODO Open by film Name not index
   showTrailers(index: number): void {
     this.showTrailer[index] = !this.showTrailer[index];
   }
