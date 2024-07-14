@@ -51,7 +51,21 @@ export interface Film {
     film_vorverkauf_zeit_nicht_erreicht?: string;
     vorstellungen_anzahl_tage: Record<string, number>;
     vorstellungen_anzahl_tage_max?: number;
-    trailer_href?: string;
+    trailerUrl?: string;
+    duration?: string;
+    fsk?: string;
+    tags?: string[];
+    director?: Regisseur[];
+    darsteller?: Darsteller[];
+}
+
+export interface Darsteller{
+    name: string;
+    vorname: string;
+}
+export interface Regisseur{
+    name: string;
+    vorname: string;
 }
 
 export interface newFilm {

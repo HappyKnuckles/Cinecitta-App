@@ -64,20 +64,6 @@ export class FilmOverviewPage implements OnInit {
     await this.onTimeChange();
   }
 
-  private async updateTrailerUrls() {
-    for (const film of this.films) {
-      const trailerUrl = await this.webScrapingService.scrapeTrailerUrl(film.filminfo_href);
-      if (trailerUrl) {
-        console.log(trailerUrl)
-        // Assign the formatted URL to the trailer_href property
-        film.trailer_href = trailerUrl;
-        
-      }
-    }
- 
-  }
-
-  
   private setDefaultSelectedFilterValues() {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;

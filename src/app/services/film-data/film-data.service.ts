@@ -66,28 +66,26 @@ export class FilmDataService {
         const data = await response.json();
         this.filmData = data?.daten?.items;
         await this.deleteLeinwandEntriesWithOVFlag();
-        await this.updateTrailerUrls();
+
+        await this.updateFilmData();
         console.log(this.filmData)
         return this.filmData;
       } else {
-        // Handle HTTP errors
         throw new Error(`HTTP Error: ${response.status}`);
       }
     } catch (error) {
       throw error;
     }
   }
-  private async updateTrailerUrls() {
-    for (const film of this.filmData) {
-      const trailerUrl = await this.webScrapingService.scrapeTrailerUrl(film.filminfo_href);
-      if (trailerUrl) {
-        console.log(trailerUrl)
-        // Assign the formatted URL to the trailer_href property
-        film.trailer_href = trailerUrl;
-        
+
+  private async updateFilmData() {
+    const filmPromises = this.filmData.map(async (film: { filminfo_href: any; }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        Object.assign(film, filmContent);
       }
-    }
- 
+    });
+    await Promise.all(filmPromises);
   }
 
   async deleteLeinwandEntriesWithOVFlag() {
