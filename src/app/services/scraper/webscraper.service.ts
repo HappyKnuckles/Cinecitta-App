@@ -59,6 +59,10 @@ export class WebscraperService {
 
     let data = match[1];
 
+    data = data.replace(/\\u([\d\w]{4})/gi, function (match: any, grp: string) {
+      return String.fromCharCode(parseInt(grp, 16));
+    });
+
     if (decode) {
       data = decodeURIComponent(data.replace(/\\\//g, "/"));
     }

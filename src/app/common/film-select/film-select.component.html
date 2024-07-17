@@ -19,7 +19,7 @@
       </div>
       <div style="font-size: 13px; letter-spacing: 0.2;">
         <div>{{film.tags}}</div>
-        <div>{{getTimeinHoursMinutes(film.duration!)}}</div>
+        <div>{{film.duration! | transformTime}}</div>
           <div>FSK {{film.fsk}}</div>
       </div>
     </ion-col>

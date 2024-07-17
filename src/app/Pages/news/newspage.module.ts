@@ -7,7 +7,7 @@ import { ExploreContainerComponentModule } from '../../explore-container/explore
 
 
 import { NewsPageRoutingModule } from './newspage-routing.module';
-import { ExtractTextModule } from 'src/app/Pipes/extract-text.module';
+import { ExtractTextModule } from 'src/app/Pipes/extract-text/extract-text.module';
 import { SearchComponent } from 'src/app/common/search/search.component';
 import { SearchModule } from 'src/app/common/search/search.module';
 

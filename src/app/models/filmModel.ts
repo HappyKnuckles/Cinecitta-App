@@ -60,11 +60,11 @@ export interface Film {
 }
 
 export interface Darsteller{
-    name: string;
+    nachname: string;
     vorname: string;
 }
 export interface Regisseur{
-    name: string;
+    nachname: string;
     vorname: string;
 }
 

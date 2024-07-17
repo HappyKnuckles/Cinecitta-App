@@ -177,24 +177,69 @@
             OV
             <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
           </div>
-          
-          <video *ngIf="film.trailerUrl !== undefined && showTrailer[i]" controls style="height: 50vh; width: 85vw;">
-            <source src="{{film.trailerUrl}}" >
+          <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film.system_id)" fill="clear"
+            style="position: absolute; left: 5%; z-index: 10; margin-top: -5px">
+            <ion-icon name="chevron-back">Zurück</ion-icon>
+          </ion-button>
+
+          <video *ngIf="film.trailerUrl !== undefined && showTrailer[film.system_id]" controls
+            style="height: 50vh; width: 85vw;">
+            <source src="{{film.trailerUrl}}">
           </video>
-          <img *ngIf="!showTrailer[i]" src="{{film.film_cover_src}}" (click)="showTrailers(i)" style="height: 50vh" />
+          <img *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}" (click)="showTrailers(film.system_id)"
+            style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
-          <!-- <div class="action">
-            <button (click)="openExternalWebsite(film.filminfo_href)">Filminfos</button>
-            <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button>
-          </div> -->
+          <div class="action">
+            <ion-button [id]="'popover' + film.system_id">Filminfos</ion-button>
+            <!-- <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button> -->
+          </div>
+          <ion-popover [trigger]="'popover' + film.system_id" id="popover">
+            <ng-template>
+              <ion-content>
+                <ion-grid>
+                  <ion-row>
+                    <b>Titel:</b>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>{{ film.film_titel }}</ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <b>Dauer:</b></ion-row>
+                  <ion-row>
+                    <ion-col>{{ film.duration! | transformTime }}</ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <b>FSK:</b>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>{{ film.fsk }}</ion-col></ion-row>
+                  <ion-row *ngIf="film.tags"><b>Tags:</b></ion-row>
+                  <ion-row>
+                    <ion-col *ngFor="let tag of film.tags">{{ tag }}</ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film.darsteller"><b>Darsteller:</b> </ion-row>
+                  <ion-row>
+                    <ion-col *ngFor="let darsteller of film.darsteller">
+                      {{ darsteller.vorname }} {{darsteller.nachname }}
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film.director"><b>Regisseure:</b> </ion-row>
+                  <ion-row>
+                    <ion-col *ngFor="let director of film.director">
+                      {{ director.vorname }} {{ director.nachname}}
+                    </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
         </div>
-        <!-- maybe überabeiten open per film id -->
-        <div (click)="openTimes(i)" style="display: flex; margin-top: 10px; justify-content: center">
-          <ion-icon *ngIf="!isTimesOpen[i]" name="chevron-down"></ion-icon>
-          <ion-icon *ngIf="isTimesOpen[i]" name="chevron-up"></ion-icon>
+        <div (click)="openTimes(film.system_id, i)" style="display: flex; margin-top: 10px; justify-content: center">
+          <ion-icon *ngIf="!isTimesOpen[film.system_id]" name="chevron-down"></ion-icon>
+          <ion-icon *ngIf="isTimesOpen[film.system_id]" name="chevron-up"></ion-icon>
         </div>
 
-        <ion-grid *ngIf="isTimesOpen[i]" [id]="'gridRef-' + i">
+        <ion-grid *ngIf="isTimesOpen[film.system_id]" [id]="'gridRef-' + i">
           <ion-row class="weekdays">
             <ion-col *ngFor="let weekday of film.film_wochentage">
               {{ weekday?.tag_text }}

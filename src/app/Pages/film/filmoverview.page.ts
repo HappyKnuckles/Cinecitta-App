@@ -14,7 +14,7 @@ import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { Subscription, filter } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { WebscraperService } from 'src/app/services/webscraper.service';
+import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 
 @Component({
   selector: 'app-filmoverview',
@@ -37,13 +37,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   message: string = '';
   isLoading: boolean = false;
   private loadingSubscription: Subscription;
-  isTimesOpen: boolean[] = [];
+  isTimesOpen: { [key: string]: boolean } = {};  
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
-  showTrailer: boolean[] = [];  
+  showTrailer: { [key: string]: boolean } = {}; 
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -84,6 +84,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
+    console.log(this.films);
   }
 
   ngOnDestroy() {
@@ -176,10 +177,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  // TODO Open by film Name not index
-  openTimes(index: number): void {
-    this.isTimesOpen[index] = !this.isTimesOpen[index];
-    if (this.isTimesOpen[index]) {
+  openTimes(film_id: string, index: number): void {
+    this.isTimesOpen[film_id] = !this.isTimesOpen[film_id];
+    if (this.isTimesOpen[film_id]) {
       setTimeout(() => {
         this.scrollToGrid(index);
       }, 300); 
@@ -195,9 +195,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  // TODO Open by film Name not index
-  showTrailers(index: number): void {
-    this.showTrailer[index] = !this.showTrailer[index];
+  showTrailers(film_id: string): void {
+    this.showTrailer[film_id] = !this.showTrailer[film_id];
   }
 
   setOpen(isOpen: boolean): void {

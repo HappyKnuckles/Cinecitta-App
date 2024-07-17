@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Film, Leinwand, Theater, newFilm } from 'src/app/models/filmModel';
-import { WebscraperService } from '../webscraper.service';
+import { WebscraperService } from '../scraper/webscraper.service';
 
 @Injectable({
   providedIn: 'root',

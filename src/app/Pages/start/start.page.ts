@@ -1,7 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Film } from 'src/app/models/filmModel';
-import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
