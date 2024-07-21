@@ -18,7 +18,7 @@
         <a>{{film.film_titel}}</a>
       </div>
       <div style="font-size: 13px; letter-spacing: 0.2;">
-        <div>{{film.tags}}</div>
+        <span *ngFor="let tag of film.tags; let last = last">{{tag}}{{last ? '' : ', '}}</span>
         <div>{{film.duration! | transformTime}}</div>
           <div>FSK {{film.fsk}}</div>
       </div>

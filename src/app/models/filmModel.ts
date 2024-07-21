@@ -57,6 +57,7 @@ export interface Film {
     tags?: string[];
     director?: Regisseur[];
     darsteller?: Darsteller[];
+    startTime?: string;
 }
 
 export interface Darsteller{

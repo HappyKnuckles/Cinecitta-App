@@ -69,7 +69,7 @@ export class FilmDataService {
         this.filmData = data?.daten?.items;
         await this.deleteLeinwandEntriesWithOVFlag();
 
-        await this.updateFilmData();
+        // await this.updateFilmData();
         return this.filmData;
       } else {
         throw new Error(`HTTP Error: ${response.status}`);

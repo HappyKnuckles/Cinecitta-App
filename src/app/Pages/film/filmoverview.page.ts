@@ -37,13 +37,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   message: string = '';
   isLoading: boolean = false;
   private loadingSubscription: Subscription;
-  isTimesOpen: { [key: string]: boolean } = {};  
+  isTimesOpen: { [key: string]: boolean } = {};
   isSearchOpen: boolean = false;
   isModalOpen: boolean = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
-  showTrailer: { [key: string]: boolean } = {}; 
+  showTrailer: { [key: string]: boolean } = {};
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -84,7 +84,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
-    console.log(this.films);
   }
 
   ngOnDestroy() {
@@ -168,7 +167,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           text: 'Filter löschen',
           role: 'confirm',
           handler: () => {
-            this.reset(); 
+            this.reset();
           },
         },
       ],
@@ -182,7 +181,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (this.isTimesOpen[film_id]) {
       setTimeout(() => {
         this.scrollToGrid(index);
-      }, 300); 
+      }, 300);
     }
   }
 
@@ -311,20 +310,32 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         );
       }
 
-      this.content.scrollToPoint(0, scrollPosition, 500); 
+      this.content.scrollToPoint(0, scrollPosition, 500);
     }
   }
 
   async loadFilmData(): Promise<void> {
     try {
-      this.loadingService.setLoading(true); 
+      this.loadingService.setLoading(true);
       this.formData = this.appendSelectedFiltersToFormData();
       this.films = await this.filmGetter.fetchFilmData(this.formData);
+      await this.updateFilmData();
     } catch (error) {
       console.error(error);
     } finally {
       this.loadingService.setLoading(false);
     }
+  }
+
+  private async updateFilmData() {
+    const filmPromises = this.films.map(async (film: { filminfo_href: any; }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        return { ...film, ...filmContent };
+      }
+      return film;
+    });
+    this.films = await Promise.all(filmPromises);
   }
 
   appendSelectedFiltersToFormData(): FormData {

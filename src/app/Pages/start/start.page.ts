@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
@@ -11,11 +11,7 @@ import { FilmSelectComponent } from 'src/app/common/film-select/film-select.comp
   styleUrls: ['start.page.scss']
 })
 export class StartPage implements AfterViewInit {
-  @ViewChild('filmSelect0') filmSelectComponent0!: FilmSelectComponent;
-  @ViewChild('filmSelect1') filmSelectComponent1!: FilmSelectComponent;
-  @ViewChild('filmSelect2') filmSelectComponent2!: FilmSelectComponent;
-  @ViewChild('filmSelect3') filmSelectComponent3!: FilmSelectComponent;
-  @ViewChild('filmSelect4') filmSelectComponent4!: FilmSelectComponent;
+  @ViewChildren(FilmSelectComponent) filmSelectComponents!: QueryList<FilmSelectComponent>;
   private loadingSubscription: Subscription;
   isLoading: boolean = false;
   genres = Filtertags.genresTag;
@@ -49,13 +45,8 @@ export class StartPage implements AfterViewInit {
   async fetchDataForAllComponents(): Promise<void> {
     this.loadingService.setLoading(true);
     try {
-      await Promise.all([
-        this.filmSelectComponent0.loadData(),
-        this.filmSelectComponent1.loadData(),
-        this.filmSelectComponent2.loadData(),
-        this.filmSelectComponent3.loadData(),
-        this.filmSelectComponent4.loadData(),
-      ]);
+      const loadPromises = this.filmSelectComponents.map(component => component.loadData());
+      await Promise.all(loadPromises);
     }
     catch (error) {
       console.log(error)

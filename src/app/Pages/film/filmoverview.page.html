@@ -217,6 +217,12 @@
                   <ion-row>
                     <ion-col *ngFor="let tag of film.tags">{{ tag }}</ion-col>
                   </ion-row>
+                  <ion-row>
+                    <b>Im Kino seit:</b>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col>{{ film.startTime }}</ion-col>
+                  </ion-row>
                   <ion-row *ngIf="film.darsteller"><b>Darsteller:</b> </ion-row>
                   <ion-row>
                     <ion-col *ngFor="let darsteller of film.darsteller">

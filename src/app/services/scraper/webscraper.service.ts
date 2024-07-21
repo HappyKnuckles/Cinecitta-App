@@ -24,6 +24,7 @@ export class WebscraperService {
       filmData.director = await this.getRegie($);
       filmData.darsteller = await this.getDarsteller($);
       filmData.tags = await this.getTags($);
+      filmData.startTime = await this.getStartTime($);
       return filmData;
     } catch (error) {
       console.error("Error fetching Data:", error);
@@ -46,14 +47,14 @@ export class WebscraperService {
     json = false
   ) {
     if (scriptContents.length === 0) {
-      console.log("No matching" + scriptContents + "found");
+      // console.log("No matching" + scriptContents + "found");
       return;
     }
 
     const match = scriptContents[0]?.match(regex);
 
     if (!match || match.length <= 1) {
-      console.log("No match with" + regex + "found");
+      // console.log("No match with" + regex + "found");
       return;
     }
 
@@ -135,5 +136,10 @@ export class WebscraperService {
       false,
       true
     );
+  }
+
+  async getStartTime($: cheerio.CheerioAPI) {
+    const scriptContents = await this.getScriptContents($, "var filminfos");
+    return this.extractDataFromScript(scriptContents, /"film_centerstart_zeit":"([^"]+)"/,);
   }
 }
