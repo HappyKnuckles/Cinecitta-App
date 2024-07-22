@@ -1,9 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { SearchComponent } from 'src/app/common/search/search.component';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { newFilm } from '../../models/filmModel';
-import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import * as Filtertags from '../../models/filtertags';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { Subscription } from 'rxjs';
@@ -22,11 +20,10 @@ export class NewsPage {
   excluded = Filtertags.excludedFilmValues;
 
 
-  @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
+  @ViewChild(SearchComponent, { static: false }) searchComponent!: SearchComponent;
 
   constructor(
     private website: OpenWebsiteService,
-    private filmGetter: FilmDataService,
     private loadingService: LoadingService
   ) {
     this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
@@ -34,28 +31,26 @@ export class NewsPage {
     });
   }
 
-  async ngOnInit() {
-    await this.fetchNewFilms();
-  }
-
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.loadingSubscription.unsubscribe();
   }
 
-  handleRefresh(event: any) {
+  handleRefresh(event: any): void {
     setTimeout(async () => {
-      await this.fetchNewFilms();
-      this.searchInput.clearInput();
+      if (this.searchComponent) {
+        await this.searchComponent.loadData();
+      }
+      this.searchComponent.clearInput();
       event.target.complete();
     }, 100);
   }
 
-  openSearch() {
+  openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
-      this.searchInput.focusInput();
+      this.searchComponent.focusInput();
     } else {
-      this.searchInput.blurInput();
+      this.searchComponent.blurInput();
     }
   }
 
@@ -64,17 +59,6 @@ export class NewsPage {
       await this.website.openExternalWebsite(url);
     } catch (error) {
       console.error('Error opening external website: ' + error);
-    }
-  }
-
-  async fetchNewFilms(): Promise<void> {
-    this.loadingService.setLoading(true);
-    try {
-      this.newFilms = await this.filmGetter.fetchNewFilms();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.loadingService.setLoading(false);
     }
   }
 }

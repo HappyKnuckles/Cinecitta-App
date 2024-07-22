@@ -1,4 +1,3 @@
-import { Interface } from "readline";
 
 export interface Leinwand {
     leinwand_name: string;
@@ -52,7 +51,7 @@ export interface Film {
     film_vorverkauf_zeit_nicht_erreicht?: string;
     vorstellungen_anzahl_tage: Record<string, number>;
     vorstellungen_anzahl_tage_max?: number;
-    
+
     system_erstell_datum: string;
     system_bearbeit_datum: string;
     film_teasertext: string;

@@ -11,6 +11,6 @@ export class FilmRoutService {
 
   constructor() {}
 
-  changeFilmTitle(title: string) {
+  changeFilmTitle(title: string): void {
     this.filmTitleSource.next(title);
   }}

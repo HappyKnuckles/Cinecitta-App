@@ -77,7 +77,7 @@ export class FilmDataService {
     }
 }
 
-  async deleteLeinwandEntriesWithOVFlag() {
+  async deleteLeinwandEntriesWithOVFlag(): Promise<Film[]> {
     try {
       // Track film titles that appear more than once
       const doubleFilms: Set<string> = new Set();

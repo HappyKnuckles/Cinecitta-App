@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
@@ -29,14 +29,14 @@ export class StartPage implements AfterViewInit {
     });
   }
 
-  async ngAfterViewInit() {
+  async ngAfterViewInit(): Promise<void> {
     await this.fetchDataForAllComponents();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.loadingSubscription.unsubscribe();
   }
-  
+
   handleRefresh(event: any): void {
     setTimeout(async () => {
       await this.fetchDataForAllComponents();
@@ -44,7 +44,7 @@ export class StartPage implements AfterViewInit {
     }, 100);
   }
 
-  onFilmClick(film: any) {
+  onFilmClick(film: any): void {
     this.filmRouter.changeFilmTitle(film.film_titel);
     this.router.navigate(['/tabs/film']);
   }

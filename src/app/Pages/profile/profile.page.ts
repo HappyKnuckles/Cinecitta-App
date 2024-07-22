@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Browser } from '@capacitor/browser';
 import { IonModal } from '@ionic/angular';
 import { Subscription, firstValueFrom } from 'rxjs';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';

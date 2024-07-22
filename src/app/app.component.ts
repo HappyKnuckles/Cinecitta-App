@@ -17,7 +17,7 @@ export class AppComponent implements OnDestroy {
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     // Unsubscribe from the observable to prevent memory leaks
     this.loadingSubscription.unsubscribe();
   }

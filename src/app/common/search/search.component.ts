@@ -4,6 +4,7 @@ import {
   Input,
   OnInit,
   Output,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { IonInput } from '@ionic/angular';
@@ -22,8 +23,8 @@ import {
 } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
-import { title } from 'process';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
+import { LoadingService } from 'src/app/services/loader/loading.service';
 
 @Component({
   selector: 'app-search',
@@ -52,12 +53,15 @@ export class SearchComponent implements OnInit {
   private searchSubject = new Subject<string>();
   searchQuery: string = '';
   sub: Subscription = new Subscription();
+  isLoading: boolean = false;
 
   constructor(
     private filmData: FilmDataService,
     private filmRouter: FilmRoutService,
-    private webScrapingService: WebscraperService
-  ) {}
+    private webScrapingService: WebscraperService,
+    private loadingService: LoadingService
+  ) {
+  }
 
   async ngOnInit() {
     this.sub.add(
@@ -68,19 +72,41 @@ export class SearchComponent implements OnInit {
         })
     );
 
-    if (this.isNewFilms) {
-      this.allFilms = await this.filmData.fetchNewFilms();
-    } else {
-      this.allFilms = await this.filmData.fetchFilmData(this.formData);
+    await this.loadData(this.formData);
+    if (!this.isNewFilms) {
       this.sub.add(
         this.filmRouter.currentFilmTitle.subscribe((title) => {
           this.onSearchChange(title);
         })
       );
-
-    }      await this.updateFilmData();
-
+    }
   }
+
+  async ngOnChanges(changes: SimpleChanges) {
+    if (changes['formData'] && !changes['formData'].isFirstChange()) {
+      await this.loadData(this.formData);
+    }
+  }
+
+  async loadData(formData?: FormData) {
+    try {
+      this.loadingService.setLoading(true);
+      if (!this.isNewFilms) {
+        this.allFilms = await this.filmData.fetchFilmData(formData);
+        await this.updateFilmData();
+      } else {
+        this.allFilms = await this.filmData.fetchNewFilms();
+      }
+      this.newFilmsChange.emit(this.allFilms);
+    }
+    catch (error) {
+      console.log(error)
+    }
+    finally {
+      this.loadingService.setLoading(false);
+    }
+  }
+
   private async updateFilmData() {
     const filmPromises = this.allFilms.map(async (film: { filminfo_href: any; }) => {
       if (film.filminfo_href !== undefined) {
@@ -91,6 +117,7 @@ export class SearchComponent implements OnInit {
     });
     this.allFilms = await Promise.all(filmPromises);
   }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -99,7 +126,7 @@ export class SearchComponent implements OnInit {
     this.setOpenEvent.emit(isOpen);
   }
 
-  filterFilms() {
+  async filterFilms() {
     if (!this.searchQuery) {
       this.newFilmsChange.emit(this.allFilms);
     } else {

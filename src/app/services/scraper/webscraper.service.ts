@@ -1,16 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import * as cheerio from 'cheerio';
-import { Observable, catchError, firstValueFrom, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebscraperService {
 
-  constructor(private http: HttpClient) { }
-
-  async scrapeData(filmHref: any) {
+  constructor() { }
+  // TODO Define the return type of the functions
+  async scrapeData(filmHref: any): Promise<any> {
     const proxyURL = "https://proxy-server-rho-pearl.vercel.app/api/server";
     try {
       const html = await fetch(`${proxyURL}?url=${filmHref}`).then((res) =>
@@ -30,7 +28,7 @@ export class WebscraperService {
     }
   }
 
-  async getScriptContents($: any, keyword: any) {
+  async getScriptContents($: any, keyword: any): Promise<any> {
     return $('script[type="text/javascript"]')
       .toArray()
       .map((script: any) => $(script).html())
@@ -43,7 +41,7 @@ export class WebscraperService {
     splitBy: any = null,
     decode = false,
     json = false
-  ) {
+  ): Promise<any> {
     if (scriptContents.length === 0) {
       // console.log("No matching" + scriptContents + "found");
       return;
@@ -89,7 +87,7 @@ export class WebscraperService {
     return data;
   }
 
-  async getTrailerUrl($: cheerio.CheerioAPI) {
+  async getTrailerUrl($: cheerio.CheerioAPI): Promise<any> {
     const scriptContents = await this.getScriptContents($, "var videos");
     let trailerUrl = await this.extractDataFromScript(
       scriptContents,
@@ -105,7 +103,7 @@ export class WebscraperService {
       return {trailerUrl, trailerPreviewUrl}
   }
 
-  async getFilmInfoJson($: cheerio.CheerioAPI){
+  async getFilmInfoJson($: cheerio.CheerioAPI): Promise<any> {
     const scriptContents = await this.getScriptContents($, "var filminfos");
     var startIndex = scriptContents[0].indexOf('{');
     var endIndex = scriptContents[0].lastIndexOf('}') + 1;

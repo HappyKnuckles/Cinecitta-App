@@ -10,11 +10,9 @@ import { SearchComponent } from 'src/app/common/search/search.component';
 import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
-import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { Subscription, filter } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 
 @Component({
   selector: 'app-filmoverview',
@@ -60,17 +58,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
-    private filmGetter: FilmDataService,
     private loadingService: LoadingService,
     private router: Router,
-    private webScrapingService: WebscraperService
   ) {
     this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
       this.isLoading = isLoading;
     });
   }
 
-  async ngOnInit() {
+  async ngOnInit(): Promise<void> {
 
     // so lassen?
     this.subscription.add(
@@ -86,7 +82,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.onTimeChange();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.loadingSubscription.unsubscribe();
   }
 
@@ -315,27 +311,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async loadFilmData(): Promise<void> {
-    try {
-      this.loadingService.setLoading(true);
-      this.formData = this.appendSelectedFiltersToFormData();
-      this.films = await this.filmGetter.fetchFilmData(this.formData);          
-      await this.updateFilmData();
-    } catch (error) {
-      console.error(error);
-    } finally {
-      this.loadingService.setLoading(false);
-    }
-  }
-
-  private async updateFilmData() {
-    const filmPromises = this.films.map(async (film: { filminfo_href: any; }) => {
-      if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
-        return { ...film, ...filmContent };
-      }
-      return film;
-    });
-    this.films = await Promise.all(filmPromises);
+    this.formData = this.appendSelectedFiltersToFormData();
   }
 
   appendSelectedFiltersToFormData(): FormData {
