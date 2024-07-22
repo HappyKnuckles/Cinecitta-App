@@ -18,13 +18,11 @@ export class WebscraperService {
       );
       const $ = cheerio.load(html);
       let filmData: any = {};
-      filmData.trailerUrl = await this.getTrailerUrl($);
-      filmData.duration = await this.getDuration($);
-      filmData.fsk = await this.getFSK($);
-      filmData.director = await this.getRegie($);
-      filmData.darsteller = await this.getDarsteller($);
-      filmData.tags = await this.getTags($);
-      filmData.startTime = await this.getStartTime($);
+      const filmInfoJson = await this.getFilmInfoJson($);      
+      const trailerUrl = await this.getTrailerUrl($);
+
+      filmData = { ...filmData, ...filmInfoJson, ...trailerUrl };
+
       return filmData;
     } catch (error) {
       console.error("Error fetching Data:", error);
@@ -70,7 +68,9 @@ export class WebscraperService {
 
     if (json) {
       try {
+        console.log(data);
         const jsonData = JSON.parse(data);
+        console.log(jsonData);
         return jsonData.map((item: { text: any; }) => item.text);
       } catch (error) {
         console.error("Error parsing JSON:", error);
@@ -91,55 +91,26 @@ export class WebscraperService {
 
   async getTrailerUrl($: cheerio.CheerioAPI) {
     const scriptContents = await this.getScriptContents($, "var videos");
-    return this.extractDataFromScript(
+    let trailerUrl = await this.extractDataFromScript(
       scriptContents,
       /"video_url":"([^"]+)"/,
       null,
       true
     );
-  }
-
-  async getFSK($: cheerio.CheerioAPI) {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(scriptContents, /"film_fsk":"(\d+)"/);
-  }
-
-  async getDuration($: cheerio.CheerioAPI) {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(scriptContents, /"film_dauer":"(\d+)"/);
-  }
-
-  async getRegie($: cheerio.CheerioAPI) {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(
+    let trailerPreviewUrl = await this.extractDataFromScript(
       scriptContents,
-      /"film_regisseure":"([^"]+)"/,
-      ","
-    );
-  }
-
-  async getDarsteller($: cheerio.CheerioAPI) {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(
-      scriptContents,
-      /"film_darsteller":"([^"]+)"/,
-      ","
-    );
-  }
-
-  async getTags($: cheerio.CheerioAPI) {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(
-      scriptContents,
-      /"film_tags":(\[[^\]]+\])/,
+      /"video_vorschau_pfad_bild":"([^"]+)"/,
       null,
-      false,
-      true
-    );
+      true);
+      return {trailerUrl, trailerPreviewUrl}
   }
 
-  async getStartTime($: cheerio.CheerioAPI) {
+  async getFilmInfoJson($: cheerio.CheerioAPI){
     const scriptContents = await this.getScriptContents($, "var filminfos");
-    return this.extractDataFromScript(scriptContents, /"film_centerstart_zeit":"([^"]+)"/,);
-  }
+    var startIndex = scriptContents[0].indexOf('{');
+    var endIndex = scriptContents[0].lastIndexOf('}') + 1;
+    var jsonStr = scriptContents[0].substring(startIndex, endIndex);    
+    var json = JSON.parse(jsonStr);
+    return json;
+}
 }

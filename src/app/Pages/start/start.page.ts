@@ -36,6 +36,13 @@ export class StartPage implements AfterViewInit {
   ngOnDestroy() {
     this.loadingSubscription.unsubscribe();
   }
+  
+  handleRefresh(event: any): void {
+    setTimeout(async () => {
+      await this.fetchDataForAllComponents();
+      event.target.complete();
+    }, 100);
+  }
 
   onFilmClick(film: any) {
     this.filmRouter.changeFilmTitle(film.film_titel);

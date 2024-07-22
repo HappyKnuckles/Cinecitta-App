@@ -24,7 +24,6 @@ export class FilmSelectComponent {
       this.selectedItem = this.items[0].id;
     }      
     await this.getFilmsByFilter(this.selectedItem);
-    await this.updateFilmData();
   }
 
   async getFilmsByFilter(data?: string): Promise<void> {
@@ -42,7 +41,8 @@ export class FilmSelectComponent {
     catch (error) {
       console.log(error)
     }
-    this.topFilms = this.getTop10Films(films);
+    this.topFilms = this.getTop10Films(films);    
+    await this.updateFilmData();
   }
 
   onFilmClick(film: any) {

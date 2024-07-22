@@ -318,7 +318,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     try {
       this.loadingService.setLoading(true);
       this.formData = this.appendSelectedFiltersToFormData();
-      this.films = await this.filmGetter.fetchFilmData(this.formData);
+      this.films = await this.filmGetter.fetchFilmData(this.formData);          
       await this.updateFilmData();
     } catch (error) {
       console.error(error);

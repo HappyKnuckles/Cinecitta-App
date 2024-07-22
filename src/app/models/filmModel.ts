@@ -1,3 +1,5 @@
+import { Interface } from "readline";
+
 export interface Leinwand {
     leinwand_name: string;
     leinwand_highlights_css: string;
@@ -45,28 +47,63 @@ export interface Film {
     }[];
     theater: Theater[];
     film_system_id: string;
-    film_favored: string;
     filminfo_href: string;
     film_cover_src: string;
     film_vorverkauf_zeit_nicht_erreicht?: string;
     vorstellungen_anzahl_tage: Record<string, number>;
     vorstellungen_anzahl_tage_max?: number;
-    trailerUrl?: string;
-    duration?: string;
-    fsk?: string;
-    tags?: string[];
-    director?: Regisseur[];
-    darsteller?: Darsteller[];
-    startTime?: string;
+    
+    system_erstell_datum: string;
+    system_bearbeit_datum: string;
+    film_teasertext: string;
+    film_synopsis: string;
+    film_dauer: string;
+    film_schlagzeile: string;
+    film_website: string;
+    film_bundesstart_datum: string;
+    film_produktionslaender: string;
+    film_jahr: string;
+    film_centerstart_zeit: string;
+    film_edis: string;
+    film_fsk: string;
+    film_darsteller: string;
+    film_regisseure?: string;
+    film_produzenten: string;
+    film_komponisten: string;
+    film_autoren: string;
+    film_studios: string;
+    film_publisher: string;
+    film_daten_sprache: string;
+    film_original_sprache: string;
+    film_favored: string;
+    film_bundesstart_datum_iso: string;
+    film_centerstart_zeit_iso: string;
+    film_vorverkauf_datum: string;
+    film_tags: Tags[];
+    barrierefrei_tags?: {
+        id: number;
+        text: string;
+        href: string;
+        tags: Tags[];
+    }
+    main_film_sprache: string;
+    film_daten_sprache_text: string;
+    film_pressezitate: {
+        id: number;
+        text: string;
+        quelle: string;
+    }[];
+    trailerUrl?: string
+    trailerPreviewUrl?: string;
 }
 
-export interface Darsteller{
-    nachname: string;
-    vorname: string;
+export interface FilmInfo {
+
 }
-export interface Regisseur{
-    nachname: string;
-    vorname: string;
+interface Tags {
+    id: number;
+    text: string;
+    href: string;
 }
 
 export interface newFilm {

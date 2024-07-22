@@ -23,6 +23,7 @@ import {
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { title } from 'process';
+import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 
 @Component({
   selector: 'app-search',
@@ -54,7 +55,8 @@ export class SearchComponent implements OnInit {
 
   constructor(
     private filmData: FilmDataService,
-    private filmRouter: FilmRoutService
+    private filmRouter: FilmRoutService,
+    private webScrapingService: WebscraperService
   ) {}
 
   async ngOnInit() {
@@ -75,9 +77,20 @@ export class SearchComponent implements OnInit {
           this.onSearchChange(title);
         })
       );
-    }
-  }
 
+    }      await this.updateFilmData();
+
+  }
+  private async updateFilmData() {
+    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any; }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        return { ...film, ...filmContent };
+      }
+      return film;
+    });
+    this.allFilms = await Promise.all(filmPromises);
+  }
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -95,7 +108,6 @@ export class SearchComponent implements OnInit {
           if (this.excludedProperties.includes(key)) {
             return false;
           }
-          console.log(this.searchQuery);
           return (
             value &&
             value

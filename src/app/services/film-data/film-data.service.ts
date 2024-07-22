@@ -46,7 +46,7 @@ export class FilmDataService {
     }
   }
 
-  async fetchFilmData(formData?: FormData): Promise<Film[]> {
+  async fetchFilmData(formData?: FormData ): Promise<Film[]> {
     this.params.com = 'anzeigen_spielplan';
     try {
       // Append the params as URL parameters
@@ -63,13 +63,11 @@ export class FilmDataService {
         },
         body: formBody,
       });
-
       if (response.ok) {
         const data = await response.json();
         this.filmData = data?.daten?.items;
         await this.deleteLeinwandEntriesWithOVFlag();
 
-        // await this.updateFilmData();
         return this.filmData;
       } else {
         throw new Error(`HTTP Error: ${response.status}`);
@@ -77,17 +75,7 @@ export class FilmDataService {
     } catch (error) {
       throw error;
     }
-  }
-  
-  private async updateFilmData() {
-    const filmPromises = this.filmData.map(async (film: { filminfo_href: any; }) => {
-      if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
-        Object.assign(film, filmContent);
-      }
-    });
-    await Promise.all(filmPromises);
-  }
+}
 
   async deleteLeinwandEntriesWithOVFlag() {
     try {

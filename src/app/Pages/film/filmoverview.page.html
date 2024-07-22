@@ -183,7 +183,7 @@
           </ion-button>
 
           <video *ngIf="film.trailerUrl !== undefined && showTrailer[film.system_id]" controls
-            style="height: 50vh; width: 85vw;">
+            style="height: 50vh; width: 85vw;" poster="{{film.trailerPreviewUrl}}">
             <source src="{{film.trailerUrl}}">
           </video>
           <img *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}" (click)="showTrailers(film.system_id)"
@@ -206,33 +206,33 @@
                   <ion-row>
                     <b>Dauer:</b></ion-row>
                   <ion-row>
-                    <ion-col>{{ film.duration! | transformTime }}</ion-col>
+                    <ion-col>{{ film.film_dauer! | transformTime }}</ion-col>
                   </ion-row>
                   <ion-row>
                     <b>FSK:</b>
                   </ion-row>
                   <ion-row>
-                    <ion-col>{{ film.fsk }}</ion-col></ion-row>
-                  <ion-row *ngIf="film.tags"><b>Tags:</b></ion-row>
+                    <ion-col>{{ film.film_fsk }}</ion-col></ion-row>
+                  <ion-row *ngIf="film.film_tags"><b>Tags:</b></ion-row>
                   <ion-row>
-                    <ion-col *ngFor="let tag of film.tags">{{ tag }}</ion-col>
+                    <ion-col *ngFor="let tag of film.film_tags">{{ tag.text }}</ion-col>
                   </ion-row>
                   <ion-row>
                     <b>Im Kino seit:</b>
                   </ion-row>
                   <ion-row>
-                    <ion-col>{{ film.startTime }}</ion-col>
+                    <ion-col>{{ film.film_centerstart_zeit }}</ion-col>
                   </ion-row>
-                  <ion-row *ngIf="film.darsteller"><b>Darsteller:</b> </ion-row>
+                  <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
                   <ion-row>
-                    <ion-col *ngFor="let darsteller of film.darsteller">
-                      {{ darsteller.vorname }} {{darsteller.nachname }}
+                    <ion-col >
+                      {{ film.film_darsteller | extractText }}
                     </ion-col>
                   </ion-row>
-                  <ion-row *ngIf="film.director"><b>Regisseure:</b> </ion-row>
+                  <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
                   <ion-row>
-                    <ion-col *ngFor="let director of film.director">
-                      {{ director.vorname }} {{ director.nachname}}
+                    <ion-col>
+                      {{ film.film_regisseure! | extractText }} 
                     </ion-col>
                   </ion-row>
                 </ion-grid>

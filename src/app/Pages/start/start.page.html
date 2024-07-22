@@ -7,6 +7,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
   <app-film-select #filmSelect1 [showSelect]="false" (filmClick)="onFilmClick($event)"></app-film-select>
   <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]" [showSelect]="true"
   (filmClick)="onFilmClick($event)"></app-film-select>
