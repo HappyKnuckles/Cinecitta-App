@@ -13,7 +13,7 @@ import { FilmSelectComponent } from 'src/app/common/film-select/film-select.comp
 export class StartPage implements AfterViewInit {
   @ViewChildren(FilmSelectComponent) filmSelectComponents!: QueryList<FilmSelectComponent>;
   private loadingSubscription: Subscription;
-  isLoading: boolean = false;
+  isLoading = false;
   genres = Filtertags.genresTag;
   flags = Filtertags.flags;
   leinwandHighlights = Filtertags.leinwandHighlights;

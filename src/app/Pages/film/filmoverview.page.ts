@@ -25,19 +25,19 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
 
-  showStartTimePicker: boolean = false;
-  showEndTimePicker: boolean = false;
+  showStartTimePicker = false;
+  showEndTimePicker = false;
   formData: any;
   startTime = '10:00';
   endTime = '03:00';
-  formattedEndTime: string = "";
+  formattedEndTime = "";
   films: Film[] = [];
-  message: string = '';
-  isLoading: boolean = false;
+  message = '';
+  isLoading = false;
   private loadingSubscription: Subscription;
   isTimesOpen: { [key: string]: boolean } = {};
-  isSearchOpen: boolean = false;
-  isModalOpen: boolean = false;
+  isSearchOpen = false;
+  isModalOpen = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
@@ -50,7 +50,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   extras = Filtertags.extras;
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
-  errorMessage: string = '';
+  errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
   private subscription: Subscription = new Subscription();
 
@@ -156,8 +156,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         {
           text: 'Schließen',
           role: 'cancel',
-          handler: () => {
-          },
+          // handler: () => {
+          // },
         },
         {
           text: 'Filter löschen',

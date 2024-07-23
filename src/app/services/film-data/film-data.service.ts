@@ -8,7 +8,7 @@ import { WebscraperService } from '../scraper/webscraper.service';
   providedIn: 'root',
 })
 export class FilmDataService {
-  url: string = 'https://proxy-server-rho-pearl.vercel.app/api/server';
+  url = 'https://proxy-server-rho-pearl.vercel.app/api/server';
   params = {
     bereich: 'portal',
     modul_id: '101',
@@ -116,7 +116,7 @@ export class FilmDataService {
 
   formDataToUrlEncoded(formData: any): string {
     const formBody = [];
-    for (let pair of formData.entries()) {
+    for (const pair of formData.entries()) {
       const encodedKey = encodeURIComponent(pair[0]);
       const encodedValue = encodeURIComponent(pair[1]);
       formBody.push(`${encodedKey}=${encodedValue}`);

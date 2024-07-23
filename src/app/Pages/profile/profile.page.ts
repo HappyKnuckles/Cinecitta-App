@@ -14,8 +14,8 @@ export class ProfilePage implements OnInit {
   @ViewChild('modal1') modal1!: IonModal;
   @ViewChild('modal2') modal2!: IonModal;
   @ViewChild('modal0') modal0!: IonModal;
-  username: string = '';
-  password: string = '';
+  username = '';
+  password = '';
 
   manhattanFilms: any[] = [];
   cinecittaFilms: any[] = [];
@@ -52,7 +52,7 @@ export class ProfilePage implements OnInit {
   image = 'assets/images/default-avatar.png';
   image2 = 'assets/images/hellow.png';
   sub: Subscription = new Subscription();
-  isToggled: boolean = false;
+  isToggled = false;
   constructor(private router: Router, private http: HttpClient, private website: OpenWebsiteService,
     ) {}
 

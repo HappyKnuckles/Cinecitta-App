@@ -5,8 +5,7 @@ import * as cheerio from 'cheerio';
   providedIn: 'root'
 })
 export class WebscraperService {
-
-  constructor() { }
+  
   // TODO Define the return type of the functions
   async scrapeData(filmHref: any): Promise<any> {
     const proxyURL = "https://proxy-server-rho-pearl.vercel.app/api/server";
@@ -89,13 +88,13 @@ export class WebscraperService {
 
   async getTrailerUrl($: cheerio.CheerioAPI): Promise<any> {
     const scriptContents = await this.getScriptContents($, "var videos");
-    let trailerUrl = await this.extractDataFromScript(
+    const trailerUrl = await this.extractDataFromScript(
       scriptContents,
       /"video_url":"([^"]+)"/,
       null,
       true
     );
-    let trailerPreviewUrl = await this.extractDataFromScript(
+    const trailerPreviewUrl = await this.extractDataFromScript(
       scriptContents,
       /"video_vorschau_pfad_bild":"([^"]+)"/,
       null,
@@ -105,10 +104,10 @@ export class WebscraperService {
 
   async getFilmInfoJson($: cheerio.CheerioAPI): Promise<any> {
     const scriptContents = await this.getScriptContents($, "var filminfos");
-    var startIndex = scriptContents[0].indexOf('{');
-    var endIndex = scriptContents[0].lastIndexOf('}') + 1;
-    var jsonStr = scriptContents[0].substring(startIndex, endIndex);    
-    var json = JSON.parse(jsonStr);
+    const startIndex = scriptContents[0].indexOf('{');
+    const endIndex = scriptContents[0].lastIndexOf('}') + 1;
+    const jsonStr = scriptContents[0].substring(startIndex, endIndex);    
+    const json = JSON.parse(jsonStr);
     return json;
 }
 }

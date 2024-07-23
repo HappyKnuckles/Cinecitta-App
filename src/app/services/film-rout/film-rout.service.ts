@@ -9,8 +9,6 @@ export class FilmRoutService {
   private filmTitleSource = new BehaviorSubject<string>('');
   currentFilmTitle = this.filmTitleSource.asObservable();
 
-  constructor() {}
-
   changeFilmTitle(title: string): void {
     this.filmTitleSource.next(title);
   }}

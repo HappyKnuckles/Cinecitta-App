@@ -13,7 +13,7 @@ export class FilmSelectComponent {
   @Input() showSelect!: boolean;
   @Input() filterType!: string;
   @Output() filmClick = new EventEmitter<any>();
-  isLoading: boolean = false;
+  isLoading = false;
   topFilms: Film[] = [];
   selectedItem!: string;
   constructor(private filmGetter: FilmDataService, private webScrapingService: WebscraperService) {

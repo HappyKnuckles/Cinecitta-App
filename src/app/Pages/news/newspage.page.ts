@@ -14,9 +14,9 @@ import { Subscription } from 'rxjs';
 export class NewsPage {
   newFilms: newFilm[] = [];
   showFull: boolean[] = [];
-  isLoading: boolean = false;
+  isLoading = false;
   private loadingSubscription: Subscription;
-  isSearchOpen: boolean = false;
+  isSearchOpen = false;
   excluded = Filtertags.excludedFilmValues;
 
 

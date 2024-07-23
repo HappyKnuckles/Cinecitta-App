@@ -96,9 +96,6 @@ export interface Film {
     trailerPreviewUrl?: string;
 }
 
-export interface FilmInfo {
-
-}
 interface Tags {
     id: number;
     text: string;

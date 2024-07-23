@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnDestroy {
-  isLoading: boolean = false;
+  isLoading = false;
   private loadingSubscription: Subscription;
 
   constructor(private loadingService: LoadingService) {

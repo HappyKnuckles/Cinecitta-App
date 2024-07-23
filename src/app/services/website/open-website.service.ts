@@ -6,8 +6,6 @@ import { Browser } from '@capacitor/browser';
 })
 export class OpenWebsiteService {
 
-  constructor() { }
-
   async openExternalWebsite(url: string): Promise<void> {
     const options = {
       toolbarColor: '#1d979f',

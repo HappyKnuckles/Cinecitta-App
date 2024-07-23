@@ -40,10 +40,10 @@ import { LoadingService } from 'src/app/services/loader/loading.service';
 })
 export class SearchComponent implements OnInit {
   @Input() formData!: FormData;
-  @Input() isNewFilms: boolean = false;
+  @Input() isNewFilms = false;
   @Input() excludedProperties: any[] = [];
-  @Input() showFilterButton: boolean = false;
-  @Input({ required: true }) isOpen: boolean = false;
+  @Input() showFilterButton = false;
+  @Input({ required: true }) isOpen = false;
 
   @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
@@ -51,9 +51,9 @@ export class SearchComponent implements OnInit {
 
   allFilms: any[] = [];
   private searchSubject = new Subject<string>();
-  searchQuery: string = '';
+  searchQuery = '';
   sub: Subscription = new Subscription();
-  isLoading: boolean = false;
+  isLoading = false;
 
   constructor(
     private filmData: FilmDataService,
