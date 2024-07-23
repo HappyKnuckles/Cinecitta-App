@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NewsPage } from './newspage.page';
-import { ExploreContainerComponentModule } from '../../explore-container/explore-container.module';
 
 
 import { NewsPageRoutingModule } from './newspage-routing.module';
@@ -16,7 +15,6 @@ import { SearchModule } from 'src/app/common/search/search.module';
     IonicModule,
     CommonModule,
     FormsModule,
-    ExploreContainerComponentModule,
     NewsPageRoutingModule,
     ExtractTextModule,
     SearchModule

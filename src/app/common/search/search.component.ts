@@ -93,7 +93,6 @@ export class SearchComponent implements OnInit {
       this.loadingService.setLoading(true);
       if (!this.isNewFilms) {
         this.allFilms = await this.filmData.fetchFilmData(formData);
-        await this.updateFilmData();
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
       }
@@ -104,7 +103,8 @@ export class SearchComponent implements OnInit {
     }
     finally {
       this.loadingService.setLoading(false);
-    }
+    }        await this.updateFilmData();
+
   }
 
   private async updateFilmData() {
