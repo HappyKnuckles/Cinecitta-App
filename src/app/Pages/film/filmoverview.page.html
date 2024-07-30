@@ -189,10 +189,8 @@
           <img *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}" (click)="showTrailers(film.system_id)"
             style="height: 50vh" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
-          <div class="action">
-            <ion-button [id]="'popover' + film.system_id">Filminfos</ion-button>
+            <ion-button [id]="'popover' + film.system_id" style="text-align: right;">Filminfos</ion-button>
             <!-- <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button> -->
-          </div>
           <ion-popover [trigger]="'popover' + film.system_id" id="popover">
             <ng-template>
               <ion-content>
@@ -311,7 +309,7 @@
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"></ion-img>
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"/>
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
               {{ ((film.film_beschreibung | extractText).length > 125 ?

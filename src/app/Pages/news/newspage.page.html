@@ -43,8 +43,8 @@
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <ion-img style="margin-bottom: 5px;" src="{{film.film_cover_src}}"
-                (click)="openExternalWebsite(film.filminfo_href)"></ion-img>
+              <img style="margin-bottom: 5px;" src="{{film.film_cover_src}}"
+                (click)="openExternalWebsite(film.filminfo_href)"/>
               <span style="display:flex; justify-content: center; color: #a3d9d5;">{{film.film_centerstart_zeit}}</span>
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''"

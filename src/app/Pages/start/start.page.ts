@@ -39,7 +39,7 @@ export class StartPage implements AfterViewInit {
 
   handleRefresh(event: any): void {
     setTimeout(async () => {
-      await this.fetchDataForAllComponents();
+      await this.fetchDataForAllComponents(true);
       event.target.complete();
     }, 100);
   }
@@ -49,10 +49,10 @@ export class StartPage implements AfterViewInit {
     this.router.navigate(['/tabs/film']);
   }
 
-  async fetchDataForAllComponents(): Promise<void> {
+  async fetchDataForAllComponents(isReload?: boolean): Promise<void> {
     this.loadingService.setLoading(true);
     try {
-      const loadPromises = this.filmSelectComponents.map(component => component.loadData());
+      const loadPromises = this.filmSelectComponents.map(component => component.loadData(isReload));
       await Promise.all(loadPromises);
     }
     catch (error) {

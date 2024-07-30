@@ -38,7 +38,7 @@ export class NewsPage {
   handleRefresh(event: any): void {
     setTimeout(async () => {
       if (this.searchComponent) {
-        await this.searchComponent.loadData();
+        await this.searchComponent.loadData(undefined, true);
       }
       this.searchComponent.clearInput();
       event.target.complete();

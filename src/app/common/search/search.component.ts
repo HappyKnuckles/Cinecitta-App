@@ -25,6 +25,8 @@ import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
+import { is } from 'cheerio/lib/api/traversing';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-search',
@@ -59,7 +61,8 @@ export class SearchComponent implements OnInit {
     private filmData: FilmDataService,
     private filmRouter: FilmRoutService,
     private webScrapingService: WebscraperService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private storageService: StorageService  
   ) {
   }
 
@@ -84,26 +87,38 @@ export class SearchComponent implements OnInit {
 
   async ngOnChanges(changes: SimpleChanges) {
     if (changes['formData'] && !changes['formData'].isFirstChange()) {
-      await this.loadData(this.formData);
+      await this.loadData(this.formData, true);
     }
   }
 
-  async loadData(formData?: FormData) {
+  async loadData(formData?: FormData, isReload?: boolean) {
+    const cacheKey = this.isNewFilms ? 'newFilms' : 'allFilms';
+    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+  
+    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
+    if (cachedFilms && !isReload) {
+      this.allFilms = await cachedFilms;
+      this.newFilmsChange.emit(this.allFilms);
+      return;
+    }
+  
     try {
       this.loadingService.setLoading(true);
       if (!this.isNewFilms) {
-        this.allFilms = await this.filmData.fetchFilmData(formData);
+        this.allFilms = await this.filmData.fetchFilmData(formData);    
+        await this.updateFilmData();      
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
       }
       this.newFilmsChange.emit(this.allFilms);
     }
     catch (error) {
-      console.log(error)
+      console.log(error);
     }
     finally {
       this.loadingService.setLoading(false);
-    }        await this.updateFilmData();
+    } 
+    await this.storageService.setLocalStorage(cacheKey, this.allFilms);
 
   }
 

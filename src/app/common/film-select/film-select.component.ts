@@ -1,7 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Film } from 'src/app/models/filmModel';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
+import { LoadingService } from 'src/app/services/loader/loading.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
+import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
   selector: 'app-film-select',
@@ -16,17 +18,27 @@ export class FilmSelectComponent {
   isLoading = false;
   topFilms: Film[] = [];
   selectedItem!: string;
-  constructor(private filmGetter: FilmDataService, private webScrapingService: WebscraperService) {
-  }
+  constructor(private filmGetter: FilmDataService,
+    private webScrapingService: WebscraperService, private storageService: StorageService, private loadingService: LoadingService) { }
 
-  async loadData() {
+
+  async loadData(isReload?: boolean): Promise<void> {
     if (this.items && this.items.length > 0) {
       this.selectedItem = this.items[0].id;
-    }      
-    await this.getFilmsByFilter(this.selectedItem);
+    }
+    await this.getFilmsByFilter(this.selectedItem, isReload);
   }
 
-  async getFilmsByFilter(data?: string): Promise<void> {
+  async getFilmsByFilter(data?: string, isReload?: boolean): Promise<void> {
+    const cacheKey = `films-${this.filterType}-${data}`;
+    const maxAge = 24 * 60 * 60 * 1000;
+
+    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
+    if (cachedFilms && !isReload) {
+      this.topFilms = this.getTop10Films(await cachedFilms);
+      return;
+    }
+
     const formData = new FormData();
     formData.append('get_filter_aktiv', 'true');
     formData.append('filter[ovfilme]', '0');
@@ -36,13 +48,18 @@ export class FilmSelectComponent {
       formData.append(this.filterType, data);
     }
     try {
+      this.loadingService.setLoading(true);
       films = await this.filmGetter.fetchFilmData(formData);
+      this.topFilms = this.getTop10Films(films);
+      await this.updateFilmData();
     }
     catch (error) {
       console.log(error)
     }
-    this.topFilms = this.getTop10Films(films);    
-    await this.updateFilmData();
+    finally {
+      this.loadingService.setLoading(false);
+    }
+    await this.storageService.setLocalStorage(cacheKey, this.topFilms);
   }
 
   onFilmClick(film: any) {
