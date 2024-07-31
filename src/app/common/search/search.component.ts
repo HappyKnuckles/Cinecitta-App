@@ -25,7 +25,6 @@ import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
-import { is } from 'cheerio/lib/api/traversing';
 import { StorageService } from 'src/app/services/storage/storage.service';
 
 @Component({
@@ -35,7 +34,7 @@ import { StorageService } from 'src/app/services/storage/storage.service';
   animations: [
     trigger('openClose', [
       state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
-      state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
+      state('false', style({ opacity: 1, 'font-size': '*', height: '*'})),
       transition('false <=> true', [animate('400ms ease-in-out')]),
     ]),
   ],
@@ -93,7 +92,7 @@ export class SearchComponent implements OnInit {
 
   async loadData(formData?: FormData, isReload?: boolean) {
     const cacheKey = this.isNewFilms ? 'newFilms' : 'allFilms';
-    const maxAge = 24 * 60 * 60 * 1000; // 24 hours
+    const maxAge = 12 * 60 * 60 * 1000; // 24 hours
   
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
     if (cachedFilms && !isReload) {

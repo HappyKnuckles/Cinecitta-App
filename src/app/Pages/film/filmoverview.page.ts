@@ -73,7 +73,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       this.router.events
         .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe((event: any) => {
-          if (event.url.includes('/tabs/film')) {
+          if (event.url.includes('/tabs/film') && this.searchInput.searchQuery !== "") {
             this.isSearchOpen = true;
           }
         })

@@ -47,12 +47,12 @@
 
         <ng-container *ngFor="let filter of filters; let i = index;">
           <ion-row style="margin: 0 5px;" (click)="showTags(i)">
-            <ion-col style="font-weight: 600;">{{ filter }}</ion-col>
-            <ion-col style="justify-content: end; display: flex;">
-              <ion-icon *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'" class="open"
+            <ion-col style="font-weight: 600;" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter }}</ion-col>
+            <ion-col style="justify-content: end; display: flex;" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">
+              <ion-icon  class="open"
                 [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
             </ion-col>
-            <ion-select class="open" *ngIf="filter === 'Zeitraum'" interface="action-sheet"
+            <ion-select class="open" *ngIf="filter === 'Zeitraum'" label="{{filter}}" interface="action-sheet"
               [(ngModel)]="selectedFilters.tageAuswahl"
               (ngModelChange)="toggleSelection(selectedFilters.tageAuswahl, 'tageAuswahl')"
               placeholder="{{tageAuswahl[0].name}}">
@@ -60,7 +60,7 @@
                 {{ wahl.name }}
               </ion-select-option>
             </ion-select>
-            <ion-select class="open" *ngIf="filter === 'Kinosaal'" interface="action-sheet"
+            <ion-select class="open" *ngIf="filter === 'Kinosaal'" label="{{filter}}" interface="action-sheet"
               [(ngModel)]="selectedFilters.leinwandHighlights"
               (ngModelChange)="toggleSelection(selectedFilters.leinwandHighlights, 'leinwandHighlights')"
               placeholder="{{leinwandHighlights[0].name}}">
@@ -340,8 +340,8 @@
           </ion-row>
           <ion-row>
             <ion-col size="1">
-              <ion-img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
-                style="width: 10vw;"></ion-img>
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
+                style="width: 10vw;"/>
             </ion-col>
             <ion-col style="
             display: flex;

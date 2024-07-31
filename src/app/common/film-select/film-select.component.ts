@@ -18,7 +18,7 @@ export class FilmSelectComponent {
   isLoading = false;
   topFilms: Film[] = [];
   selectedItem!: string;
-  constructor(private filmGetter: FilmDataService,
+  constructor(private filmData: FilmDataService,
     private webScrapingService: WebscraperService, private storageService: StorageService, private loadingService: LoadingService) { }
 
 
@@ -31,7 +31,7 @@ export class FilmSelectComponent {
 
   async getFilmsByFilter(data?: string, isReload?: boolean): Promise<void> {
     const cacheKey = `films-${this.filterType}-${data}`;
-    const maxAge = 24 * 60 * 60 * 1000;
+    const maxAge = 12 * 60 * 60 * 1000;
 
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
     if (cachedFilms && !isReload) {
@@ -49,7 +49,7 @@ export class FilmSelectComponent {
     }
     try {
       this.loadingService.setLoading(true);
-      films = await this.filmGetter.fetchFilmData(formData);
+      films = await this.filmData.fetchFilmData(formData);
       this.topFilms = this.getTop10Films(films);
       await this.updateFilmData();
     }
@@ -62,12 +62,12 @@ export class FilmSelectComponent {
     await this.storageService.setLocalStorage(cacheKey, this.topFilms);
   }
 
-  onFilmClick(film: any) {
+  onFilmClick(film: Film): void {
     this.filmClick.emit(film);
   }
 
-  private async updateFilmData() {
-    const filmPromises = this.topFilms.map(async (film: { filminfo_href: any; }) => {
+  private async updateFilmData(): Promise<any> {
+    const filmPromises = this.topFilms.map(async (film: { filminfo_href: string; }) => {
       if (film.filminfo_href !== undefined) {
         const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
         return { ...film, ...filmContent };

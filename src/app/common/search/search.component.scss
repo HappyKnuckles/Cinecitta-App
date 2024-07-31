@@ -1,5 +1,5 @@
 .search {
-    --padding-start: 15px;
+    --padding-start: 35px;
     position: relative;
     pointer-events: auto;
     height: 50px;
@@ -7,13 +7,19 @@
     ion-icon {
         font-size: 20px;
         color: #a3d9d5;
+        position: absolute;
+        left: 2%;
+        top: 25%;
     }
     
     .filterBtn {
         position: absolute;
         right: 5%;
+        top: 10%;
         --border-radius: 7px;
         height: 65%;
+        width: 15%;
         opacity: .8;
+        z-index: 5;
     }
 }

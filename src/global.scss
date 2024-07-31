@@ -40,6 +40,10 @@ ion-toolbar{
 img{
     border-radius: 7px;
 }
+
+.sc-ion-input-ios-h:not(.legacy-input){
+    min-height: 0 !important;
+}
 // ion-content{
 //     --background: linear-gradient(125deg, #1b6d7b 0%, transparent 60%) !important;
 // }

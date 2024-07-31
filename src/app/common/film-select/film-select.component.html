@@ -1,13 +1,13 @@
 <ion-grid class="border">
   <ion-row>
-    <ion-col>Top {{topFilms.length}}</ion-col>
     <ion-col *ngIf="showSelect">
-      <ion-select [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
+      <ion-select label="Top {{topFilms.length}}" [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
         <ion-select-option *ngFor="let item of items" [value]="item.id">
           {{ item.name }}
         </ion-select-option>
       </ion-select>
     </ion-col>
+    <ion-col *ngIf="!showSelect">Top {{topFilms.length}}</ion-col>
   </ion-row>
   <ion-row *ngFor="let film of topFilms; let i = index" (click)="onFilmClick(film)" class="contentRow">
     <ion-col size="1" style="display: flex; align-items: center; justify-content: center;">{{i+1}}.</ion-col>

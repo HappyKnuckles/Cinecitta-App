@@ -57,6 +57,13 @@
 
     .open {
         transform: translateY(-5px);
+
+        &::part(label){
+            font-weight: 600;
+        }
+        &:not(ion-icon){
+            margin: 0 5px;
+        }
     }
 }
 
@@ -241,3 +248,4 @@
         display: table-cell;
     }
 }
+
