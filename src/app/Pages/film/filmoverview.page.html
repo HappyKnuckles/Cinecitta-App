@@ -10,7 +10,7 @@
 
 
 
-
+<!-- Header -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <div slot="start">
@@ -29,6 +29,7 @@
     [excludedProperties]="excluded" (newFilmsChange)="films = $event"></app-search>
 </ion-header>
 
+<!-- Filter Modal -->
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative;">
   <ng-template>
     <ion-header>
@@ -47,10 +48,11 @@
 
         <ng-container *ngFor="let filter of filters; let i = index;">
           <ion-row style="margin: 0 5px;" (click)="showTags(i)">
-            <ion-col style="font-weight: 600;" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter }}</ion-col>
-            <ion-col style="justify-content: end; display: flex;" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">
-              <ion-icon  class="open"
-                [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
+            <ion-col style="font-weight: 600;" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter
+              }}</ion-col>
+            <ion-col style="justify-content: end; display: flex;"
+              *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">
+              <ion-icon class="open" [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
             </ion-col>
             <ion-select class="open" *ngIf="filter === 'Zeitraum'" label="{{filter}}" interface="action-sheet"
               [(ngModel)]="selectedFilters.tageAuswahl"
@@ -162,35 +164,41 @@
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
+  <!-- Detailview -->
   <div *ngIf="detailView[0]" class="content">
     <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="filmSpecific">
-          <span *ngIf="film.film_neu === 'NEU'">
-            <div class="new-dreieck">
-              <div class="new">NEU</div>
-            </div>
-
-            <!-- TODO Add an info Icon, open Popup with image details (duration, cast, regisseur, tags, FSK)-->
-          </span>
-          <div *ngIf="film.film_ist_ov === '1'" class="titel">
-            OV
-            <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
-          </div>
+          <ion-grid class="infoRow">
+            <ion-row>
+              <ion-col *ngIf="film.film_ist_ov === '1'" class="titel">
+                OV
+                <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
+              </ion-col>
+              <ion-col *ngIf="film.film_ist_ov !== '1'" class="titel">
+              </ion-col>
+              <ion-col>
+                <div *ngIf="film.film_neu === 'NEU'" class="new-viereck">
+                  <div class="new">NEU</div>
+                </div>
+              </ion-col>
+              <ion-col class="infoBtn">
+                <ion-icon [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
           <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film.system_id)" fill="clear"
             style="position: absolute; left: 5%; z-index: 10; margin-top: -5px">
             <ion-icon name="chevron-back">Zurück</ion-icon>
           </ion-button>
-
+          <!-- TODO find good unit for height-->
           <video *ngIf="film.trailerUrl !== undefined && showTrailer[film.system_id]" controls
-            style="height: 50vh; width: 85vw;" poster="{{film.trailerPreviewUrl}}">
+            style="height: 120.3vmin; width: 85vw;" poster="{{film.trailerPreviewUrl}}">
             <source src="{{film.trailerUrl}}">
           </video>
-          <img *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}" (click)="showTrailers(film.system_id)"
-            style="height: 50vh" />
+          <img style="height: 119vmin;" *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}"
+            (click)="showTrailers(film.system_id)" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
-            <ion-button [id]="'popover' + film.system_id" style="text-align: right;">Filminfos</ion-button>
-            <!-- <button (click)="openExternalWebsite(film.filminfo_href + '#tickets')">Tickets</button> -->
           <ion-popover [trigger]="'popover' + film.system_id" id="popover">
             <ng-template>
               <ion-content>
@@ -223,14 +231,14 @@
                   </ion-row>
                   <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
                   <ion-row>
-                    <ion-col >
+                    <ion-col>
                       {{ film.film_darsteller | extractText }}
                     </ion-col>
                   </ion-row>
                   <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
                   <ion-row>
                     <ion-col>
-                      {{ film.film_regisseure! | extractText }} 
+                      {{ film.film_regisseure! | extractText }}
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -285,6 +293,8 @@
     </div>
   </div>
 
+  <!-- Kurzview -->
+  <!-- TODO Add info Button-->
   <div *ngIf="detailView[1]" class="content">
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
@@ -309,7 +319,7 @@
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"/>
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" />
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
               {{ ((film.film_beschreibung | extractText).length > 125 ?
@@ -326,6 +336,7 @@
     </ion-grid>
   </div>
 
+  <!-- Miniview -->
   <div *ngIf="detailView[2]" class="content">
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'"
@@ -341,7 +352,7 @@
           <ion-row>
             <ion-col size="1">
               <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
-                style="width: 10vw;"/>
+                style="width: 10vw;" />
             </ion-col>
             <ion-col style="
             display: flex;
@@ -358,5 +369,4 @@
       </div>
     </ion-grid>
   </div>
-
 </ion-content>

@@ -8,5 +8,8 @@
       "resize": "none",
       "resizeOnFullScreen": false
     }
+  },
+  "server": {
+    "url": "http://192.168.178.24:8100"
   }
 }

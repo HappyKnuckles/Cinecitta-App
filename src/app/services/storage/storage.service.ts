@@ -1,33 +1,3 @@
-// import { Injectable } from '@angular/core';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class StorageService {
-
-//   constructor() { }
-
-//   setLocalStorage(key: string, value: any): void {
-//     const data = {
-//       value,
-//       timestamp: new Date().getTime(),
-//     };
-//     localStorage.setItem(key, JSON.stringify(data));
-//   }
-
-//   getLocalStorage(key: string, maxAge: number): any | null {
-//     const data = localStorage.getItem(key);
-//     if (data) {
-//       const parsedData = JSON.parse(data);
-//       const age = new Date().getTime() - parsedData.timestamp;
-//       if (age < maxAge) {
-//         return parsedData.value;
-//       }
-//     }
-//     return null;
-//   }
-// }
-
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
@@ -35,6 +5,7 @@ import { Storage } from '@ionic/storage-angular';
   providedIn: 'root'
 })
 export class StorageService {
+  
   constructor(private storage: Storage) {
     this.init();
   }

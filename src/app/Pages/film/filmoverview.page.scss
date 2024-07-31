@@ -58,10 +58,11 @@
     .open {
         transform: translateY(-5px);
 
-        &::part(label){
+        &::part(label) {
             font-weight: 600;
         }
-        &:not(ion-icon){
+
+        &:not(ion-icon) {
             margin: 0 5px;
         }
     }
@@ -97,8 +98,8 @@
     }
 }
 
-#popover{
-    ion-row{
+#popover {
+    ion-row {
         margin-bottom: 1px;
     }
 }
@@ -106,10 +107,10 @@
 .filmContainer {
     padding: 0 0 30px;
 
-    &.mini{
+    &.mini {
         padding: 0 0 5px;
 
-        .border{
+        .border {
             padding: 3px 0;
         }
     }
@@ -119,7 +120,7 @@
     }
 
     .border {
-        padding: 10px 0;
+        padding: 0 0 10px;
         box-shadow: 0 4px 16px #a3d9d558;
         border: 1px solid #a3d9d5;
         border-radius: 7px;
@@ -129,6 +130,50 @@
 
     .filmSpecific {
         padding: 0 10px;
+    }
+
+    .infoRow {
+        ion-col {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .titel {
+            justify-content: left;
+            margin: 0;
+            align-items: center;
+
+        }
+
+        .infoBtn {
+            justify-content: right;
+            color: #a3d9d5;
+        }
+        .new-viereck {
+            display: flex;
+            width: 50px;
+            height: 20px;
+            background: #1d979f;
+            border-radius: 7px;
+            font-size: 10px;
+            justify-content: center;
+            align-items: center;
+    
+            &.small {
+                right: 24px;
+            }
+    
+            &.mini {
+                right: 24px;
+                transform: translateY(-4px);
+            }
+    
+            .new {
+                color: #fff;
+                font-size: 12px;
+            }
+        }
     }
 
     .new-dreieck {
@@ -144,13 +189,9 @@
         border-color: transparent #1d979f transparent transparent;
         font-size: 10px;
         opacity: .9;
-
-        &.small {
-            right: 24px;
-        }
+        right: 24px;
 
         &.mini{
-            right: 24px;
             transform: translateY(-4px);
         }
 
@@ -163,7 +204,6 @@
             position: absolute;
         }
     }
-
     .titel {
         margin-bottom: 5px;
         font-weight: 600;
@@ -213,7 +253,7 @@
         }
     }
 
-    ion-grid {
+    ion-grid:not(.infoRow) {
         margin-top: 10px;
         text-align: center;
 
@@ -225,6 +265,10 @@
         .times {
             font-size: 14px;
             margin-bottom: 10px;
+
+            @media screen and (max-width: 360px) {
+                font-size: 13px;
+            }
         }
 
         .divider {
@@ -248,4 +292,3 @@
         display: table-cell;
     }
 }
-

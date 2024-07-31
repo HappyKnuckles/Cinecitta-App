@@ -3,6 +3,7 @@
   Keine Filme verfügbar
 </ion-text>
 
+<!-- Header -->
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
@@ -20,6 +21,7 @@
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"> </ion-refresher>
+  <!-- Filmcontainer -->
   <div class="content">
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0;">
       <div class="filmContainer small">
@@ -75,5 +77,4 @@
       </div>
     </ion-grid>
   </div>
-
 </ion-content>
