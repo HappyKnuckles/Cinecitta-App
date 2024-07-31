@@ -190,8 +190,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  showTrailers(film_id: string): void {
-    this.showTrailer[film_id] = !this.showTrailer[film_id];
+  showTrailers(film: Film): void {
+    if (film.trailerUrl) {
+      this.showTrailer[film.system_id] = !this.showTrailer[film.system_id];
+    }
   }
 
   setOpen(isOpen: boolean): void {

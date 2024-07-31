@@ -120,7 +120,7 @@
     }
 
     .border {
-        padding: 0 0 10px;
+        padding: 10px 0;
         box-shadow: 0 4px 16px #a3d9d558;
         border: 1px solid #a3d9d5;
         border-radius: 7px;
@@ -133,23 +133,23 @@
     }
 
     .infoRow {
-        ion-col {
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .titel {
-            justify-content: left;
-            margin: 0;
-            align-items: center;
-
-        }
+        position: absolute;
+        z-index: 5;
+        width: 85vw;
+        background-color: #0000001a;
+        display: inline-flex;
+        border-radius: 7px 7px 0 0;
+        justify-content: space-between;
+        padding: 5px 10px 0;
 
         .infoBtn {
-            justify-content: right;
+            transform: translateY(-3px);
             color: #a3d9d5;
+            font-weight: 700;
+            font-size: 30px;
+
         }
+
         .new-viereck {
             display: flex;
             width: 50px;
@@ -159,16 +159,7 @@
             font-size: 10px;
             justify-content: center;
             align-items: center;
-    
-            &.small {
-                right: 24px;
-            }
-    
-            &.mini {
-                right: 24px;
-                transform: translateY(-4px);
-            }
-    
+
             .new {
                 color: #fff;
                 font-size: 12px;
@@ -191,7 +182,7 @@
         opacity: .9;
         right: 24px;
 
-        &.mini{
+        &.mini {
             transform: translateY(-4px);
         }
 
@@ -204,6 +195,7 @@
             position: absolute;
         }
     }
+
     .titel {
         margin-bottom: 5px;
         font-weight: 600;
@@ -216,10 +208,8 @@
     }
 
     img {
-        height: auto;
-        width: 90vw;
-        border-radius: 10px;
         margin-bottom: 5px;
+        width: 90vw;
     }
 
     .tagcontainer {

@@ -169,35 +169,32 @@
     <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="filmSpecific">
-          <ion-grid class="infoRow">
-            <ion-row>
-              <ion-col *ngIf="film.film_ist_ov === '1'" class="titel">
-                OV
-                <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
-              </ion-col>
-              <ion-col *ngIf="film.film_ist_ov !== '1'" class="titel">
-              </ion-col>
-              <ion-col>
-                <div *ngIf="film.film_neu === 'NEU'" class="new-viereck">
-                  <div class="new">NEU</div>
-                </div>
-              </ion-col>
-              <ion-col class="infoBtn">
-                <ion-icon [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
-              </ion-col>
-            </ion-row>
-          </ion-grid>
-          <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film.system_id)" fill="clear"
+
+          <div class="infoRow" *ngIf="!showTrailer[film.system_id]">
+            <div *ngIf="film.film_ist_ov === '1'" class="titel">
+              OV
+              <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
+            </div>
+            <div *ngIf="film.film_ist_ov !== '1'" class="titel">
+              <div class="OV"></div>
+            </div>
+            <div *ngIf="film.film_neu === 'NEU'" class="new-viereck">
+              <div class="new">NEU</div>
+            </div>
+            <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
+          </div>
+
+          <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film)" fill="clear"
             style="position: absolute; left: 5%; z-index: 10; margin-top: -5px">
-            <ion-icon name="chevron-back">Zurück</ion-icon>
+            <ion-icon name="chevron-back"></ion-icon>
           </ion-button>
           <!-- TODO find good unit for height-->
-          <video *ngIf="film.trailerUrl !== undefined && showTrailer[film.system_id]" controls
+          <video *ngIf="showTrailer[film.system_id]" controls
             style="height: 120.3vmin; width: 85vw;" poster="{{film.trailerPreviewUrl}}">
             <source src="{{film.trailerUrl}}">
           </video>
           <img style="height: 119vmin;" *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}"
-            (click)="showTrailers(film.system_id)" />
+            (click)="showTrailers(film)"/>
           <span class="description">{{film.film_beschreibung | extractText}}</span>
           <ion-popover [trigger]="'popover' + film.system_id" id="popover">
             <ng-template>
