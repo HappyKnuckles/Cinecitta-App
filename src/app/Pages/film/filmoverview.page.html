@@ -182,6 +182,52 @@
               <div class="new">NEU</div>
             </div>
             <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
+            <ion-popover [trigger]="'popover' + film.system_id" id="popover">
+              <ng-template>
+                <ion-content>
+                  <ion-grid>
+                    <ion-row>
+                      <b>Titel:</b>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col>{{ film.film_titel }}</ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <b>Dauer:</b></ion-row>
+                    <ion-row>
+                      <ion-col>{{ film.film_dauer! | transformTime }}</ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <b>FSK:</b>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col>{{ film.film_fsk }}</ion-col></ion-row>
+                    <ion-row *ngIf="film.film_tags"><b>Tags:</b></ion-row>
+                    <ion-row>
+                      <ion-col *ngFor="let tag of film.film_tags">{{ tag.text }}</ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <b>Im Kino seit:</b>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col>{{ film.film_centerstart_zeit }}</ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
+                    <ion-row>
+                      <ion-col>
+                        {{ film.film_darsteller | extractText }}
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
+                    <ion-row>
+                      <ion-col>
+                        {{ film.film_regisseure! | extractText }}
+                      </ion-col>
+                    </ion-row>
+                  </ion-grid>
+                </ion-content>
+              </ng-template>
+            </ion-popover>
           </div>
 
           <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film)" fill="clear"
@@ -189,59 +235,14 @@
             <ion-icon name="chevron-back"></ion-icon>
           </ion-button>
           <!-- TODO find good unit for height-->
-          <video *ngIf="showTrailer[film.system_id]" controls
-            style="height: 120.3vmin; width: 85vw;" poster="{{film.trailerPreviewUrl}}">
+          <video *ngIf="showTrailer[film.system_id]" controls style="height: 120.3vmin; width: 85vw;"
+            poster="{{film.trailerPreviewUrl}}">
             <source src="{{film.trailerUrl}}">
           </video>
           <img style="height: 119vmin;" *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}"
-            (click)="showTrailers(film)"/>
+            (click)="showTrailers(film)" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
-          <ion-popover [trigger]="'popover' + film.system_id" id="popover">
-            <ng-template>
-              <ion-content>
-                <ion-grid>
-                  <ion-row>
-                    <b>Titel:</b>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>{{ film.film_titel }}</ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <b>Dauer:</b></ion-row>
-                  <ion-row>
-                    <ion-col>{{ film.film_dauer! | transformTime }}</ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <b>FSK:</b>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>{{ film.film_fsk }}</ion-col></ion-row>
-                  <ion-row *ngIf="film.film_tags"><b>Tags:</b></ion-row>
-                  <ion-row>
-                    <ion-col *ngFor="let tag of film.film_tags">{{ tag.text }}</ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <b>Im Kino seit:</b>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col>{{ film.film_centerstart_zeit }}</ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      {{ film.film_darsteller | extractText }}
-                    </ion-col>
-                  </ion-row>
-                  <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
-                  <ion-row>
-                    <ion-col>
-                      {{ film.film_regisseure! | extractText }}
-                    </ion-col>
-                  </ion-row>
-                </ion-grid>
-              </ion-content>
-            </ng-template>
-          </ion-popover>
+
         </div>
         <div (click)="openTimes(film.system_id, i)" style="display: flex; margin-top: 10px; justify-content: center">
           <ion-icon *ngIf="!isTimesOpen[film.system_id]" name="chevron-down"></ion-icon>
