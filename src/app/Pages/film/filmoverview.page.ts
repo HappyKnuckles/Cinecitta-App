@@ -7,7 +7,7 @@ import {
 import { AlertController } from '@ionic/angular';
 import * as Filtertags from '../../models/filtertags';
 import { SearchComponent } from 'src/app/common/search/search.component';
-import { Film, Leinwand, Theater } from '../../models/filmModel';
+import { Film, Leinwand } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
@@ -34,7 +34,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   films: Film[] = [];
   message = '';
   isLoading = false;
-  private loadingSubscription: Subscription;
   isTimesOpen: { [key: string]: boolean } = {};
   isSearchOpen = false;
   isModalOpen = false;
@@ -52,14 +51,18 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
-  private subscription: Subscription = new Subscription();
+  private loadingSubscription: Subscription;
+  private routerSubscription: Subscription = new Subscription();
+  private debounceTimeout: any;
+
+  intervalId: any;
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
     private loadingService: LoadingService,
-    private router: Router,
+    private router: Router
   ) {
     this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
       this.isLoading = isLoading;
@@ -69,7 +72,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
 
     // so lassen?
-    this.subscription.add(
+    this.routerSubscription.add(
       this.router.events
         .pipe(filter(event => event instanceof NavigationEnd))
         .subscribe((event: any) => {
@@ -80,10 +83,63 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange();
+    this.startPeriodicCheck();
+  }
+  startPeriodicCheck() {
+    this.intervalId = setInterval(() => {
+      this.checkTimes();
+    }, 60000); // Check every minute
   }
 
+  // TODO make more efficient maybe sort films before checking times or map films to a dictionary
+  checkTimes() {
+    const now = new Date();
+
+    this.films.forEach(film => {
+      film.theater.forEach(theater => {
+        theater.leinwaende.forEach(leinwand => {
+          leinwand.vorstellungen.forEach(vorstellung => {
+            const vorstellungTime = new Date(vorstellung.datum_uhrzeit_iso!);
+            if (vorstellungTime < now && !vorstellung.deaktiviert) {
+              vorstellung.deaktiviert = true;
+            }
+          });
+        });
+      });
+    });
+
+  }
+  // with dictionary
+  // checkTimes() {
+  //   const now = new Date();
+  
+  //   // Flatten the structure and map films to a dictionary
+  //   const filmMap = new Map<string, any>();
+  //   this.films.forEach(film => {
+  //     film.theater.forEach(theater => {
+  //       theater.leinwaende.forEach(leinwand => {
+  //         leinwand.vorstellungen.forEach(vorstellung => {
+  //           const vorstellungTime = new Date(vorstellung.datum_uhrzeit_iso!);
+  //           filmMap.set(vorstellung.id, { film, theater, leinwand, vorstellung, vorstellungTime });
+  //         });
+  //       });
+  //     });
+  //   });
+  
+  //   // Iterate through the dictionary
+  //   filmMap.forEach((value, key) => {
+  //     if (value.vorstellungTime <= now) {
+  //       // Perform the necessary action
+  //      value.vorstellung.deaktiviert = true;
+
+  //     }
+  //   });
+  // }
   ngOnDestroy(): void {
     this.loadingSubscription.unsubscribe();
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   private setDefaultSelectedFilterValues(): void {
@@ -210,6 +266,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error opening external website: ' + error);
     }
+
   }
 
   openStartTimePicker(): void {
@@ -221,7 +278,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async confirm(): Promise<void> {
-    await this.loadFilmData();
     this.showAllTags = this.showAllTags.map((_) => false);
     this.setOpen(false);
 
@@ -259,13 +315,23 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.loadFilmData();
   }
 
-  hasScreenings(theater: Theater): boolean {
-    for (const leinwand of theater.leinwaende) {
-      if (leinwand.vorstellungen) {
-        return true;
-      }
-    }
-    return false;
+  hasScreenings(film: Film): boolean {
+    return film.theater.some(theater =>
+      theater.leinwaende.some(leinwand =>
+        leinwand.vorstellungen?.some(vorstellung =>
+          this.startTime <= vorstellung.uhrzeit &&
+          this.formattedEndTime >= vorstellung.uhrzeit
+        )
+      )
+    );
+  }
+
+  hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
+    const result = leinwand.vorstellungen?.some(vorstellung => {
+      const isWithinTimeRange = this.startTime <= vorstellung.uhrzeit && this.formattedEndTime >= vorstellung.uhrzeit;
+      return isWithinTimeRange;
+    });
+    return result;
   }
 
   hasFlagName(leinwand: Leinwand, name: string): boolean {
@@ -412,7 +478,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       this.endTime = `${formatHour(endHour)}:00`;
       this.startTime = `${formatHour(startHour)}:00`;
     }
-    await this.loadFilmData();
+
+    // Debounce loadFilmData
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+    }
+    this.debounceTimeout = setTimeout(async () => {
+      await this.loadFilmData();
+    }, 300); // Adjust the debounce delay as needed (300ms in this example)
   }
 
   convertTimeToNumeric(timeStr: string): number {

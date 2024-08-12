@@ -167,7 +167,8 @@
   <!-- Detailview -->
   <div *ngIf="detailView[0]" class="content">
     <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
-      <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
+      <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"
+        *ngIf="hasScreenings(film)">
         <div class="filmSpecific">
 
           <div class="infoRow" *ngIf="!showTrailer[film.system_id]">
@@ -257,33 +258,41 @@
           </ion-row>
 
           <ng-container *ngFor="let theater of film.theater">
-            <ion-row class="theaterRow" *ngIf="hasScreenings(theater)">
+            <ion-row class="theaterRow">
               <ion-col><span class="theaterName">{{ theater.theater_name }}</span></ion-col>
             </ion-row>
             <ng-container *ngFor="let leinwand of theater.leinwaende">
-              <ion-row>
-                <ion-col>
-                  <ion-row class="saalName">
-                    <ion-col>{{ leinwand.leinwand_name }} <span *ngIf="hasFlagName(leinwand, 'mU')">mU</span></ion-col>
-                  </ion-row>
-                  <ion-row>
-                    <ion-col *ngFor="let weekday of film.film_wochentage">
-                      <ng-container *ngIf="leinwand.vorstellungen">
-                        <div *ngFor="let vorstellung of leinwand.vorstellungen">
-                          <ng-container
-                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
-                            <div (click)="openExternalWebsite(vorstellung.href!)"
-                              [ngStyle]="{'color': vorstellung.deaktiviert ? 'grey' : getColor(vorstellung.belegung_ampel)}"
-                              class="times">
-                              {{ vorstellung.uhrzeit }}
-                            </div>
-                          </ng-container>
-                        </div>
-                      </ng-container>
-                    </ion-col>
-                  </ion-row>
-                </ion-col>
-              </ion-row>
+              <ng-container *ngIf="hasScreeningsForLeinwand(leinwand)">
+                <ion-row>
+                  <ion-col>
+                    <ion-row class="saalName">
+                      <ion-col>{{ leinwand.leinwand_name }} <span
+                          *ngIf="hasFlagName(leinwand, 'mU')">mU</span></ion-col>
+                    </ion-row>
+                    <ion-row>
+                      <ion-col *ngFor="let weekday of film.film_wochentage">
+                        <ng-container *ngIf="leinwand.vorstellungen">
+                          <div *ngFor="let vorstellung of leinwand.vorstellungen">
+                            <ng-container
+                              *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
+                              <div *ngIf="!vorstellung.deaktiviert; else greyVorstellung"
+                                (click)="openExternalWebsite(vorstellung.href!)"
+                                [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
+                                {{ vorstellung.uhrzeit }}
+                              </div>
+                              <ng-template #greyVorstellung>
+                                <div [ngStyle]="{'color': 'grey'}" class="times">
+                                  {{ vorstellung.uhrzeit }}
+                                </div>
+                              </ng-template>
+                            </ng-container>
+                          </div>
+                        </ng-container>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                </ion-row>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ion-grid>
