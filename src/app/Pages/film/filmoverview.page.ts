@@ -82,8 +82,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         })
     );
     this.setDefaultSelectedFilterValues();
-    //await this.onTimeChange();
-    await this.loadFilmData();
+    await this.onTimeChange();
+    // await this.loadFilmData();
     this.startPeriodicCheck();
   }
   startPeriodicCheck() {
