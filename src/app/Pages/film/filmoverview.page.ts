@@ -478,7 +478,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       this.endTime = `${formatHour(endHour)}:00`;
       this.startTime = `${formatHour(startHour)}:00`;
     }
-
+    // TODO change initial loading method (debounce time happens on startup)
     // Debounce loadFilmData
     if (!isInit) {
       if (this.debounceTimeout) {
