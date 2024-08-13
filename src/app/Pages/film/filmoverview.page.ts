@@ -27,7 +27,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   showStartTimePicker = false;
   showEndTimePicker = false;
-  formData: any;
+  formData: FormData = new FormData();
   startTime = '10:00';
   endTime = '03:00';
   formattedEndTime = "";
@@ -82,7 +82,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         })
     );
     this.setDefaultSelectedFilterValues();
-    await this.onTimeChange();
+    await this.onTimeChange(true);
     this.startPeriodicCheck();
   }
   startPeriodicCheck() {
@@ -112,7 +112,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // with dictionary
   // checkTimes() {
   //   const now = new Date();
-  
+
   //   // Flatten the structure and map films to a dictionary
   //   const filmMap = new Map<string, any>();
   //   this.films.forEach(film => {
@@ -125,7 +125,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   //       });
   //     });
   //   });
-  
+
   //   // Iterate through the dictionary
   //   filmMap.forEach((value, key) => {
   //     if (value.vorstellungTime <= now) {
@@ -459,7 +459,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  async onTimeChange(): Promise<void> {
+  async onTimeChange(isInit?: boolean): Promise<void> {
     let startHour = this.convertTimeToNumeric(this.startTime);
     let endHour = this.convertTimeToNumeric(this.endTime);
     const formatHour = (hour: number) => hour.toString().padStart(2, '0');
@@ -480,12 +480,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     // Debounce loadFilmData
-    if (this.debounceTimeout) {
-      clearTimeout(this.debounceTimeout);
+    if (!isInit) {
+      if (this.debounceTimeout) {
+        clearTimeout(this.debounceTimeout);
+      }
+      this.debounceTimeout = setTimeout(async () => {
+        await this.loadFilmData();
+      }, 300); // Adjust the debounce delay as needed (300ms in this example)
     }
-    this.debounceTimeout = setTimeout(async () => {
-      await this.loadFilmData();
-    }, 300); // Adjust the debounce delay as needed (300ms in this example)
   }
 
   convertTimeToNumeric(timeStr: string): number {
