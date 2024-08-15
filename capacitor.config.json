@@ -1,7 +1,7 @@
 {
   "appId": "io.ionic.cine",
   "appName": "Cinecitta",
-  "webDir": "www",
+  "webDir": "www/browser",
   "bundledWebRuntime": false,
   "plugins": {
     "Keyboard": {
