@@ -136,7 +136,8 @@
         position: absolute;
         z-index: 5;
         width: 85vw;
-        background-color: #0000001a;
+        height: 10%;
+        background: linear-gradient(rgba(0, 0, 0, 0.681), #0000);
         display: inline-flex;
         border-radius: 7px 7px 0 0;
         justify-content: space-between;
@@ -147,7 +148,6 @@
             color: #a3d9d5;
             font-weight: 700;
             font-size: 30px;
-
         }
 
         .new-viereck {
