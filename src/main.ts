@@ -1,12 +1,25 @@
-import { enableProdMode } from '@angular/core';
-import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-
-import { AppModule } from './app/app.module';
+import { enableProdMode, importProvidersFrom } from '@angular/core';
 import { environment } from './environments/environment';
+import { AppComponent } from './app/app.component';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { withInterceptorsFromDi, provideHttpClient } from '@angular/common/http';
+import { AppRoutingModule } from './app/app-routing.module';
+import { BrowserModule, bootstrapApplication } from '@angular/platform-browser';
+import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import { RouteReuseStrategy } from '@angular/router';
 
 if (environment.production) {
   enableProdMode();
 }
 
-platformBrowserDynamic().bootstrapModule(AppModule)
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(BrowserModule, AppRoutingModule, IonicStorageModule.forRoot()),
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    provideIonicAngular(),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideAnimations(),
+  ]
+})
   .catch(err => console.log(err));

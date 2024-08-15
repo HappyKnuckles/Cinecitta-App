@@ -1,184 +1,198 @@
 import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
+    Component,
+    EventEmitter,
+    Input,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild,
 } from '@angular/core';
-import { IonInput } from '@ionic/angular';
+import { IonInput, IonIcon, IonButton, IonLabel } from '@ionic/angular/standalone';
 import {
-  debounceTime,
-  distinctUntilChanged,
-  Subject,
-  Subscription,
+    debounceTime,
+    distinctUntilChanged,
+    Subject,
+    Subscription,
 } from 'rxjs';
 import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
+    trigger,
+    state,
+    style,
+    transition,
+    animate,
 } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
+import { addIcons } from "ionicons";
+import { search } from "ionicons/icons";
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
-      state('false', style({ opacity: 1, 'font-size': '*', height: '*'})),
-      transition('false <=> true', [animate('400ms ease-in-out')]),
-    ]),
-  ],
+    selector: 'app-search',
+    templateUrl: './search.component.html',
+    styleUrls: ['./search.component.scss'],
+    animations: [
+        trigger('openClose', [
+            state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
+            state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
+            transition('false <=> true', [animate('400ms ease-in-out')]),
+        ]),
+    ],
+    standalone: true,
+    imports: [
+        IonInput,
+        FormsModule,
+        IonIcon,
+        NgIf,
+        IonButton,
+        IonLabel,
+    ],
 })
 export class SearchComponent implements OnInit {
-  @Input() formData!: FormData;
-  @Input() isNewFilms = false;
-  @Input() excludedProperties: any[] = [];
-  @Input() showFilterButton = false;
-  @Input({ required: true }) isOpen = false;
+    @Input() formData!: FormData;
+    @Input() isNewFilms = false;
+    @Input() excludedProperties: any[] = [];
+    @Input() showFilterButton = false;
+    @Input({ required: true }) isOpen = false;
 
-  @Output() newFilmsChange = new EventEmitter<any[]>();
-  @Output() setOpenEvent = new EventEmitter<boolean>();
-  @ViewChild('searchInput') searchInput?: IonInput;
+    @Output() newFilmsChange = new EventEmitter<any[]>();
+    @Output() setOpenEvent = new EventEmitter<boolean>();
+    @ViewChild('searchInput') searchInput?: IonInput;
 
-  allFilms: any[] = [];
-  private searchSubject = new Subject<string>();
-  searchQuery = '';
-  sub: Subscription = new Subscription();
-  isLoading = false;
+    allFilms: any[] = [];
+    private searchSubject = new Subject<string>();
+    searchQuery = '';
+    sub: Subscription = new Subscription();
+    isLoading = false;
 
-  constructor(
-    private filmData: FilmDataService,
-    private filmRouter: FilmRoutService,
-    private webScrapingService: WebscraperService,
-    private loadingService: LoadingService,
-    private storageService: StorageService  
-  ) {
-  }
-
-  async ngOnInit() {
-    this.sub.add(
-      this.searchSubject
-        .pipe(debounceTime(300), distinctUntilChanged())
-        .subscribe(() => {
-          this.filterFilms();
-        })
-    );
-
-    await this.loadData(this.formData);
-    if (!this.isNewFilms) {
-      this.sub.add(
-        this.filmRouter.currentFilmTitle.subscribe((title) => {
-          this.onSearchChange(title);
-        })
-      );
+    constructor(
+        private filmData: FilmDataService,
+        private filmRouter: FilmRoutService,
+        private webScrapingService: WebscraperService,
+        private loadingService: LoadingService,
+        private storageService: StorageService
+    ) {
+        addIcons({ search });
     }
-  }
 
-  async ngOnChanges(changes: SimpleChanges) {
-    if (changes['formData'] && !changes['formData'].isFirstChange()) {
-      await this.loadData(this.formData, true);
+    async ngOnInit() {
+        this.sub.add(
+            this.searchSubject
+                .pipe(debounceTime(300), distinctUntilChanged())
+                .subscribe(() => {
+                    this.filterFilms();
+                })
+        );
+
+        await this.loadData(this.formData);
+        if (!this.isNewFilms) {
+            this.sub.add(
+                this.filmRouter.currentFilmTitle.subscribe((title) => {
+                    this.onSearchChange(title);
+                })
+            );
+        }
     }
-  }
 
-  async loadData(formData?: FormData, isReload?: boolean) {
-    const cacheKey = this.isNewFilms ? 'newFilms' : 'allFilms';
-    const maxAge = 12 * 60 * 60 * 1000; // 24 hours
-  
-    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
-    if (cachedFilms && !isReload) {
-      this.allFilms = await cachedFilms;
-      this.newFilmsChange.emit(this.allFilms);
-      return;
+    async ngOnChanges(changes: SimpleChanges) {
+        if (changes['formData'] && !changes['formData'].isFirstChange()) {
+            await this.loadData(this.formData, true);
+        }
     }
-  
-    try {
-      this.loadingService.setLoading(true);
-      if (!this.isNewFilms) {
-        this.allFilms = await this.filmData.fetchFilmData(formData);    
-        await this.updateFilmData();      
-      } else {
-        this.allFilms = await this.filmData.fetchNewFilms();
-      }
-      this.newFilmsChange.emit(this.allFilms);
+
+    async loadData(formData?: FormData, isReload?: boolean) {
+        const cacheKey = this.isNewFilms ? 'newFilms' : 'allFilms';
+        const maxAge = 12 * 60 * 60 * 1000; // 24 hours
+
+        const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
+        if (cachedFilms && !isReload) {
+            this.allFilms = await cachedFilms;
+            this.newFilmsChange.emit(this.allFilms);
+            return;
+        }
+
+        try {
+            this.loadingService.setLoading(true);
+            if (!this.isNewFilms) {
+                this.allFilms = await this.filmData.fetchFilmData(formData);
+                await this.updateFilmData();
+            } else {
+                this.allFilms = await this.filmData.fetchNewFilms();
+            }
+            this.newFilmsChange.emit(this.allFilms);
+        }
+        catch (error) {
+            console.log(error);
+        }
+        finally {
+            this.loadingService.setLoading(false);
+        }
+        await this.storageService.setLocalStorage(cacheKey, this.allFilms);
+
     }
-    catch (error) {
-      console.log(error);
+
+    private async updateFilmData() {
+        const filmPromises = this.allFilms.map(async (film: { filminfo_href: any; }) => {
+            if (film.filminfo_href !== undefined) {
+                const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+                return { ...film, ...filmContent };
+            }
+            return film;
+        });
+        this.allFilms = await Promise.all(filmPromises);
     }
-    finally {
-      this.loadingService.setLoading(false);
-    } 
-    await this.storageService.setLocalStorage(cacheKey, this.allFilms);
 
-  }
-
-  private async updateFilmData() {
-    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any; }) => {
-      if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
-        return { ...film, ...filmContent };
-      }
-      return film;
-    });
-    this.allFilms = await Promise.all(filmPromises);
-  }
-
-  ngOnDestroy() {
-    this.sub.unsubscribe();
-  }
-
-  emitSetOpen(isOpen: boolean) {
-    this.setOpenEvent.emit(isOpen);
-  }
-
-  async filterFilms() {
-    if (!this.searchQuery) {
-      this.newFilmsChange.emit(this.allFilms);
-    } else {
-      const filteredFilms = this.allFilms.filter((film: any) =>
-        Object.entries(film).some(([key, value]) => {
-          if (this.excludedProperties.includes(key)) {
-            return false;
-          }
-          return (
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())
-          );
-        })
-      );
-      this.newFilmsChange.emit(filteredFilms);
+    ngOnDestroy() {
+        this.sub.unsubscribe();
     }
-  }
 
-  focusInput() {
-    this.searchInput?.setFocus();
-  }
+    emitSetOpen(isOpen: boolean) {
+        this.setOpenEvent.emit(isOpen);
+    }
 
-  blurInput() {
-    this.searchInput?.getInputElement().then((inputElement) => {
-      inputElement.blur();
-    });
-  }
+    async filterFilms() {
+        if (!this.searchQuery) {
+            this.newFilmsChange.emit(this.allFilms);
+        } else {
+            const filteredFilms = this.allFilms.filter((film: any) =>
+                Object.entries(film).some(([key, value]) => {
+                    if (this.excludedProperties.includes(key)) {
+                        return false;
+                    }
+                    return (
+                        value &&
+                        value
+                            .toString()
+                            .toLowerCase()
+                            .includes(this.searchQuery.toLowerCase())
+                    );
+                })
+            );
+            this.newFilmsChange.emit(filteredFilms);
+        }
+    }
 
-  onSearchChange(searchValue: string) {
-    this.searchQuery = searchValue.trim().toLowerCase();
-    this.searchSubject.next(this.searchQuery);
-  }
+    focusInput() {
+        this.searchInput?.setFocus();
+    }
 
-  clearInput() {
-    this.searchQuery = '';
-    this.searchSubject.next(this.searchQuery);
-  }
+    blurInput() {
+        this.searchInput?.getInputElement().then((inputElement) => {
+            inputElement.blur();
+        });
+    }
+
+    onSearchChange(searchValue: string) {
+        this.searchQuery = searchValue.trim().toLowerCase();
+        this.searchSubject.next(this.searchQuery);
+    }
+
+    clearInput() {
+        this.searchQuery = '';
+        this.searchSubject.next(this.searchQuery);
+    }
 }

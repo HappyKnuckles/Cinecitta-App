@@ -1,4 +1,3 @@
-import { IonicModule } from '@ionic/angular';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -6,19 +5,29 @@ import { NewsPage } from './newspage.page';
 
 
 import { NewsPageRoutingModule } from './newspage-routing.module';
-import { ExtractTextModule } from 'src/app/Pipes/extract-text/extract-text.module';
+
 import { SearchComponent } from 'src/app/common/search/search.component';
-import { SearchModule } from 'src/app/common/search/search.module';
+
+import { IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from "@ionic/angular/standalone";
 
 @NgModule({
-  imports: [
-    IonicModule,
+    imports: [
     CommonModule,
     FormsModule,
     NewsPageRoutingModule,
-    ExtractTextModule,
-    SearchModule
-  ],
-  declarations: [NewsPage]
+    IonText,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButton,
+    IonIcon,
+    IonContent,
+    IonRefresher,
+    IonGrid,
+    IonRow,
+    IonImg,
+    IonCol,
+    NewsPage
+]
 })
-export class NewsPageModule {}
+export class NewsPageModule { }

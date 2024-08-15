@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'extractText'
+    name: 'extractText',
+    standalone: true
 })
 export class ExtractTextPipe implements PipeTransform {
   transform(html: string): string {
