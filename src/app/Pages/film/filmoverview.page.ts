@@ -3,7 +3,7 @@ import { ActionSheetController, IonContent, IonModal, IonBackdrop, IonText, IonH
 import { AlertController } from '@ionic/angular/standalone';
 import * as Filtertags from '../../models/filtertags';
 import { SearchComponent } from 'src/app/common/search/search.component';
-import { Film, Leinwand } from '../../models/filmModel';
+import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
@@ -332,7 +332,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
             )
         );
     }
-
+    hasScreeningsForTheater(theater: Theater): boolean {
+        for (const leinwand of theater.leinwaende) {
+            if (this.hasScreeningsForLeinwand(leinwand)) {
+                return true;
+            }
+        }
+        return false;
+    }
     hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
         const result = leinwand.vorstellungen?.some(vorstellung => {
             const isWithinTimeRange = this.startTime <= vorstellung.uhrzeit && this.formattedEndTime >= vorstellung.uhrzeit;
