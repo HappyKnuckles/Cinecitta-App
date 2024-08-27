@@ -69,6 +69,7 @@ export class SearchComponent implements OnInit {
     searchQuery = '';
     sub: Subscription = new Subscription();
     isLoading = false;
+    private searchCache = new Map<string, any[]>();
 
     constructor(
         private filmData: FilmDataService,
@@ -160,7 +161,11 @@ export class SearchComponent implements OnInit {
             this.newFilmsChange.emit(this.allFilms);
             return;
         }
-
+        // Check cache first
+        if (this.searchCache.has(this.searchQuery)) {
+            this.newFilmsChange.emit(this.searchCache.get(this.searchQuery)!);
+            return;
+        }
         const options = {
             keys: [
                 { name: 'film_titel', weight: 0.7 },
@@ -169,8 +174,8 @@ export class SearchComponent implements OnInit {
                     .map(key => ({ name: key, weight: 0.3 }))
             ],
             threshold: 0.3,
-            location: 0,
-            distance: 100,
+            ignoreLocation: true,
+            minMatchCharLength: 3,
             includeMatches: true,
             includeScore: true,
             shouldSort: true,
@@ -181,6 +186,9 @@ export class SearchComponent implements OnInit {
         const result = fuse.search(this.searchQuery);
 
         const filteredFilms = result.map(({ item }) => item);
+
+        // Cache the result
+        this.searchCache.set(this.searchQuery, filteredFilms);
 
         this.newFilmsChange.emit(filteredFilms);
     }
