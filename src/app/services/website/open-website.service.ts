@@ -13,10 +13,11 @@ export class OpenWebsiteService {
     };
     let target = '_self';
     const finishedUrl = 'https://cinecitta.' + url;
+
     if (isPlatform('desktop') || isPlatform('mobileweb')) {
       target = '_blank';
-    }
-    else {
+      window.open(finishedUrl, target);
+    } else {
       try {
         await Browser.open({
           url: finishedUrl,
