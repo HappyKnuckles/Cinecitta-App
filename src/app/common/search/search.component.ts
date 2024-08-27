@@ -176,6 +176,48 @@ export class SearchComponent implements OnInit {
         }
     }
 
+    //TODO Implement better filtering and fuse.js
+    // async filterFilms() {
+    //     if (!this.searchQuery) {
+    //         this.newFilmsChange.emit(this.allFilms);
+    //         return;
+    //     }
+    
+    //     const lowerCaseQuery = this.searchQuery.toLowerCase();
+    //     const keywords = lowerCaseQuery.split(' ').filter(keyword => keyword);
+    
+    //     const filteredFilms = this.allFilms
+    //         .map((film: any) => {
+    //             let matchScore = 0;
+    
+    //             for (const [key, value] of Object.entries(film)) {
+    //                 if (this.excludedProperties.includes(key)) continue;
+    
+    //                 const stringValue = value ? value.toString().toLowerCase() : '';
+    
+    //                 for (const keyword of keywords) {
+    //                     if (stringValue === keyword) {
+    //                         // Exact match
+    //                         matchScore += 3;
+    //                     } else if (stringValue.startsWith(keyword)) {
+    //                         // Starts with match
+    //                         matchScore += 2;
+    //                     } else if (stringValue.includes(keyword)) {
+    //                         // Partial match
+    //                         matchScore += 1;
+    //                     }
+    //                 }
+    //             }
+    
+    //             return { film, matchScore };
+    //         })
+    //         .filter(({ matchScore }) => matchScore > 0)
+    //         .sort((a, b) => b.matchScore - a.matchScore) // Sort by relevance
+    //         .map(({ film }) => film);
+    
+    //     this.newFilmsChange.emit(filteredFilms);
+    // }
+    
     focusInput() {
         this.searchInput?.setFocus();
     }
