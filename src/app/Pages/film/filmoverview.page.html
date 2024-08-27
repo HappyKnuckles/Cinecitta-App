@@ -170,67 +170,72 @@
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"
         *ngIf="hasScreenings(film)">
         <div class="filmSpecific">
-
-          <div class="infoRow" *ngIf="!showTrailer[film.system_id]">
-            <div *ngIf="film.film_ist_ov === '1'" class="titel">
-              OV
-              <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
-            </div>
-            <div *ngIf="film.film_ist_ov !== '1'" class="titel">
-              <div class="OV"></div>
-            </div>
-            <div *ngIf="film.film_neu === 'NEU'" class="new-viereck">
-              <div class="new">NEU</div>
-            </div>
-            <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
-            <ion-popover [trigger]="'popover' + film.system_id" id="popover">
-              <ng-template>
-                <ion-content>
-                  <ion-grid>
-                    <ion-row>
-                      <b>Titel:</b>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col>{{ film.film_titel }}</ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <b>Dauer:</b></ion-row>
-                    <ion-row>
-                      <ion-col>{{ film.film_dauer! | transformTime }}</ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <b>FSK:</b>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col>{{ film.film_fsk }}</ion-col></ion-row>
-                    <ion-row *ngIf="film.film_tags"><b>Tags:</b></ion-row>
-                    <ion-row>
-                      <ion-col *ngFor="let tag of film.film_tags">{{ tag.text }}</ion-col>
-                    </ion-row>
-                    <ion-row>
-                      <b>Im Kino seit:</b>
-                    </ion-row>
-                    <ion-row>
-                      <ion-col>{{ film.film_centerstart_zeit }}</ion-col>
-                    </ion-row>
-                    <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
-                    <ion-row>
-                      <ion-col>
-                        {{ film.film_darsteller | extractText }}
-                      </ion-col>
-                    </ion-row>
-                    <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
-                    <ion-row>
-                      <ion-col>
-                        {{ film.film_regisseure! | extractText }}
-                      </ion-col>
-                    </ion-row>
-                  </ion-grid>
-                </ion-content>
-              </ng-template>
-            </ion-popover>
-          </div>
-
+          <ion-grid class="infoGrid">
+            <ion-row class="infoRow" *ngIf="!showTrailer[film.system_id]">
+              <ion-col *ngIf="film.film_ist_ov === '1'" class="titel ion-text-left">
+                OV
+                <ion-img class="OV" src="assets/images/united-kingdom.png"></ion-img>
+              </ion-col>
+              <ion-col *ngIf="film.film_ist_ov !== '1'" class="titel ion-text-left">
+                <div class="OV"></div>
+              </ion-col>
+              <ion-col style="display: flex; justify-content: center;">
+                <div *ngIf="film.film_neu === 'NEU'" class="new-viereck">
+                  <div class="new">NEU</div>
+                </div>
+              </ion-col>
+              <ion-col class="ion-text-right">
+                <ion-icon class="infoBtn" [id]="'popover' + film.system_id"
+                  name="information-circle-outline"></ion-icon>
+                </ion-col>
+              <ion-popover [trigger]="'popover' + film.system_id" id="popover">
+                <ng-template>
+                  <ion-content>
+                    <ion-grid>
+                      <ion-row>
+                        <b>Titel:</b>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col>{{ film.film_titel }}</ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <b>Dauer:</b></ion-row>
+                      <ion-row>
+                        <ion-col>{{ film.film_dauer! | transformTime }}</ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <b>FSK:</b>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col>{{ film.film_fsk }}</ion-col></ion-row>
+                      <ion-row *ngIf="film.film_tags"><b>Tags:</b></ion-row>
+                      <ion-row>
+                        <ion-col *ngFor="let tag of film.film_tags">{{ tag.text }}</ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <b>Im Kino seit:</b>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col>{{ film.film_centerstart_zeit }}</ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="film.film_darsteller"><b>Darsteller:</b> </ion-row>
+                      <ion-row>
+                        <ion-col>
+                          {{ film.film_darsteller | extractText }}
+                        </ion-col>
+                      </ion-row>
+                      <ion-row *ngIf="film.film_regisseure"><b>Regisseure:</b> </ion-row>
+                      <ion-row>
+                        <ion-col>
+                          {{ film.film_regisseure! | extractText }}
+                        </ion-col>
+                      </ion-row>
+                    </ion-grid>
+                  </ion-content>
+                </ng-template>
+              </ion-popover>
+            </ion-row>
+          </ion-grid>
           <ion-button *ngIf="showTrailer[film.system_id]" (click)="showTrailers(film)" fill="clear"
             style="position: absolute; left: 5%; z-index: 10; margin-top: -5px">
             <ion-icon name="chevron-back"></ion-icon>
@@ -318,7 +323,7 @@
               <ion-img class="OV" src="assets/images/united-kingdom.png">
               </ion-img>
             </span>
-            <span *ngIf="film.film_neu === 'NEU'" style="margin-left: 5px;">
+            <span *ngIf="film.film_neu === 'NEU'" class="newSpan">
               <div class="new-dreieck small">
                 <div class="new">NEU</div>
               </div>
@@ -350,7 +355,7 @@
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
-            <span *ngIf="film.film_neu === 'NEU'" style="margin-left: 5px;">
+            <span *ngIf="film.film_neu === 'NEU'" class="newSpan">
               <div class="new-dreieck mini">
                 <div class="new">NEU</div>
               </div>

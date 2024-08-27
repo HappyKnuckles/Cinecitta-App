@@ -132,20 +132,24 @@
         padding: 0 10px;
     }
 
-    .infoRow {
+    .infoGrid {
         position: absolute;
         z-index: 5;
         width: 85vw;
         height: 10%;
         background: linear-gradient(rgba(0, 0, 0, 0.681), #0000);
-        display: inline-flex;
-        border-radius: 7px 7px 0 0;
-        justify-content: space-between;
-        padding: 5px 10px 0;
+        // display: inline-flex;
+        // justify-content: space-between;
+        // padding: 5px 10px 0;
+
+        .infoRow {
+            width: 100%;
+        }
 
         .infoBtn {
             transform: translateY(-3px);
             color: #a3d9d5;
+            color: #2ce8f4;
             font-weight: 700;
             font-size: 30px;
         }
@@ -167,32 +171,35 @@
         }
     }
 
-    .new-dreieck {
-        z-index: 10;
+    .newSpan {
+        margin-left: 5px;
         position: absolute;
-        transform: translateY(-11px);
-        right: 5%;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-radius: 7px;
-        border-width: 0 40px 40px 0;
-        border-color: transparent #1d979f transparent transparent;
-        font-size: 10px;
-        opacity: .9;
-        right: 24px;
+        right: 6%;
+        z-index: 10;
 
-        &.mini {
-            transform: translateY(-4px);
-        }
+        .new-dreieck {
+            transform: translateY(-11px);
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-radius: 0 7px 0 0;
+            border-width: 0 40px 40px 0;
+            border-color: transparent #1d979f transparent transparent;
+            font-size: 10px;
+            opacity: .9;
 
-        .new {
-            transform: rotate(45deg);
-            color: #fff;
-            font-size: 12px;
-            top: 6px;
-            right: -38px;
-            position: absolute;
+            &.mini {
+                transform: translateY(-4px);
+            }
+
+            .new {
+                transform: rotate(45deg);
+                color: #fff;
+                font-size: 12px;
+                top: 6px;
+                right: -38px;
+                position: absolute;
+            }
         }
     }
 
@@ -243,7 +250,7 @@
         }
     }
 
-    ion-grid:not(.infoRow) {
+    ion-grid:not(.infoGrid) {
         margin-top: 10px;
         text-align: center;
 
