@@ -30,6 +30,7 @@ import { addIcons } from "ionicons";
 import { search } from "ionicons/icons";
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Fuse from 'fuse.js';
 
 @Component({
     selector: 'app-search',
@@ -157,67 +158,33 @@ export class SearchComponent implements OnInit {
     async filterFilms() {
         if (!this.searchQuery) {
             this.newFilmsChange.emit(this.allFilms);
-        } else {
-            const filteredFilms = this.allFilms.filter((film: any) =>
-                Object.entries(film).some(([key, value]) => {
-                    if (this.excludedProperties.includes(key)) {
-                        return false;
-                    }
-                    return (
-                        value &&
-                        value
-                            .toString()
-                            .toLowerCase()
-                            .includes(this.searchQuery.toLowerCase())
-                    );
-                })
-            );
-            this.newFilmsChange.emit(filteredFilms);
+            return;
         }
+
+        const options = {
+            keys: [
+                { name: 'film_titel', weight: 0.7 },
+                ...Object.keys(this.allFilms[0])
+                    .filter(key => !this.excludedProperties.includes(key) && key !== 'film_titel')
+                    .map(key => ({ name: key, weight: 0.3 }))
+            ],
+            threshold: 0.3,
+            location: 0,
+            distance: 100,
+            includeMatches: true,
+            includeScore: true,
+            shouldSort: true,
+            useExtendedSearch: false
+        };
+
+        const fuse = new Fuse(this.allFilms, options);
+        const result = fuse.search(this.searchQuery);
+
+        const filteredFilms = result.map(({ item }) => item);
+
+        this.newFilmsChange.emit(filteredFilms);
     }
 
-    //TODO Implement better filtering and fuse.js
-    // async filterFilms() {
-    //     if (!this.searchQuery) {
-    //         this.newFilmsChange.emit(this.allFilms);
-    //         return;
-    //     }
-    
-    //     const lowerCaseQuery = this.searchQuery.toLowerCase();
-    //     const keywords = lowerCaseQuery.split(' ').filter(keyword => keyword);
-    
-    //     const filteredFilms = this.allFilms
-    //         .map((film: any) => {
-    //             let matchScore = 0;
-    
-    //             for (const [key, value] of Object.entries(film)) {
-    //                 if (this.excludedProperties.includes(key)) continue;
-    
-    //                 const stringValue = value ? value.toString().toLowerCase() : '';
-    
-    //                 for (const keyword of keywords) {
-    //                     if (stringValue === keyword) {
-    //                         // Exact match
-    //                         matchScore += 3;
-    //                     } else if (stringValue.startsWith(keyword)) {
-    //                         // Starts with match
-    //                         matchScore += 2;
-    //                     } else if (stringValue.includes(keyword)) {
-    //                         // Partial match
-    //                         matchScore += 1;
-    //                     }
-    //                 }
-    //             }
-    
-    //             return { film, matchScore };
-    //         })
-    //         .filter(({ matchScore }) => matchScore > 0)
-    //         .sort((a, b) => b.matchScore - a.matchScore) // Sort by relevance
-    //         .map(({ film }) => film);
-    
-    //     this.newFilmsChange.emit(filteredFilms);
-    // }
-    
     focusInput() {
         this.searchInput?.setFocus();
     }
