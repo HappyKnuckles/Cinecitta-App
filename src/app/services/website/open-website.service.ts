@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Browser } from '@capacitor/browser';
+import { isPlatform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,21 @@ export class OpenWebsiteService {
     const options = {
       toolbarColor: '#1d979f',
     };
+    let target = '_self';
     const finishedUrl = 'https://cinecitta.' + url;
-
-    try {
-      await Browser.open({
-        url: finishedUrl,
-        windowName: '_self',
-        toolbarColor: options.toolbarColor,
-      });
-    } catch (error) {
-      console.error('Error opening external website: ' + error);
+    if (isPlatform('desktop') || isPlatform('mobileweb')) {
+      target = '_blank';
+    }
+    else {
+      try {
+        await Browser.open({
+          url: finishedUrl,
+          windowName: target,
+          toolbarColor: options.toolbarColor,
+        });
+      } catch (error) {
+        console.error('Error opening external website: ' + error);
+      }
     }
   }
 }
