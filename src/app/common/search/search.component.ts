@@ -58,8 +58,10 @@ export class SearchComponent implements OnInit {
     @Input() excludedProperties: any[] = [];
     @Input() showFilterButton = false;
     @Input({ required: true }) isOpen = false;
+    @Input() isReload = false;
 
-    @Output() newFilmsChange = new EventEmitter<any[]>();
+
+    @Output() filmsChange = new EventEmitter<any[]>();
     @Output() setOpenEvent = new EventEmitter<boolean>();
     @ViewChild('searchInput') searchInput?: IonInput;
 
@@ -100,7 +102,7 @@ export class SearchComponent implements OnInit {
 
     async ngOnChanges(changes: SimpleChanges) {
         if (changes['formData'] && !changes['formData'].isFirstChange()) {
-            await this.loadData(this.formData, true);
+            await this.loadData(this.formData, this.isReload);
         }
     }
 
@@ -116,7 +118,7 @@ export class SearchComponent implements OnInit {
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if (cachedFilms && !isReload) {
             this.allFilms = await cachedFilms;
-            this.newFilmsChange.emit(this.allFilms);
+            this.filmsChange.emit(this.allFilms);
             return;
         }
 
@@ -128,7 +130,7 @@ export class SearchComponent implements OnInit {
             } else {
                 this.allFilms = await this.filmData.fetchNewFilms();
             }
-            this.newFilmsChange.emit(this.allFilms);
+            this.filmsChange.emit(this.allFilms);
         }
         catch (error) {
             console.log(error);
@@ -153,7 +155,7 @@ export class SearchComponent implements OnInit {
 
     filterFilms() {
         if (!this.searchQuery) {
-            this.newFilmsChange.emit(this.allFilms);
+            this.filmsChange.emit(this.allFilms);
         } else {
             const filteredFilms = this.allFilms.filter((film: any) =>
                 Object.entries(film).some(([key, value]) => {
@@ -169,7 +171,7 @@ export class SearchComponent implements OnInit {
                     );
                 })
             );
-            this.newFilmsChange.emit(filteredFilms);
+            this.filmsChange.emit(filteredFilms);
         }
     }
 

@@ -25,8 +25,8 @@
       </ion-button>
     </div>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [formData]="formData"
-    [excludedProperties]="excluded" (newFilmsChange)="films = $event"></app-search>
+  <app-search [isOpen]="isSearchOpen" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true" [formData]="formData"
+    [excludedProperties]="excluded" (filmsChange)="films = $event"></app-search>
 </ion-header>
 
 <!-- Filter Modal -->
