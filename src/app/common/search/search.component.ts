@@ -105,7 +105,12 @@ export class SearchComponent implements OnInit {
     }
 
     async loadData(formData?: FormData, isReload?: boolean) {
-        const cacheKey = this.isNewFilms ? 'newFilms' : 'allFilms';
+        let hashedFormData: string | undefined;
+        if (formData) {
+            const serializedFormData = this.serializeFormData(this.formData);
+            hashedFormData = await this.hashString(serializedFormData);
+        }
+        const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
         const maxAge = 12 * 60 * 60 * 1000; // 24 hours
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
@@ -146,15 +151,7 @@ export class SearchComponent implements OnInit {
         this.allFilms = await Promise.all(filmPromises);
     }
 
-    ngOnDestroy() {
-        this.sub.unsubscribe();
-    }
-
-    emitSetOpen(isOpen: boolean) {
-        this.setOpenEvent.emit(isOpen);
-    }
-
-    async filterFilms() {
+    filterFilms() {
         if (!this.searchQuery) {
             this.newFilmsChange.emit(this.allFilms);
         } else {
@@ -182,19 +179,19 @@ export class SearchComponent implements OnInit {
     //         this.newFilmsChange.emit(this.allFilms);
     //         return;
     //     }
-    
+
     //     const lowerCaseQuery = this.searchQuery.toLowerCase();
     //     const keywords = lowerCaseQuery.split(' ').filter(keyword => keyword);
-    
+
     //     const filteredFilms = this.allFilms
     //         .map((film: any) => {
     //             let matchScore = 0;
-    
+
     //             for (const [key, value] of Object.entries(film)) {
     //                 if (this.excludedProperties.includes(key)) continue;
-    
+
     //                 const stringValue = value ? value.toString().toLowerCase() : '';
-    
+
     //                 for (const keyword of keywords) {
     //                     if (stringValue === keyword) {
     //                         // Exact match
@@ -208,16 +205,41 @@ export class SearchComponent implements OnInit {
     //                     }
     //                 }
     //             }
-    
+
     //             return { film, matchScore };
     //         })
     //         .filter(({ matchScore }) => matchScore > 0)
     //         .sort((a, b) => b.matchScore - a.matchScore) // Sort by relevance
     //         .map(({ film }) => film);
-    
+
     //     this.newFilmsChange.emit(filteredFilms);
     // }
-    
+
+    ngOnDestroy() {
+        this.sub.unsubscribe();
+    }
+
+    emitSetOpen(isOpen: boolean) {
+        this.setOpenEvent.emit(isOpen);
+    }
+
+    serializeFormData(formData: FormData): string {
+        const entries = [];
+        for (const [key, value] of (formData as any).entries()) {
+            entries.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+        }
+        return entries.join('&');
+    }
+
+    async hashString(str: string): Promise<string> {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        return hashHex;
+    }
+
     focusInput() {
         this.searchInput?.setFocus();
     }

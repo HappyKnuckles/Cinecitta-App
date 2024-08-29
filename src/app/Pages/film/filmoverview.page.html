@@ -281,7 +281,7 @@
                             <div *ngFor="let vorstellung of leinwand.vorstellungen">
                               <ng-container
                                 *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit">
-                                <div *ngIf="!vorstellung.deaktiviert; else greyVorstellung"
+                                <div *ngIf="!vorstellung.deaktiviert && !vorstellung.ausgegraut; else greyVorstellung"
                                   (click)="openExternalWebsite(vorstellung.href!)"
                                   [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
                                   {{ vorstellung.uhrzeit }}
@@ -292,6 +292,14 @@
                                   </div>
                                 </ng-template>
                               </ng-container>
+                              <!-- TODO Überlegen ob Zeiten ausgrauen oder entfernen-->
+                              <!-- <ng-container
+                                *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit && !vorstellung.ausgegraut && !vorstellung.deaktiviert">
+                                <div (click)="openExternalWebsite(vorstellung.href!)"
+                                  [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
+                                  {{ vorstellung.uhrzeit }}
+                                </div>
+                              </ng-container> -->
                             </div>
                           </ng-container>
                         </ion-col>

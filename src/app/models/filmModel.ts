@@ -2,23 +2,38 @@
 export interface Leinwand {
     leinwand_name: string;
     leinwand_highlights_css: string;
-    vorstellungen: {
-        belegung_ampel: string;
-        belegung_ampel_text: string;
-        tag_der_woche: string;
-        uhrzeit: string;
-        datum_uhrzeit: string;
-        datum_uhrzeit_iso?: string;
-        deaktiviert?: boolean;
-        vorstellung_id?: string;
-        href?: string;
-    }[];
+    // vorstellungen: {
+    //     belegung_ampel: string;
+    //     belegung_ampel_text: string;
+    //     tag_der_woche: string;
+    //     uhrzeit: string;
+    //     datum_uhrzeit: string;
+    //     datum_uhrzeit_iso?: string;
+    //     deaktiviert?: boolean;
+    //     vorstellung_id?: string;
+    //     href?: string;
+    //     ausgegraut?: boolean;
+    // }[];
+    vorstellungen: Vorstellung[];
     theater_name: string;
     theater_ort_name: string;
     theater_ort_adresse: string;
     release_flags: any[];
     vorstellungen_anzahl_tage: Record<string, number>;
     hat_aktive_vorstellungen: boolean;
+}
+
+export interface Vorstellung {
+    belegung_ampel: string;
+    belegung_ampel_text: string;
+    tag_der_woche: string;
+    uhrzeit: string;
+    datum_uhrzeit: string;
+    datum_uhrzeit_iso?: string;
+    deaktiviert?: boolean;
+    vorstellung_id?: string;
+    href?: string;
+    ausgegraut?: boolean;
 }
 
 export interface Theater {
