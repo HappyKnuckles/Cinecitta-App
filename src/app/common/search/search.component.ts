@@ -90,7 +90,8 @@ export class SearchComponent implements OnInit {
                 })
         );
 
-        await this.loadData(this.formData);
+        await this.loadData(this.formData);            console.log(this.allFilms)
+
         if (!this.isNewFilms) {
             this.sub.add(
                 this.filmRouter.currentFilmTitle.subscribe((title) => {
@@ -103,6 +104,7 @@ export class SearchComponent implements OnInit {
     async ngOnChanges(changes: SimpleChanges) {
         if (changes['formData'] && !changes['formData'].isFirstChange()) {
             await this.loadData(this.formData, this.isReload);
+
         }
     }
 
