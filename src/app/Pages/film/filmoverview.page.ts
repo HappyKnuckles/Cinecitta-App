@@ -38,6 +38,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     formattedEndTime = "";
     films: Film[] = [];
     message = '';
+    isReload = false;
     isLoading = false;
     isTimesOpen: { [key: string]: boolean } = {};
     isSearchOpen = false;
@@ -143,6 +144,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     //     }
     //   });
     // }
+    
     ngOnDestroy(): void {
         this.loadingSubscription.unsubscribe();
         if (this.intervalId) {
@@ -157,9 +159,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
     handleRefresh(event: any): void {
         setTimeout(async () => {
+            this.isReload = true;
             await this.loadFilmData();
             this.searchInput.clearInput();
             event.target.complete();
+
         }, 100);
     }
 
@@ -323,38 +327,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         await this.loadFilmData();
     }
 
-    // hasScreenings(film: Film): boolean {
-    //     return film.theater.some(theater =>
-    //         theater.leinwaende.some(leinwand =>
-    //             leinwand.vorstellungen?.some(vorstellung =>
-    //                 this.startTime <= vorstellung.uhrzeit &&
-    //                 this.formattedEndTime >= vorstellung.uhrzeit
-    //             )
-    //         )
-    //     );
-    // }
-
-    // hasScreeningsForTheater(theater: Theater): boolean {
-    //     for (const leinwand of theater.leinwaende) {
-    //         if (this.hasScreeningsForLeinwand(leinwand)) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
-    //     const result = leinwand.vorstellungen?.some(vorstellung => {
-    //         const isWithinTimeRange = this.startTime <= vorstellung.uhrzeit && this.formattedEndTime >= vorstellung.uhrzeit;
-    //         return isWithinTimeRange;
-    //     });
-    //     return result;
-    // }
-
-    // hasFlagName(leinwand: Leinwand, name: string): boolean {
-    //     return leinwand.release_flags.some((flag: any) => flag.flag_name === name);
-    // }
-
     hasScreenings(film: Film): boolean {
         return film.theater.some(theater => this.hasScreeningsForTheater(theater));
     }
@@ -460,6 +432,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     async toggleSelection(id: any, filterType: string): Promise<void> {
+        this.isReload = false;
         if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
             // For Kinosaal tag or other non-time filters
             this.selectedFilters[filterType] = [id];
@@ -497,6 +470,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     async onTimeChange(isInit?: boolean): Promise<void> {
+        this.isReload = false;
         let startHour = this.convertTimeToNumeric(this.startTime);
         let endHour = this.convertTimeToNumeric(this.endTime);
         const formatHour = (hour: number) => hour.toString().padStart(2, '0');
