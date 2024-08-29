@@ -68,7 +68,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         private website: OpenWebsiteService,
         private loadingService: LoadingService,
         private router: Router
-    ) {        addIcons({ ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline });
+    ) {
+        addIcons({ ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline });
 
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
@@ -322,34 +323,56 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         await this.loadFilmData();
     }
 
+    // hasScreenings(film: Film): boolean {
+    //     return film.theater.some(theater =>
+    //         theater.leinwaende.some(leinwand =>
+    //             leinwand.vorstellungen?.some(vorstellung =>
+    //                 this.startTime <= vorstellung.uhrzeit &&
+    //                 this.formattedEndTime >= vorstellung.uhrzeit
+    //             )
+    //         )
+    //     );
+    // }
+
+    // hasScreeningsForTheater(theater: Theater): boolean {
+    //     for (const leinwand of theater.leinwaende) {
+    //         if (this.hasScreeningsForLeinwand(leinwand)) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
+
+    // hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
+    //     const result = leinwand.vorstellungen?.some(vorstellung => {
+    //         const isWithinTimeRange = this.startTime <= vorstellung.uhrzeit && this.formattedEndTime >= vorstellung.uhrzeit;
+    //         return isWithinTimeRange;
+    //     });
+    //     return result;
+    // }
+
+    // hasFlagName(leinwand: Leinwand, name: string): boolean {
+    //     return leinwand.release_flags.some((flag: any) => flag.flag_name === name);
+    // }
+
     hasScreenings(film: Film): boolean {
-        return film.theater.some(theater =>
-            theater.leinwaende.some(leinwand =>
-                leinwand.vorstellungen?.some(vorstellung =>
-                    this.startTime <= vorstellung.uhrzeit &&
-                    this.formattedEndTime >= vorstellung.uhrzeit
-                )
-            )
-        );
+        return film.theater.some(theater => this.hasScreeningsForTheater(theater));
     }
+
     hasScreeningsForTheater(theater: Theater): boolean {
-        for (const leinwand of theater.leinwaende) {
-            if (this.hasScreeningsForLeinwand(leinwand)) {
-                return true;
-            }
-        }
-        return false;
+        return theater.leinwaende.some(leinwand => this.hasScreeningsForLeinwand(leinwand));
     }
+
     hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
-        const result = leinwand.vorstellungen?.some(vorstellung => {
-            const isWithinTimeRange = this.startTime <= vorstellung.uhrzeit && this.formattedEndTime >= vorstellung.uhrzeit;
-            return isWithinTimeRange;
-        });
-        return result;
+        return leinwand.vorstellungen?.some(vorstellung => this.isWithinTimeRange(vorstellung.uhrzeit)) ?? false;
+    }
+
+    isWithinTimeRange(uhrzeit: string): boolean {
+        return this.startTime <= uhrzeit && this.formattedEndTime >= uhrzeit;
     }
 
     hasFlagName(leinwand: Leinwand, name: string): boolean {
-        return leinwand.release_flags.some((flag: any) => flag.flag_name === name);
+        return leinwand.release_flags.some((flag: { flag_name: string }) => flag.flag_name === name);
     }
 
     getColor(belegung_ampel: string): string {

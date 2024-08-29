@@ -20,11 +20,11 @@ export const selectedFilters: any = {
   
   export const tageAuswahl = [
     { id: '', name: 'Diese Woche' },
-    { id: 'tage_auswahl-heute', name: 'Heute' },
-    { id: 'tage_auswahl-morgen', name: 'Morgen' },
-    { id: 'tage_auswahl-amwe', name: 'Am Wochenende' },
-    { id: 'tage_auswahl-naechstewoche', name: 'nächste Woche' },
-    { id: 'tage_auswahl-weiterenwochen', name: 'alle weiteren Wochen' },
+    { id: 'tage-auswahl-heute', name: 'Heute' },
+    { id: 'tage-auswahl-morgen', name: 'Morgen' },
+    { id: 'tage-auswahl-amwe', name: 'Am Wochenende' },
+    { id: 'tage-auswahl-naechstewoche', name: 'nächste Woche' },
+    { id: 'tage-auswahl-weiterenwochen', name: 'alle weiteren Wochen' },
   ];
   
   export const genresTag = [
