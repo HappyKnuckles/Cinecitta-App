@@ -30,6 +30,8 @@ import { addIcons } from "ionicons";
 import { search } from "ionicons/icons";
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Network } from '@capacitor/network';
+import { ToastService } from 'src/app/services/toast/toast.service';
 
 @Component({
     selector: 'app-search',
@@ -76,7 +78,8 @@ export class SearchComponent implements OnInit {
         private filmRouter: FilmRoutService,
         private webScrapingService: WebscraperService,
         private loadingService: LoadingService,
-        private storageService: StorageService
+        private storageService: StorageService,
+        private toastService: ToastService
     ) {
         addIcons({ search });
     }
@@ -90,7 +93,7 @@ export class SearchComponent implements OnInit {
                 })
         );
 
-        await this.loadData(this.formData);            console.log(this.allFilms)
+        await this.loadData(this.formData); console.log(this.allFilms)
 
         if (!this.isNewFilms) {
             this.sub.add(
@@ -104,7 +107,6 @@ export class SearchComponent implements OnInit {
     async ngOnChanges(changes: SimpleChanges) {
         if (changes['formData'] && !changes['formData'].isFirstChange()) {
             await this.loadData(this.formData, this.isReload);
-
         }
     }
 
@@ -116,11 +118,15 @@ export class SearchComponent implements OnInit {
         }
         const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
         const maxAge = 12 * 60 * 60 * 1000; // 24 hours
+        const hasInternet = !(await Network.getStatus()).connected;
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
-        if (cachedFilms && !isReload) {
+        if ((cachedFilms && !isReload) || !hasInternet) {
             this.allFilms = await cachedFilms;
             this.filmsChange.emit(this.allFilms);
+            if (!hasInternet) {
+                this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
+            }
             return;
         }
 

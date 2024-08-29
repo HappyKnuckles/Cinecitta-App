@@ -8,6 +8,8 @@ import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.p
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { Network } from '@capacitor/network';
+import { has } from 'cheerio/lib/api/traversing';
 
 @Component({
     selector: 'app-film-select',
@@ -34,8 +36,12 @@ export class FilmSelectComponent {
     isLoading = false;
     topFilms: Film[] = [];
     selectedItem!: string;
-    constructor(private filmData: FilmDataService,
-        private webScrapingService: WebscraperService, private storageService: StorageService, private loadingService: LoadingService) { }
+    constructor(
+        private filmData: FilmDataService,
+        private webScrapingService: WebscraperService,
+        private storageService: StorageService,
+        private loadingService: LoadingService,
+    ) { }
 
 
     async loadData(isReload?: boolean): Promise<void> {
@@ -48,9 +54,10 @@ export class FilmSelectComponent {
     async getFilmsByFilter(data?: string, isReload?: boolean): Promise<void> {
         const cacheKey = `films-${this.filterType}-${data}`;
         const maxAge = 12 * 60 * 60 * 1000;
+        const hasInternet = (await Network.getStatus()).connected;
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
-        if (cachedFilms && !isReload) {
+        if ((cachedFilms && !isReload) || !hasInternet) {
             this.topFilms = this.getTop10Films(await cachedFilms);
             return;
         }

@@ -3,6 +3,7 @@ import { LoadingService } from './services/loader/loading.service';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular/standalone';
+import { ToastComponent } from './common/toast/toast.component';
 
 @Component({
     selector: 'app-root',
@@ -15,6 +16,7 @@ import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular
         IonBackdrop,
         IonSpinner,
         IonRouterOutlet,
+        ToastComponent
     ],
 })
 export class AppComponent implements OnDestroy {
