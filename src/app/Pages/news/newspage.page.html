@@ -16,7 +16,7 @@
     </div>
   </ion-toolbar>
   <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded"
-    (newFilmsChange)="newFilms = $event"></app-search>
+    (filmsChange)="newFilms = $event"></app-search>
 </ion-header>
 
 <ion-content [fullscreen]="true">
