@@ -58,7 +58,7 @@ export class FilmSelectComponent {
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if ((cachedFilms && !isReload) || !hasInternet) {
-            this.topFilms = this.getTop10Films(await cachedFilms);
+            this.topFilms = this.getTopFilms(await cachedFilms);
             return;
         }
 
@@ -73,7 +73,7 @@ export class FilmSelectComponent {
         try {
             this.loadingService.setLoading(true);
             films = await this.filmData.fetchFilmData(formData);
-            this.topFilms = this.getTop10Films(films);
+            this.topFilms = this.getTopFilms(films);
             await this.updateFilmData();
         }
         catch (error) {
@@ -100,7 +100,7 @@ export class FilmSelectComponent {
         this.topFilms = await Promise.all(filmPromises);
     }
 
-    getTop10Films(films: Film[]): Film[] {
+    getTopFilms(films: Film[]): Film[] {
         const filmMap = new Map<string, Film>();
         films.forEach(film => {
             if (!filmMap.has(film.film_titel)) {

@@ -16,6 +16,7 @@ import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
 import { FormsModule } from '@angular/forms';
 import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
+import { ToastService } from 'src/app/services/toast/toast.service';
 
 @Component({
     selector: 'app-filmoverview',
@@ -68,7 +69,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         private alertController: AlertController,
         private website: OpenWebsiteService,
         private loadingService: LoadingService,
-        private router: Router
+        private router: Router,
+        private toastService: ToastService
     ) {
         addIcons({ ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline });
 
@@ -144,7 +146,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     //     }
     //   });
     // }
-    
+
     ngOnDestroy(): void {
         this.loadingSubscription.unsubscribe();
         if (this.intervalId) {
@@ -261,6 +263,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     showTrailers(film: Film): void {
         if (film.trailerUrl) {
             this.showTrailer[film.system_id] = !this.showTrailer[film.system_id];
+        } else {
+            this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
         }
     }
 
