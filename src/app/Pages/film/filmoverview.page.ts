@@ -93,6 +93,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         );
         this.setDefaultSelectedFilterValues();
         await this.onTimeChange(true);
+        this.checkTimes();
         this.startPeriodicCheck();
     }
 
