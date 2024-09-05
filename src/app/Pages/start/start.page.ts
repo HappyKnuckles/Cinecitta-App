@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { FilmSelectComponent } from 'src/app/common/film-select/film-select.component';
 import { FilmSelectComponent as FilmSelectComponent_1 } from '../../common/film-select/film-select.component';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from '@ionic/angular/standalone';
+import { Network } from '@capacitor/network';
+import { ToastService } from 'src/app/services/toast/toast.service';
 @Component({
     selector: 'app-tab1',
     templateUrl: 'start.page.html',
@@ -26,7 +28,8 @@ export class StartPage implements AfterViewInit {
     constructor(
         private loadingService: LoadingService,
         private filmRouter: FilmRoutService,
-        private router: Router
+        private router: Router,
+        private toastService: ToastService
     ) {
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
@@ -55,7 +58,13 @@ export class StartPage implements AfterViewInit {
 
     async fetchDataForAllComponents(isReload?: boolean): Promise<void> {
         this.loadingService.setLoading(true);
+        const hasInternet = (await Network.getStatus()).connected;
+
         try {
+            if (!hasInternet) {
+                this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
+                return;
+            }
             const loadPromises = this.filmSelectComponents.map(component => component.loadData(isReload));
             await Promise.all(loadPromises);
         }

@@ -111,6 +111,13 @@ export class SearchComponent implements OnInit {
     }
 
     async loadData(formData?: FormData, isReload?: boolean) {
+        const hasInternet = (await Network.getStatus()).connected;
+
+        if (!hasInternet && isReload) {
+            this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
+            return;
+        }
+        
         let hashedFormData: string | undefined;
         if (formData) {
             const serializedFormData = this.serializeFormData(this.formData);
@@ -118,7 +125,6 @@ export class SearchComponent implements OnInit {
         }
         const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
         const maxAge = 12 * 60 * 60 * 1000; // 24 hours
-        const hasInternet = (await Network.getStatus()).connected;
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if ((cachedFilms && !isReload) || !hasInternet) {
