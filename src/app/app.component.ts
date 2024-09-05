@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular/standalone';
 import { ToastComponent } from './common/toast/toast.component';
+import { SwUpdate } from '@angular/service-worker';
 
 @Component({
     selector: 'app-root',
@@ -23,9 +24,20 @@ export class AppComponent implements OnDestroy {
     isLoading = false;
     private loadingSubscription: Subscription;
 
-    constructor(private loadingService: LoadingService) {
+    constructor(private loadingService: LoadingService, private swUpdate: SwUpdate) {
+        this.initializeApp();
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
+        });
+    }
+
+    initializeApp(): void {
+        this.swUpdate.versionUpdates.subscribe(event => {
+            if (event.type === 'VERSION_READY') {
+                if (confirm('A new version is available. Load it?')) {
+                    window.location.reload();
+                }
+            }
         });
     }
 
