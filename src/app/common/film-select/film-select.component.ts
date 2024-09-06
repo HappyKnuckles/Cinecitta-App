@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
-import { has } from 'cheerio/lib/api/traversing';
+import { has, is } from 'cheerio/lib/api/traversing';
 
 @Component({
     selector: 'app-film-select',
@@ -55,6 +55,10 @@ export class FilmSelectComponent {
         const cacheKey = `films-${this.filterType}-${data}`;
         const maxAge = 12 * 60 * 60 * 1000;
         const hasInternet = (await Network.getStatus()).connected;
+
+        if(!hasInternet && isReload) {
+            throw new Error('No internet connection');
+        }
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if ((cachedFilms && !isReload) || !hasInternet) {

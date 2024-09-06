@@ -58,20 +58,17 @@ export class StartPage implements AfterViewInit {
 
     async fetchDataForAllComponents(isReload?: boolean): Promise<void> {
         this.loadingService.setLoading(true);
-        const hasInternet = (await Network.getStatus()).connected;
 
         try {
-            if (!hasInternet) {
-                this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
-                return;
-            }
             const loadPromises = this.filmSelectComponents.map(component => component.loadData(isReload));
             await Promise.all(loadPromises);
         }
-        catch (error) {
+        catch (error: any) {
+            if (error.message === 'No internet connection') {
+                this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
+            }
             console.log(error)
         }
         finally { this.loadingService.setLoading(false); }
     }
-
 }
