@@ -65,7 +65,11 @@ export class StartPage implements AfterViewInit {
 
         try {
             const loadPromises = this.filmSelectComponents.map(component => component.loadData(isReload));
-            await Promise.all(loadPromises);
+            const results = await Promise.all(loadPromises);
+
+            if (results.some(result => typeof result === 'boolean' && result === true)) {
+                this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
+            }
         }
         catch (error: any) {
             if (error.message === 'No internet connection') {

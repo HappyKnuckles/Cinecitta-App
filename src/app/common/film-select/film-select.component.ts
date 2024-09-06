@@ -51,19 +51,19 @@ export class FilmSelectComponent {
         await this.getFilmsByFilter(this.selectedItem, isReload);
     }
 
-    async getFilmsByFilter(data?: string, isReload?: boolean): Promise<void> {
+    async getFilmsByFilter(data?: string, isReload?: boolean): Promise<boolean> {
         const cacheKey = `films-${this.filterType}-${data}`;
         const maxAge = 12 * 60 * 60 * 1000;
         const hasInternet = (await Network.getStatus()).connected;
 
-        if(!hasInternet && isReload) {
+        if (!hasInternet && isReload) {
             throw new Error('No internet connection');
         }
 
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if ((cachedFilms && !isReload) || !hasInternet) {
             this.topFilms = this.getTopFilms(await cachedFilms);
-            return;
+            return true;
         }
 
         const formData = new FormData();
@@ -87,6 +87,7 @@ export class FilmSelectComponent {
             this.loadingService.setLoading(false);
         }
         await this.storageService.setLocalStorage(cacheKey, this.topFilms);
+        return false;
     }
 
     onFilmClick(film: Film): void {
