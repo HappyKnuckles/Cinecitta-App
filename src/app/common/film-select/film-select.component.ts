@@ -44,11 +44,11 @@ export class FilmSelectComponent {
     ) { }
 
 
-    async loadData(isReload?: boolean): Promise<void> {
+    async loadData(isReload?: boolean): Promise<boolean> {
         if (this.items && this.items.length > 0) {
             this.selectedItem = this.items[0].id;
         }
-        await this.getFilmsByFilter(this.selectedItem, isReload);
+        return await this.getFilmsByFilter(this.selectedItem, isReload);
     }
 
     async getFilmsByFilter(data?: string, isReload?: boolean): Promise<boolean> {
@@ -63,7 +63,7 @@ export class FilmSelectComponent {
         const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
         if ((cachedFilms && !isReload) || !hasInternet) {
             this.topFilms = this.getTopFilms(await cachedFilms);
-            return true;
+            return !hasInternet;
         }
 
         const formData = new FormData();
