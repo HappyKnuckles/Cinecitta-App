@@ -11,6 +11,8 @@ import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
 import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
 import { IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { NgIf, NgFor } from '@angular/common';
+import { HapticService } from 'src/app/services/haptic/haptic.service';
+import { ImpactStyle } from '@capacitor/haptics';
 
 @Component({
     selector: 'app-newspage',
@@ -33,7 +35,8 @@ export class NewsPage {
 
     constructor(
         private website: OpenWebsiteService,
-        private loadingService: LoadingService
+        private loadingService: LoadingService,
+        private hapticService: HapticService
     ) {
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
@@ -46,6 +49,7 @@ export class NewsPage {
     }
 
     handleRefresh(event: any): void {
+        this.hapticService.vibrate(ImpactStyle.Medium, 200);
         setTimeout(async () => {
             if (this.searchComponent) {
                 await this.searchComponent.loadData(undefined, true);

@@ -17,6 +17,8 @@ import { FormsModule } from '@angular/forms';
 import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { HapticService } from 'src/app/services/haptic/haptic.service';
+import { ImpactStyle } from '@capacitor/haptics';
 
 @Component({
     selector: 'app-filmoverview',
@@ -70,7 +72,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         private website: OpenWebsiteService,
         private loadingService: LoadingService,
         private router: Router,
-        private toastService: ToastService
+        private toastService: ToastService,
+        private hapticService: HapticService
     ) {
         addIcons({ ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline });
 
@@ -161,6 +164,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     handleRefresh(event: any): void {
+        this.hapticService.vibrate(ImpactStyle.Medium, 200);
         setTimeout(async () => {
             this.isReload = true;
             await this.loadFilmData();
@@ -172,7 +176,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
     async presentActionSheet(): Promise<void> {
         const buttons = [];
-
+        this.hapticService.vibrate(ImpactStyle.Medium, 200);
         if (!this.detailView[0]) {
             buttons.push({
                 text: ViewType.Detail,
@@ -220,6 +224,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     async showNoMoviesPopup(): Promise<void> {
+        this.hapticService.vibrate(ImpactStyle.Heavy, 300);
         const alert = await this.alertController.create({
             header: 'Keine Filme gefunden',
             message: 'Mit den ausgewählten Filtern sind keine Filme verfügbar',
@@ -244,6 +249,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
 
     openTimes(film_id: string, index: number): void {
+        this.hapticService.vibrate(ImpactStyle.Light, 100);
         this.isTimesOpen[film_id] = !this.isTimesOpen[film_id];
         if (this.isTimesOpen[film_id]) {
             setTimeout(() => {

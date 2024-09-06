@@ -9,6 +9,8 @@ import { FilmSelectComponent as FilmSelectComponent_1 } from '../../common/film-
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { HapticService } from 'src/app/services/haptic/haptic.service';
+import { ImpactStyle } from '@capacitor/haptics';
 @Component({
     selector: 'app-tab1',
     templateUrl: 'start.page.html',
@@ -29,7 +31,8 @@ export class StartPage implements AfterViewInit {
         private loadingService: LoadingService,
         private filmRouter: FilmRoutService,
         private router: Router,
-        private toastService: ToastService
+        private toastService: ToastService,
+        private hapticService: HapticService
     ) {
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
@@ -45,6 +48,7 @@ export class StartPage implements AfterViewInit {
     }
 
     handleRefresh(event: any): void {
+        this.hapticService.vibrate(ImpactStyle.Medium, 200);
         setTimeout(async () => {
             await this.fetchDataForAllComponents(true);
             event.target.complete();
