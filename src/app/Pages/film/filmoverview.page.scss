@@ -130,17 +130,15 @@
 
     .filmSpecific {
         padding: 0 10px;
+        position: relative;
     }
 
     .infoGrid {
         position: absolute;
         z-index: 5;
-        width: 85vw;
+        width: calc(100% - 20px);
         height: 10%;
         background: linear-gradient(rgba(0, 0, 0, 0.681), #0000);
-        // display: inline-flex;
-        // justify-content: space-between;
-        // padding: 5px 10px 0;
 
         .infoRow {
             width: 100%;

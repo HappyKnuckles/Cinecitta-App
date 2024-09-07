@@ -93,7 +93,7 @@ export class SearchComponent implements OnInit {
                 })
         );
 
-        await this.loadData(this.formData); console.log(this.allFilms)
+        await this.loadData(this.formData); 
 
         if (!this.isNewFilms) {
             this.sub.add(
