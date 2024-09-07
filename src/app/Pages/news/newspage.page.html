@@ -39,14 +39,15 @@
               </ng-container>
             </span>
             <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px;">
-              <ion-img class="OV" src="assets/images/united-kingdom.png">
+              <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge">
               </ion-img>
             </span>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
               <img style="margin-bottom: 5px;" src="{{film.film_cover_src}}"
-                (click)="openExternalWebsite(film.filminfo_href)"/>
+                (click)="openExternalWebsite(film.filminfo_href)" loading="lazy"
+                alt="Film Cover von {{film.film_titel}}" />
               <span style="display:flex; justify-content: center; color: #a3d9d5;">{{film.film_centerstart_zeit}}</span>
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''"
