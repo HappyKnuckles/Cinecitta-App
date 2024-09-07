@@ -60,7 +60,7 @@ export class FilmSelectComponent {
             throw new Error('No internet connection');
         }
 
-        const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
+        const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
         if ((cachedFilms && !isReload) || !hasInternet) {
             this.topFilms = this.getTopFilms(await cachedFilms);
             return !hasInternet;

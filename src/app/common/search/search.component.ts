@@ -126,7 +126,7 @@ export class SearchComponent implements OnInit {
         const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
         const maxAge = 12 * 60 * 60 * 1000; // 24 hours
 
-        const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge);
+        const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
         if ((cachedFilms && !isReload) || !hasInternet) {
             this.allFilms = await cachedFilms;
             this.filmsChange.emit(this.allFilms);
