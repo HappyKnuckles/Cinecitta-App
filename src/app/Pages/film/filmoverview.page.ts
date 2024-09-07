@@ -19,6 +19,7 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
+import { Network } from '@capacitor/network';
 
 @Component({
     selector: 'app-filmoverview',
@@ -275,8 +276,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         }
     }
 
-    setOpen(isOpen: boolean): void {
-        this.isModalOpen = isOpen;
+    async setOpen(isOpen: boolean): Promise<void> {
+        const hasInternet = (await Network.getStatus()).connected;
+        if (hasInternet) {
+            this.hapticService.vibrate(ImpactStyle.Medium, 200);
+            this.isModalOpen = isOpen;
+        } else {
+            this.toastService.showToast("Can't use filters. No internet connection.", 'bug', true);
+        }
     }
 
     showTags(index: number): void {
