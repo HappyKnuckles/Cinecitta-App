@@ -171,7 +171,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
             await this.loadFilmData();
             this.searchInput.clearInput();
             event.target.complete();
-
         }, 100);
     }
 
@@ -282,7 +281,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
             this.hapticService.vibrate(ImpactStyle.Medium, 200);
             this.isModalOpen = isOpen;
         } else {
-            this.toastService.showToast("Can't use filters. No internet connection.", 'bug', true);
+            this.toastService.showToast("Can't use filters. No internet connection.", 'alert-outline', true);
         }
     }
 

@@ -114,7 +114,7 @@ export class SearchComponent implements OnInit {
         const hasInternet = (await Network.getStatus()).connected;
 
         if (!hasInternet && isReload) {
-            this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
+            this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
             return;
         }
         

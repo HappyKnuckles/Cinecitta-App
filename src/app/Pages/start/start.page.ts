@@ -73,7 +73,7 @@ export class StartPage implements AfterViewInit {
         }
         catch (error: any) {
             if (error.message === 'No internet connection') {
-                this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline');
+                this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
             }
             console.log(error)
         }
