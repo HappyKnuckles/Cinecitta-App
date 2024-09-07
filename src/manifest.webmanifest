@@ -1,64 +1,92 @@
 {
   "name": "Cinecitta'",
   "short_name": "Cinecitta'",
+  "description": "CINECITTA' - The premier cinema experience in Nürnberg, offering the latest movies, comfortable seating, and state-of-the-art technology. Join us for an unforgettable movie experience.",
   "theme_color": "#000",
   "background_color": "#000",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
   "icons": [{
-      "src": "assets/icons/icon-72x72.png",
+      "src": "assets/icons/android/launcher-icon-72x72.png",
       "sizes": "72x72",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-96x96.png",
+      "src": "assets/icons/android/launcher-icon-96x96.png",
       "sizes": "96x96",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "assets/icons/icon-144x144.png",
+      "src": "assets/icons/android/launcher-icon-144x144.png",
       "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-152x152.png",
+      "src": "assets/icons/ios/touch-icon-152x152.png",
       "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-192x192.png",
+      "src": "assets/icons/android/launcher-icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
-      "src": "assets/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "assets/icons/icon-512x512.png",
+      "src": "assets/icons/android/splash-icon-512x512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "type": "image/png"
     },
     {
       "src": "assets/icons/ios/touch-icon-1024x1024.png",
-      "sizes": "512x512",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/start_wide.png",
+      "sizes": "2340x1932",
       "type": "image/png",
-      "purpose": "maskable any"
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshots/films_wide.png",
+      "sizes": "2340x1932",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshots/soon_wide.png",
+      "sizes": "2340x1932",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshots/profile_wide.png",
+      "sizes": "2340x1932",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshots/start.png",
+      "sizes": "575x1246",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/screenshots/films.png",
+      "sizes": "575x1246",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/screenshots/soon.png",
+      "sizes": "575x1246",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/screenshots/profile.png",
+      "sizes": "575x1246",
+      "type": "image/png"
     }
   ]
 }
