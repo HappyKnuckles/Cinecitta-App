@@ -61,7 +61,6 @@ export class StartPage implements AfterViewInit {
     }
 
     async fetchDataForAllComponents(isReload?: boolean): Promise<void> {
-        this.loadingService.setLoading(true);
 
         try {
             const loadPromises = this.filmSelectComponents.map(component => component.loadData(isReload));
@@ -77,6 +76,5 @@ export class StartPage implements AfterViewInit {
             }
             console.log(error)
         }
-        finally { this.loadingService.setLoading(false); }
     }
 }

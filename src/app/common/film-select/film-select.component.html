@@ -1,4 +1,4 @@
-<ion-grid class="border">
+<ion-grid class="border" *ngIf="!isLoading">
   <ion-row>
     <ion-col *ngIf="showSelect">
       <ion-select label="Top {{topFilms.length}}" [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
@@ -21,6 +21,39 @@
         <span *ngFor="let tag of film.film_tags; let last = last">{{tag.text}}{{last ? '' : ', '}}</span>
         <div>{{film.film_dauer | transformTime}}</div>
           <div>FSK {{film.film_fsk}}</div>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+<ion-grid class="border" *ngIf="isLoading">
+  <ion-row>
+    <ion-col *ngIf="showSelect">
+        <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-col>
+    <ion-col *ngIf="!showSelect">          
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngFor="let film of topFilms; let i = index" class="contentRow">
+    <ion-col size="1" style="display: flex; align-items: center; justify-content: center;">{{i+1}}.</ion-col>
+    <ion-col size="2" style="display: flex; align-items: center; justify-content: center;">
+      <ion-thumbnail style="height: 70px; --border-radius: 7px;">
+      <ion-skeleton-text [animated]="true"></ion-skeleton-text>
+    </ion-thumbnail>
+         </ion-col> 
+         <ion-col
+      style="display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <a><ion-skeleton-text [animated]="true" style="width: 70%;"></ion-skeleton-text></a>
+      </div>
+      <div style="font-size: 13px; letter-spacing: 0.2;">
+          <ion-skeleton-text [animated]="true" style="width: 40%;"></ion-skeleton-text>
+        <div>          
+          <ion-skeleton-text [animated]="true" style="width: 20%;"></ion-skeleton-text>
+        </div>
+          <div>          
+            <ion-skeleton-text [animated]="true" style="width: 10%;"></ion-skeleton-text>
+          </div>
       </div>
     </ion-col>
   </ion-row>

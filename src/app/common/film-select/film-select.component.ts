@@ -7,9 +7,10 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
-import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { IonGrid, IonThumbnail, IonSkeletonText, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
 import { has, is } from 'cheerio/lib/api/traversing';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-film-select',
@@ -26,6 +27,8 @@ import { has, is } from 'cheerio/lib/api/traversing';
         NgFor,
         IonSelectOption,
         TransformTimePipe,
+        IonSkeletonText,
+        IonThumbnail
     ],
 })
 export class FilmSelectComponent {
@@ -41,7 +44,9 @@ export class FilmSelectComponent {
         private webScrapingService: WebscraperService,
         private storageService: StorageService,
         private loadingService: LoadingService,
-    ) { }
+    ) { 
+    
+    }
 
 
     async loadData(isReload?: boolean): Promise<boolean> {
@@ -75,7 +80,7 @@ export class FilmSelectComponent {
             formData.append(this.filterType, data);
         }
         try {
-            this.loadingService.setLoading(true);
+            this.isLoading = true
             films = await this.filmData.fetchFilmData(formData);
             this.topFilms = this.getTopFilms(films);
             await this.updateFilmData();
@@ -84,7 +89,7 @@ export class FilmSelectComponent {
             console.log(error)
         }
         finally {
-            this.loadingService.setLoading(false);
+            this.isLoading = false;
         }
         await this.storageService.setLocalStorage(cacheKey, this.topFilms);
         return false;
