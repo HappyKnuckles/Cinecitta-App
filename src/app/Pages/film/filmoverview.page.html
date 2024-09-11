@@ -337,11 +337,9 @@
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge">
               </ion-img>
             </span>
-            <span *ngIf="film.film_neu === 'NEU'" class="newSpan">
-              <div class="new-dreieck small">
+              <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
                 <div class="new">NEU</div>
               </div>
-            </span>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
@@ -369,11 +367,9 @@
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
-            <span *ngIf="film.film_neu === 'NEU'" class="newSpan">
-              <div class="new-dreieck mini">
+              <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck mini">
                 <div class="new">NEU</div>
               </div>
-            </span>
           </ion-row>
           <ion-row>
             <ion-col size="1">

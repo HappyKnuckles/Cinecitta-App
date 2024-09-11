@@ -126,6 +126,7 @@
         border-radius: 7px;
         width: 90%;
         margin: 0 auto;
+        position: relative;
     }
 
     .filmSpecific {
@@ -169,35 +170,32 @@
         }
     }
 
-    .newSpan {
-        margin-left: 5px;
+    .new-dreieck {
+        transform: translateY(-11px);
         position: absolute;
-        right: 6%;
-        z-index: 10;
+        right: -1px;
+        top: 10px;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-radius: 0 7px 0 0;
+        border-width: 0 40px 40px 0;
+        border-color: transparent #1d979f transparent transparent;
+        font-size: 10px;
+        opacity: .9;
 
-        .new-dreieck {
-            transform: translateY(-11px);
-            width: 0;
-            height: 0;
-            border-style: solid;
-            border-radius: 0 7px 0 0;
-            border-width: 0 40px 40px 0;
-            border-color: transparent #1d979f transparent transparent;
-            font-size: 10px;
-            opacity: .9;
+        &.mini {
+            transform: translateY(-4px);
+            top: unset;
+        }
 
-            &.mini {
-                transform: translateY(-4px);
-            }
-
-            .new {
-                transform: rotate(45deg);
-                color: #fff;
-                font-size: 12px;
-                top: 6px;
-                right: -38px;
-                position: absolute;
-            }
+        .new {
+            transform: rotate(45deg);
+            color: #fff;
+            font-size: 12px;
+            top: 6px;
+            right: -39px;
+            position: absolute;
         }
     }
 
