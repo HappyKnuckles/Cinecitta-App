@@ -9,7 +9,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prebuild": "git log -1 --pretty=%B > src/assets/commit-message.txt"
   },
   "private": true,
   "dependencies": {

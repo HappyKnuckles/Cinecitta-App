@@ -5,6 +5,7 @@ import { NgIf } from '@angular/common';
 import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular/standalone';
 import { ToastComponent } from './common/toast/toast.component';
 import { SwUpdate } from '@angular/service-worker';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-root',
@@ -22,9 +23,10 @@ import { SwUpdate } from '@angular/service-worker';
 })
 export class AppComponent implements OnDestroy {
     isLoading = false;
+    commitMessage: string = '';
     private loadingSubscription: Subscription;
 
-    constructor(private loadingService: LoadingService, private swUpdate: SwUpdate) {
+    constructor(private loadingService: LoadingService, private swUpdate: SwUpdate, private http: HttpClient) {
         this.initializeApp();
         this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
             this.isLoading = isLoading;
@@ -32,14 +34,30 @@ export class AppComponent implements OnDestroy {
     }
 
     initializeApp(): void {
-        this.swUpdate.versionUpdates.subscribe(event => {
-            if (event.type === 'VERSION_READY') {
-                if (confirm('A new version is available. Load it?')) {
-                    window.location.reload();
-                }
-            }
+        // Fetch the commit message from the file
+        this.http.get('assets/commit-message.txt', { responseType: 'text' })
+        .subscribe({
+          next: (message: string) => {
+            this.commitMessage = message;
+          },
+          error: (error) => {
+            console.error('Failed to fetch commit message:', error);
+          },
+          complete: () => {
+            console.log('Commit message fetched successfully');
+          }
         });
-    }
+      
+    
+        // Listen for version updates and prompt the user
+        this.swUpdate.versionUpdates.subscribe(event => {
+          if (event.type === 'VERSION_READY') {
+            if (confirm(`A new version is available. Changes: ${this.commitMessage}. Load it?`)) {
+              window.location.reload();
+            }
+          }
+        });
+      }
 
     ngOnDestroy(): void {
         // Unsubscribe from the observable to prevent memory leaks
