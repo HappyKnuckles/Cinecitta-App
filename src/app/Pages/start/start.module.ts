@@ -5,19 +5,25 @@ import { StartPage } from './start.page';
 
 import { StartPageRoutingModule } from './start-routing.module';
 
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from "@ionic/angular/standalone";
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonRefresher,
+} from '@ionic/angular/standalone';
 
 @NgModule({
-	imports: [
-		CommonModule,
-		FormsModule,
-		StartPageRoutingModule,
-		IonHeader,
-		IonToolbar,
-		IonTitle,
-		IonContent,
-		IonRefresher,
-		StartPage
-	]
+  imports: [
+    CommonModule,
+    FormsModule,
+    StartPageRoutingModule,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonRefresher,
+    StartPage,
+  ],
 })
-export class StartPageModule { }
+export class StartPageModule {}

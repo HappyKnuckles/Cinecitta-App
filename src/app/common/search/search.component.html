@@ -1,7 +1,22 @@
-<ion-input class="search" maxlength="40" #searchInput placeholder="Search" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)" [clearOnEdit]="true" [@openClose]="!isOpen ? true : false">
-    <ion-icon name="search"></ion-icon>
-  <ion-button disabled="{{!isOpen}}" size="small" *ngIf="showFilterButton" class="filterBtn" id="filter-modal" (click)="emitSetOpen(true)">
+<ion-input
+  class="search"
+  maxlength="40"
+  #searchInput
+  placeholder="Search"
+  [(ngModel)]="searchQuery"
+  (ngModelChange)="onSearchChange($event)"
+  [clearOnEdit]="true"
+  [@openClose]="!isOpen ? true : false"
+>
+  <ion-icon name="search"></ion-icon>
+  <ion-button
+    disabled="{{ !isOpen }}"
+    size="small"
+    *ngIf="showFilterButton"
+    class="filterBtn"
+    id="filter-modal"
+    (click)="emitSetOpen(true)"
+  >
     <ion-label>Filter</ion-label>
   </ion-button>
 </ion-input>
-

@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import * as cheerio from 'cheerio';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WebscraperService {
-
   // TODO Define the return type of the functions
   async scrapeData(filmHref: any): Promise<any> {
-    const proxyURL = "https://proxy-server-rho-pearl.vercel.app/api/server";
+    const proxyURL = 'https://proxy-server-rho-pearl.vercel.app/api/server';
     try {
       const html = await fetch(`${proxyURL}?url=${filmHref}`).then((res) =>
         res.text()
@@ -22,7 +21,7 @@ export class WebscraperService {
 
       return filmData;
     } catch (error) {
-      console.error("Error fetching Data:", error);
+      console.error('Error fetching Data:', error);
       return undefined;
     }
   }
@@ -60,7 +59,7 @@ export class WebscraperService {
     });
 
     if (decode) {
-      data = decodeURIComponent(data.replace(/\\\//g, "/"));
+      data = decodeURIComponent(data.replace(/\\\//g, '/'));
     }
 
     if (json) {
@@ -68,17 +67,17 @@ export class WebscraperService {
         console.log(data);
         const jsonData = JSON.parse(data);
         console.log(jsonData);
-        return jsonData.map((item: { text: any; }) => item.text);
+        return jsonData.map((item: { text: any }) => item.text);
       } catch (error) {
-        console.error("Error parsing JSON:", error);
+        console.error('Error parsing JSON:', error);
         return;
       }
     }
 
     if (splitBy) {
       const splitData = data.split(splitBy).map((name: string) => name.trim());
-      return splitData.map((name: { split: (arg0: string) => [any, any]; }) => {
-        const [vorname, nachname] = name.split(" ");
+      return splitData.map((name: { split: (arg0: string) => [any, any] }) => {
+        const [vorname, nachname] = name.split(' ');
         return { vorname, nachname };
       });
     }
@@ -87,7 +86,7 @@ export class WebscraperService {
   }
 
   async getTrailerUrl($: cheerio.CheerioAPI): Promise<any> {
-    const scriptContents = await this.getScriptContents($, "var videos");
+    const scriptContents = await this.getScriptContents($, 'var videos');
     const trailerUrl = await this.extractDataFromScript(
       scriptContents,
       /"video_url":"([^"]+)"/,
@@ -98,12 +97,13 @@ export class WebscraperService {
       scriptContents,
       /"video_vorschau_pfad_bild":"([^"]+)"/,
       null,
-      true);
-    return { trailerUrl, trailerPreviewUrl }
+      true
+    );
+    return { trailerUrl, trailerPreviewUrl };
   }
 
   async getFilmInfoJson($: cheerio.CheerioAPI): Promise<any> {
-    const scriptContents = await this.getScriptContents($, "var filminfos");
+    const scriptContents = await this.getScriptContents($, 'var filminfos');
     const startIndex = scriptContents[0].indexOf('{');
     const endIndex = scriptContents[0].lastIndexOf('}') + 1;
     const jsonStr = scriptContents[0].substring(startIndex, endIndex);

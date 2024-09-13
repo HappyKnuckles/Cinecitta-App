@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { WebscraperService } from './webscraper.service';
 
-
 describe('WebscraperService', () => {
   let service: WebscraperService;
 

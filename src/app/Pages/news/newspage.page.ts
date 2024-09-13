@@ -5,74 +5,105 @@ import { newFilm } from '../../models/filmModel';
 import * as Filtertags from '../../models/filtertags';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { Subscription } from 'rxjs';
-import { addIcons } from "ionicons";
-import { search } from "ionicons/icons";
+import { addIcons } from 'ionicons';
+import { search } from 'ionicons/icons';
 import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
 import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
-import { IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
+import {
+  IonText,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButton,
+  IonIcon,
+  IonContent,
+  IonRefresher,
+  IonGrid,
+  IonRow,
+  IonImg,
+  IonCol,
+} from '@ionic/angular/standalone';
 import { NgIf, NgFor } from '@angular/common';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
 
 @Component({
-	selector: 'app-newspage',
-	templateUrl: 'newspage.page.html',
-	styleUrls: ['newspage.page.scss'],
-	standalone: true,
-	imports: [NgIf, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, SearchComponent_1, IonContent, IonRefresher, NgFor, IonGrid, IonRow, IonImg, IonCol, ExtractTextPipe]
+  selector: 'app-newspage',
+  templateUrl: 'newspage.page.html',
+  styleUrls: ['newspage.page.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    IonText,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButton,
+    IonIcon,
+    SearchComponent_1,
+    IonContent,
+    IonRefresher,
+    NgFor,
+    IonGrid,
+    IonRow,
+    IonImg,
+    IonCol,
+    ExtractTextPipe,
+  ],
 })
-
 export class NewsPage {
-	newFilms: newFilm[] = [];
-	showFull: boolean[] = [];
-	isLoading = false;
-	private loadingSubscription: Subscription;
-	isSearchOpen = false;
-	excluded = Filtertags.excludedFilmValues;
+  newFilms: newFilm[] = [];
+  showFull: boolean[] = [];
+  isLoading = false;
+  private loadingSubscription: Subscription;
+  isSearchOpen = false;
+  excluded = Filtertags.excludedFilmValues;
 
+  @ViewChild(SearchComponent, { static: false })
+  searchComponent!: SearchComponent;
 
-	@ViewChild(SearchComponent, { static: false }) searchComponent!: SearchComponent;
+  constructor(
+    private website: OpenWebsiteService,
+    private loadingService: LoadingService,
+    private hapticService: HapticService
+  ) {
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe(
+      (isLoading) => {
+        this.isLoading = isLoading;
+      }
+    );
+    addIcons({ search });
+  }
 
-	constructor(
-		private website: OpenWebsiteService,
-		private loadingService: LoadingService,
-		private hapticService: HapticService
-	) {
-		this.loadingSubscription = this.loadingService.isLoading$.subscribe(isLoading => {
-			this.isLoading = isLoading;
-		});
-		addIcons({ search });
-	}
+  ngOnDestroy(): void {
+    this.loadingSubscription.unsubscribe();
+  }
 
-	ngOnDestroy(): void {
-		this.loadingSubscription.unsubscribe();
-	}
+  handleRefresh(event: any): void {
+    this.hapticService.vibrate(ImpactStyle.Medium, 200);
+    setTimeout(async () => {
+      if (this.searchComponent) {
+        await this.searchComponent.loadData(undefined, true);
+      }
+      this.searchComponent.clearInput();
+      event.target.complete();
+    }, 100);
+  }
 
-	handleRefresh(event: any): void {
-		this.hapticService.vibrate(ImpactStyle.Medium, 200);
-		setTimeout(async () => {
-			if (this.searchComponent) {
-				await this.searchComponent.loadData(undefined, true);
-			}
-			this.searchComponent.clearInput();
-			event.target.complete();
-		}, 100);
-	}
+  openSearch(): void {
+    this.isSearchOpen = !this.isSearchOpen;
+    if (this.isSearchOpen) {
+      this.searchComponent.focusInput();
+    } else {
+      this.searchComponent.blurInput();
+    }
+  }
 
-	openSearch(): void {
-		this.isSearchOpen = !this.isSearchOpen;
-		if (this.isSearchOpen) {
-			this.searchComponent.focusInput();
-		} else {
-			this.searchComponent.blurInput();
-		}
-	}
-
-	async openExternalWebsite(url: string): Promise<void> {
-		try {
-			await this.website.openExternalWebsite(url);
-		} catch (error) {
-			console.error('Error opening external website: ' + error);
-		}
-	}
+  async openExternalWebsite(url: string): Promise<void> {
+    try {
+      await this.website.openExternalWebsite(url);
+    } catch (error) {
+      console.error('Error opening external website: ' + error);
+    }
+  }
 }
