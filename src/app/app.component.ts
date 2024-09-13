@@ -43,7 +43,7 @@ export class AppComponent implements OnDestroy {
 
             if (newCommits.length > 0) {
               const commitMessages = newCommits.join('\n');
-              if (confirm(`A new version is available. Changes:\n${commitMessages}\nLoad it?`)) {
+              if (confirm(`A new version is available. Load it?\nChanges:\n${commitMessages}\n`)) {
                 localStorage.setItem('lastCommitSha', data[0].sha);
                 window.location.reload();
               }
