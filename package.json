@@ -71,7 +71,7 @@
     "ts-node": "8.3.0",
     "typescript": "5.4.5"
   },
-  "description": "App for Cinecitta",
+  "description": "App for Cinecitta'",
   "browserslist": [
     "Chrome >=79",
     "ChromeAndroid >=79",
