@@ -33,15 +33,7 @@ import { LoadingService } from 'src/app/services/loader/loading.service';
 import { Subscription, filter } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { addIcons } from 'ionicons';
-import {
-  ellipsisVertical,
-  search,
-  chevronBack,
-  chevronUp,
-  chevronDown,
-  removeOutline,
-  informationCircleOutline,
-} from 'ionicons/icons';
+import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
 import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
 import { FormsModule } from '@angular/forms';
@@ -146,26 +138,19 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       informationCircleOutline,
     });
 
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe(
-      (isLoading) => {
-        this.isLoading = isLoading;
-      }
-    );
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
+      this.isLoading = isLoading;
+    });
   }
 
   async ngOnInit(): Promise<void> {
     // so lassen?
     this.routerSubscription.add(
-      this.router.events
-        .pipe(filter((event) => event instanceof NavigationEnd))
-        .subscribe((event: any) => {
-          if (
-            event.url.includes('/tabs/film') &&
-            this.searchInput.searchQuery !== ''
-          ) {
-            this.isSearchOpen = true;
-          }
-        })
+      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
+        if (event.url.includes('/tabs/film') && this.searchInput.searchQuery !== '') {
+          this.isSearchOpen = true;
+        }
+      })
     );
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange(true);
@@ -342,11 +327,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (film.trailerUrl) {
       this.showTrailer[film.system_id] = !this.showTrailer[film.system_id];
     } else {
-      this.toastService.showToast(
-        `Kein Trailer für ${film.film_titel} verfügbar`,
-        'bug',
-        true
-      );
+      this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
     }
   }
 
@@ -356,11 +337,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       this.hapticService.vibrate(ImpactStyle.Medium, 200);
       this.isModalOpen = isOpen;
     } else {
-      this.toastService.showToast(
-        "Can't use filters. No internet connection.",
-        'alert-outline',
-        true
-      );
+      this.toastService.showToast("Can't use filters. No internet connection.", 'alert-outline', true);
     }
   }
 
@@ -423,23 +400,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   hasScreenings(film: Film): boolean {
-    return film.theater.some((theater) =>
-      this.hasScreeningsForTheater(theater)
-    );
+    return film.theater.some((theater) => this.hasScreeningsForTheater(theater));
   }
 
   hasScreeningsForTheater(theater: Theater): boolean {
-    return theater.leinwaende.some((leinwand) =>
-      this.hasScreeningsForLeinwand(leinwand)
-    );
+    return theater.leinwaende.some((leinwand) => this.hasScreeningsForLeinwand(leinwand));
   }
 
   hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
-    return (
-      leinwand.vorstellungen?.some((vorstellung) =>
-        this.isWithinTimeRange(vorstellung.uhrzeit)
-      ) ?? false
-    );
+    return leinwand.vorstellungen?.some((vorstellung) => this.isWithinTimeRange(vorstellung.uhrzeit)) ?? false;
   }
 
   isWithinTimeRange(uhrzeit: string): boolean {
@@ -447,9 +416,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   hasFlagName(leinwand: Leinwand, name: string): boolean {
-    return leinwand.release_flags.some(
-      (flag: { flag_name: string }) => flag.flag_name === name
-    );
+    return leinwand.release_flags.some((flag: { flag_name: string }) => flag.flag_name === name);
   }
 
   getColor(belegung_ampel: string): string {
@@ -466,9 +433,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async scrollToGrid(index: number): Promise<void> {
-    const gridElement: HTMLElement | null = document.querySelector(
-      `#gridRef-${index}`
-    );
+    const gridElement: HTMLElement | null = document.querySelector(`#gridRef-${index}`);
     if (gridElement) {
       const scrollElement: HTMLElement = await this.content.getScrollElement();
       const contentHeight = scrollElement.scrollHeight;
@@ -482,10 +447,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       } else {
         scrollPosition = gridOffsetTop - (windowHeight - gridHeight) / 2;
         const maxScrollPosition = contentHeight - windowHeight;
-        scrollPosition = Math.max(
-          0,
-          Math.min(scrollPosition, maxScrollPosition)
-        );
+        scrollPosition = Math.max(0, Math.min(scrollPosition, maxScrollPosition));
       }
 
       this.content.scrollToPoint(0, scrollPosition, 500);
@@ -503,30 +465,16 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     formData.append('filter[ovfilme]', '0');
 
     // Append selected filters to the form data
-    this.selectedFilters.genresTags.forEach((id: number) =>
-      formData.append('filter[genres_tags][]', id.toString())
-    );
+    this.selectedFilters.genresTags.forEach((id: number) => formData.append('filter[genres_tags][]', id.toString()));
     if (this.selectedFilters.leinwandHighlights.length > 0) {
-      formData.append(
-        'filter[leinwand_highlight]',
-        this.selectedFilters.leinwandHighlights[0].toString()
-      );
+      formData.append('filter[leinwand_highlight]', this.selectedFilters.leinwandHighlights[0].toString());
     }
     if (this.selectedFilters.tageAuswahl.length > 0) {
-      formData.append(
-        'filter[tage_auswahl]',
-        this.selectedFilters.tageAuswahl[0]
-      );
+      formData.append('filter[tage_auswahl]', this.selectedFilters.tageAuswahl[0]);
     }
-    this.selectedFilters.extras.forEach((extra: string) =>
-      formData.append('filter[extra][]', extra)
-    );
-    this.selectedFilters.flags.forEach((id: number) =>
-      formData.append('filter[releasetypen_flags][]', id.toString())
-    );
-    this.selectedFilters.behindertenTags.forEach((id: number) =>
-      formData.append('filter[barrierefrei_tags][]', id.toString())
-    );
+    this.selectedFilters.extras.forEach((extra: string) => formData.append('filter[extra][]', extra));
+    this.selectedFilters.flags.forEach((id: number) => formData.append('filter[releasetypen_flags][]', id.toString()));
+    this.selectedFilters.behindertenTags.forEach((id: number) => formData.append('filter[barrierefrei_tags][]', id.toString()));
 
     const startTimeNumeric = this.convertTimeToNumeric(this.startTime);
     const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
@@ -558,16 +506,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   isSelected(id: any, filterType: string): boolean {
     if (filterType === 'leinwandHighlights') {
       // For Kinosaal tag
-      return (
-        this.selectedFilters[filterType].includes(id) ||
-        (this.selectedFilters[filterType].length === 0 && id === 171984)
-      );
+      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === 171984);
     } else if (filterType === 'tageAuswahl') {
       // For tageAuswahl tag
-      return (
-        this.selectedFilters[filterType].includes(id) ||
-        (this.selectedFilters[filterType].length === 0 && id === '')
-      );
+      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === '');
     } else {
       // For other tags
       return this.selectedFilters[filterType].includes(id);

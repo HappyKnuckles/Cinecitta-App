@@ -8,15 +8,7 @@ export const selectedFilters: any = {
   behindertenTags: [],
 };
 
-export const filters = [
-  'Zeitraum',
-  'Genre',
-  'Kinosaal',
-  'Sound',
-  'Barrierefreie Optionen',
-  'Extras',
-  'Zeiten',
-];
+export const filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen', 'Extras', 'Zeiten'];
 
 export const tageAuswahl = [
   { id: '', name: 'Diese Woche' },
@@ -74,14 +66,7 @@ export const behindertenTags = [
   { id: 3, name: 'Untertitel für Hörgeschädigte' },
 ];
 
-export const excludedFilmValues = [
-  'film_beschreibung',
-  'film_cover_src',
-  'film_favored',
-  'filminfo_href',
-  'film_system_id',
-  'system_id',
-];
+export const excludedFilmValues = ['film_beschreibung', 'film_cover_src', 'film_favored', 'filminfo_href', 'film_system_id', 'system_id'];
 
 export const excludedNewFilmValues = [
   'film_beschreibung',

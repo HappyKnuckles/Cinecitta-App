@@ -7,13 +7,7 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
-import {
-  IonGrid,
-  IonRow,
-  IonCol,
-  IonSelect,
-  IonSelectOption,
-} from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
 import { has, is } from 'cheerio/lib/api/traversing';
 
@@ -22,17 +16,7 @@ import { has, is } from 'cheerio/lib/api/traversing';
   templateUrl: './film-select.component.html',
   styleUrls: ['./film-select.component.scss'],
   standalone: true,
-  imports: [
-    IonGrid,
-    IonRow,
-    NgIf,
-    IonCol,
-    IonSelect,
-    FormsModule,
-    NgFor,
-    IonSelectOption,
-    TransformTimePipe,
-  ],
+  imports: [IonGrid, IonRow, NgIf, IonCol, IonSelect, FormsModule, NgFor, IonSelectOption, TransformTimePipe],
 })
 export class FilmSelectComponent {
   @Input() items!: any[];
@@ -65,11 +49,7 @@ export class FilmSelectComponent {
       throw new Error('No internet connection');
     }
 
-    const cachedFilms = await this.storageService.getLocalStorage(
-      cacheKey,
-      maxAge,
-      hasInternet
-    );
+    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.topFilms = this.getTopFilms(await cachedFilms);
       return !hasInternet;
@@ -102,17 +82,13 @@ export class FilmSelectComponent {
   }
 
   private async updateFilmData(): Promise<any> {
-    const filmPromises = this.topFilms.map(
-      async (film: { filminfo_href: string }) => {
-        if (film.filminfo_href !== undefined) {
-          const filmContent = await this.webScrapingService.scrapeData(
-            film.filminfo_href
-          );
-          return { ...film, ...filmContent };
-        }
-        return film;
+    const filmPromises = this.topFilms.map(async (film: { filminfo_href: string }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        return { ...film, ...filmContent };
       }
-    );
+      return film;
+    });
     this.topFilms = await Promise.all(filmPromises);
   }
 
@@ -126,12 +102,6 @@ export class FilmSelectComponent {
 
     const uniqueFilms = Array.from(filmMap.values());
 
-    return uniqueFilms
-      .sort(
-        (a, b) =>
-          (b.vorstellungen_anzahl_tage_max ?? 0) -
-          (a.vorstellungen_anzahl_tage_max ?? 0)
-      )
-      .slice(0, 7);
+    return uniqueFilms.sort((a, b) => (b.vorstellungen_anzahl_tage_max ?? 0) - (a.vorstellungen_anzahl_tage_max ?? 0)).slice(0, 7);
   }
 }

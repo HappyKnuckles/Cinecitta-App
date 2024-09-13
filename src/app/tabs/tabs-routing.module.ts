@@ -9,27 +9,19 @@ const routes: Routes = [
     children: [
       {
         path: 'start',
-        loadChildren: () =>
-          import('../Pages/start/start.module').then((m) => m.StartPageModule),
+        loadChildren: () => import('../Pages/start/start.module').then((m) => m.StartPageModule),
       },
       {
         path: 'film',
-        loadChildren: () =>
-          import('../Pages/film/filmoverview.module').then(
-            (m) => m.FilmoverviewModule
-          ),
+        loadChildren: () => import('../Pages/film/filmoverview.module').then((m) => m.FilmoverviewModule),
       },
       {
         path: 'news',
-        loadChildren: () =>
-          import('../Pages/news/newspage.module').then((m) => m.NewsPageModule),
+        loadChildren: () => import('../Pages/news/newspage.module').then((m) => m.NewsPageModule),
       },
       {
         path: 'profile',
-        loadChildren: () =>
-          import('../Pages/profile/profile.module').then(
-            (m) => m.ProfilePageModule
-          ),
+        loadChildren: () => import('../Pages/profile/profile.module').then((m) => m.ProfilePageModule),
       },
       {
         path: '',

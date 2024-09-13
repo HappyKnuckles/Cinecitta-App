@@ -5,33 +5,12 @@
 </ion-header>
 
 <ion-content>
-  <ion-refresher
-    slot="fixed"
-    (ionRefresh)="handleRefresh($event)"
-  ></ion-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
   <div style="padding-top: 3%; padding-bottom: 3%">
     <ion-thumbnail class="thumbnail">
-      <ion-img
-        *ngIf="!isToggled"
-        (click)="toggleImage()"
-        class="profilPic"
-        [src]="image"
-      >
-      </ion-img>
-      <ion-img
-        *ngIf="isToggled"
-        (click)="toggleImage()"
-        class="profilPic"
-        [src]="image2"
-      >
-      </ion-img>
-      <ion-icon
-        *ngIf="!isToggled"
-        (click)="toggleImage()"
-        name="add-circle"
-        id="photoSelectIcon"
-      >
-      </ion-icon>
+      <ion-img *ngIf="!isToggled" (click)="toggleImage()" class="profilPic" [src]="image"> </ion-img>
+      <ion-img *ngIf="isToggled" (click)="toggleImage()" class="profilPic" [src]="image2"> </ion-img>
+      <ion-icon *ngIf="!isToggled" (click)="toggleImage()" name="add-circle" id="photoSelectIcon"> </ion-icon>
     </ion-thumbnail>
     <p style="text-align: center">Hans Dieter</p>
   </div>
@@ -65,12 +44,7 @@
     </ion-row>
     <ion-row id="recommendations">
       <ion-col size="1">
-        <ion-icon
-          name="thumbs-up-outline"
-          class="blueIcon"
-          style="font-size: 20px; margin-left: 2px"
-        >
-        </ion-icon>
+        <ion-icon name="thumbs-up-outline" class="blueIcon" style="font-size: 20px; margin-left: 2px"> </ion-icon>
       </ion-col>
       <ion-col size="10">
         <span class="settingLinkText">Empfehlungen</span>
@@ -109,15 +83,11 @@
         <ion-col size="1">
           <ion-icon name="stats-chart-outline"></ion-icon>
         </ion-col>
-        <ion-col size="auto" style="font-weight: 700"
-          >Deine Statistiken:</ion-col
-        >
+        <ion-col size="auto" style="font-weight: 700">Deine Statistiken:</ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="7">Filme in diesem Monat:</ion-col>
-        <ion-col style="text-align: end"
-          >{{filmsInCurrentMonth.length}}</ion-col
-        >
+        <ion-col style="text-align: end">{{filmsInCurrentMonth.length}}</ion-col>
       </ion-row>
       <ion-row>
         <ion-col size="7">Filme in diesem Jahr:</ion-col>
@@ -147,30 +117,21 @@
           *ngIf="cinecittaFilms.length > 0"
           src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/cinecitta.svg"
           style="width: 100px; margin: 20px 10px 0 10px"
-          alt="CINECITTA'"
-        >
+          alt="CINECITTA'">
         </ion-img>
-        <ion-grid
-          style="margin: 0 10px 10px 10px"
-          *ngFor="let tickets of cinecittaFilms; let last = last"
-        >
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of cinecittaFilms; let last = last">
           <div class="ticketContainer" [class.last]="last">
             <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen' -->
             <ion-row class="titel">
               <ion-col size="6">{{tickets.buchung_film_titel}}</ion-col>
-              <ion-col size="4"
-                >{{tickets.buchung_vorstellung_start_datum}}</ion-col
-              >
+              <ion-col size="4">{{tickets.buchung_vorstellung_start_datum}}</ion-col>
               <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col></ion-col>
               <ion-col style="position: absolute">
                 <ion-thumbnail style="--size: 70px">
-                  <ion-img
-                    [src]="'https://www.cinecitta.de/' + tickets.film_bild"
-                    (click)="openExternalWebsite(tickets.buchung_film_href)"
-                  >
+                  <ion-img [src]="'https://www.cinecitta.de/' + tickets.film_bild" (click)="openExternalWebsite(tickets.buchung_film_href)">
                   </ion-img>
                 </ion-thumbnail>
               </ion-col>
@@ -190,30 +151,21 @@
           *ngIf="manhattanFilms.length > 0"
           src="https://static.cinecitta.de/portal/skins/cine_corvus/pics/theater/manhattan.svg"
           style="width: 120px; margin: 10px 20px 0 15px"
-          alt="Manhattan"
-        >
+          alt="Manhattan">
         </ion-img>
-        <ion-grid
-          style="margin: 0 10px 10px 10px"
-          *ngFor="let tickets of manhattanFilms; let last = last"
-        >
+        <ion-grid style="margin: 0 10px 10px 10px" *ngFor="let tickets of manhattanFilms; let last = last">
           <div class="ticketContainer" [class.last]="last">
             <!-- *ngIf="tickets.transaktion.zeitlich !== 'vergangen'"-->
             <ion-row class="titel">
               <ion-col size="6">{{tickets.buchung_film_titel}}</ion-col>
-              <ion-col size="4"
-                >{{tickets.buchung_vorstellung_start_datum}}</ion-col
-              >
+              <ion-col size="4">{{tickets.buchung_vorstellung_start_datum}}</ion-col>
               <ion-col>{{tickets.buchung_vorstellung_start_zeit}}</ion-col>
             </ion-row>
             <ion-row>
               <ion-col></ion-col>
               <ion-col style="position: absolute">
                 <ion-thumbnail style="--size: 70px">
-                  <ion-img
-                    [src]="'https://www.cinecitta.de/' + tickets.film_bild"
-                    (click)="openExternalWebsite(tickets.buchung_film_href)"
-                  >
+                  <ion-img [src]="'https://www.cinecitta.de/' + tickets.film_bild" (click)="openExternalWebsite(tickets.buchung_film_href)">
                   </ion-img>
                 </ion-thumbnail>
               </ion-col>
@@ -247,32 +199,15 @@
       </ion-header>
       <ion-content>
         <ion-grid *ngFor="let tickets of history">
-          <ion-row
-            style="
-              justify-content: center;
-              text-align: center;
-              font-size: 17px;
-              font-weight: 700;
-              margin-bottom: 10px;
-              color: #a3d9d5;
-            "
-          >
+          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
             {{tickets.buchung_film_titel}}</ion-row
           >
-          <ion-row
-            style="
-              justify-content: center;
-              transform: translateY(-10px);
-              font-size: 15px;
-            "
-          >
-            {{tickets.buchung_vorstellung_start_datum}}
-            {{tickets.buchung_vorstellung_start_zeit}}
+          <ion-row style="justify-content: center; transform: translateY(-10px); font-size: 15px">
+            {{tickets.buchung_vorstellung_start_datum}} {{tickets.buchung_vorstellung_start_zeit}}
           </ion-row>
           <ion-row>
             <ion-col size="4">
-              <ion-img [src]="'https://www.cinecitta.de/' + tickets.film_bild">
-              </ion-img>
+              <ion-img [src]="'https://www.cinecitta.de/' + tickets.film_bild"> </ion-img>
             </ion-col>
             <ion-col>
               <ion-row> {{tickets.buchung_vorstellung_leinwand}} </ion-row>
@@ -295,9 +230,7 @@
               <ion-icon name="chevron-back"></ion-icon>
             </ion-button>
           </ion-buttons>
-          <ion-title style="padding-inline: 0">
-            Deine Filmempfehlungen
-          </ion-title>
+          <ion-title style="padding-inline: 0"> Deine Filmempfehlungen </ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
@@ -312,16 +245,8 @@
           <ion-row class="titel first">
             <ion-col>The Avengers Age of Ultron</ion-col>
             <ion-col (click)="openDetails(0)" style="text-align: right">
-              <ion-icon
-                *ngIf="!isOpen[0]"
-                name="chevron-down"
-                class="bottomIcon"
-              ></ion-icon>
-              <ion-icon
-                *ngIf="isOpen[0]"
-                name="chevron-up"
-                class="bottomIcon"
-              ></ion-icon>
+              <ion-icon *ngIf="!isOpen[0]" name="chevron-down" class="bottomIcon"></ion-icon>
+              <ion-icon *ngIf="isOpen[0]" name="chevron-up" class="bottomIcon"></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[0]">
@@ -332,37 +257,22 @@
             </ion-row>
             <ion-row>
               <ion-col class="description"
-                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
-                maxime doloremque a quisquam unde perspiciatis at iusto aliquid
-                porro deleniti neque.
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae maxime
+                doloremque a quisquam unde perspiciatis at iusto aliquid porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
-                >Zum Film:</ion-col
-              >
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
               <ion-col style="text-align: right">
-                <ion-icon
-                  name="arrow-forward-outline"
-                  class="bottomIcon"
-                ></ion-icon>
+                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
               </ion-col>
             </ion-row>
           </div>
           <ion-row class="titel">
             <ion-col>13 Exorcism</ion-col>
             <ion-col (click)="openDetails(1)" style="text-align: right">
-              <ion-icon
-                *ngIf="!isOpen[1]"
-                name="chevron-down"
-                class="bottomIcon"
-              ></ion-icon>
-              <ion-icon
-                *ngIf="isOpen[1]"
-                name="chevron-up"
-                class="bottomIcon"
-              ></ion-icon>
+              <ion-icon *ngIf="!isOpen[1]" name="chevron-down" class="bottomIcon"></ion-icon>
+              <ion-icon *ngIf="isOpen[1]" name="chevron-up" class="bottomIcon"></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[1]">
@@ -373,37 +283,22 @@
             </ion-row>
             <ion-row>
               <ion-col class="description"
-                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
-                maxime doloremque a quisquam unde perspiciatis at iusto aliquid
-                porro deleniti neque.
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae maxime
+                doloremque a quisquam unde perspiciatis at iusto aliquid porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row (click)="openFilm(1)">
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
-                >Zum Film:</ion-col
-              >
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
               <ion-col style="text-align: right">
-                <ion-icon
-                  name="arrow-forward-outline"
-                  class="bottomIcon"
-                ></ion-icon>
+                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
               </ion-col>
             </ion-row>
           </div>
           <ion-row class="titel">
             <ion-col>Arielle die Meerjungfrau</ion-col>
             <ion-col (click)="openDetails(2)" style="text-align: right">
-              <ion-icon
-                *ngIf="!isOpen[2]"
-                name="chevron-down"
-                class="bottomIcon"
-              ></ion-icon>
-              <ion-icon
-                *ngIf="isOpen[2]"
-                name="chevron-up"
-                class="bottomIcon"
-              ></ion-icon>
+              <ion-icon *ngIf="!isOpen[2]" name="chevron-down" class="bottomIcon"></ion-icon>
+              <ion-icon *ngIf="isOpen[2]" name="chevron-up" class="bottomIcon"></ion-icon>
             </ion-col>
           </ion-row>
           <div class="recommendationContainer" *ngIf="isOpen[2]">
@@ -414,21 +309,14 @@
             </ion-row>
             <ion-row>
               <ion-col class="description"
-                >Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae
-                maxime doloremque a quisquam unde perspiciatis at iusto aliquid
-                porro deleniti neque.
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus hic ea ex modi illo, molestiae, enim vel repudiandae maxime
+                doloremque a quisquam unde perspiciatis at iusto aliquid porro deleniti neque.
               </ion-col>
             </ion-row>
             <ion-row>
-              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px"
-                >Zum Film:</ion-col
-              >
+              <ion-col style="color: #a3d9d5; font-weight: 700; font-size: 18px">Zum Film:</ion-col>
               <ion-col style="text-align: right">
-                <ion-icon
-                  name="arrow-forward-outline"
-                  class="bottomIcon"
-                ></ion-icon>
+                <ion-icon name="arrow-forward-outline" class="bottomIcon"></ion-icon>
               </ion-col>
             </ion-row>
           </div>

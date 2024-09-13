@@ -21,11 +21,7 @@ export class StorageService {
     await this.storage.set(key, data);
   }
 
-  async getLocalStorage(
-    key: string,
-    maxAge: number,
-    hasInternet: boolean
-  ): Promise<any | null> {
+  async getLocalStorage(key: string, maxAge: number, hasInternet: boolean): Promise<any | null> {
     const data = await this.storage.get(key);
     if (data) {
       if (!hasInternet) {

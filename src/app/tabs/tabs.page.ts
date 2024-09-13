@@ -1,21 +1,7 @@
 import { Component } from '@angular/core';
 import { addIcons } from 'ionicons';
-import {
-  IonTabs,
-  IonTabBar,
-  IonTabButton,
-  IonIcon,
-  IonLabel,
-} from '@ionic/angular/standalone';
-import {
-  homeOutline,
-  home,
-  videocam,
-  newspaperOutline,
-  personOutline,
-  person,
-  newspaper,
-} from 'ionicons/icons';
+import { IonTabs, IonTabBar, IonTabButton, IonIcon, IonLabel } from '@ionic/angular/standalone';
+import { homeOutline, home, videocam, newspaperOutline, personOutline, person, newspaper } from 'ionicons/icons';
 
 @Component({
   selector: 'app-tabs',

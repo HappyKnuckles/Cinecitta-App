@@ -1,11 +1,7 @@
 <ion-grid class="border">
   <ion-row>
     <ion-col *ngIf="showSelect">
-      <ion-select
-        label="Top {{ topFilms.length }}"
-        [(ngModel)]="selectedItem"
-        (ionChange)="getFilmsByFilter(selectedItem)"
-      >
+      <ion-select label="Top {{ topFilms.length }}" [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
         <ion-select-option *ngFor="let item of items" [value]="item.id">
           {{ item.name }}
         </ion-select-option>
@@ -13,35 +9,17 @@
     </ion-col>
     <ion-col *ngIf="!showSelect">Top {{ topFilms.length }}</ion-col>
   </ion-row>
-  <ion-row
-    *ngFor="let film of topFilms; let i = index"
-    (click)="onFilmClick(film)"
-    class="contentRow"
-  >
-    <ion-col
-      size="1"
-      style="display: flex; align-items: center; justify-content: center"
-      >{{ i + 1 }}.</ion-col
-    >
-    <ion-col
-      size="2"
-      style="display: flex; align-items: center; justify-content: center"
+  <ion-row *ngFor="let film of topFilms; let i = index" (click)="onFilmClick(film)" class="contentRow">
+    <ion-col size="1" style="display: flex; align-items: center; justify-content: center">{{ i + 1 }}.</ion-col>
+    <ion-col size="2" style="display: flex; align-items: center; justify-content: center"
       ><img src="{{ film.film_cover_src }}" style="height: 70px"
     /></ion-col>
-    <ion-col
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      "
-    >
+    <ion-col style="display: flex; flex-direction: column; justify-content: space-between">
       <div>
         <a>{{ film.film_titel }}</a>
       </div>
       <div style="font-size: 13px; letter-spacing: 0.2">
-        <span *ngFor="let tag of film.film_tags; let last = last"
-          >{{ tag.text }}{{ last ? "" : ", " }}</span
-        >
+        <span *ngFor="let tag of film.film_tags; let last = last">{{ tag.text }}{{ last ? "" : ", " }}</span>
         <div>{{ film.film_dauer | transformTime }}</div>
         <div>FSK {{ film.film_fsk }}</div>
       </div>

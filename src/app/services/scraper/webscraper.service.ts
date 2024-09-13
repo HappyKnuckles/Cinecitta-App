@@ -9,9 +9,7 @@ export class WebscraperService {
   async scrapeData(filmHref: any): Promise<any> {
     const proxyURL = 'https://proxy-server-rho-pearl.vercel.app/api/server';
     try {
-      const html = await fetch(`${proxyURL}?url=${filmHref}`).then((res) =>
-        res.text()
-      );
+      const html = await fetch(`${proxyURL}?url=${filmHref}`).then((res) => res.text());
       const $ = cheerio.load(html);
       let filmData: any = {};
       const filmInfoJson = await this.getFilmInfoJson($);
@@ -33,13 +31,7 @@ export class WebscraperService {
       .filter((content: string | any[]) => content?.includes(keyword));
   }
 
-  async extractDataFromScript(
-    scriptContents: any,
-    regex: RegExp,
-    splitBy: any = null,
-    decode = false,
-    json = false
-  ): Promise<any> {
+  async extractDataFromScript(scriptContents: any, regex: RegExp, splitBy: any = null, decode = false, json = false): Promise<any> {
     if (scriptContents.length === 0) {
       // console.log("No matching" + scriptContents + "found");
       return;
@@ -87,18 +79,8 @@ export class WebscraperService {
 
   async getTrailerUrl($: cheerio.CheerioAPI): Promise<any> {
     const scriptContents = await this.getScriptContents($, 'var videos');
-    const trailerUrl = await this.extractDataFromScript(
-      scriptContents,
-      /"video_url":"([^"]+)"/,
-      null,
-      true
-    );
-    const trailerPreviewUrl = await this.extractDataFromScript(
-      scriptContents,
-      /"video_vorschau_pfad_bild":"([^"]+)"/,
-      null,
-      true
-    );
+    const trailerUrl = await this.extractDataFromScript(scriptContents, /"video_url":"([^"]+)"/, null, true);
+    const trailerPreviewUrl = await this.extractDataFromScript(scriptContents, /"video_vorschau_pfad_bild":"([^"]+)"/, null, true);
     return { trailerUrl, trailerPreviewUrl };
   }
 

@@ -62,16 +62,10 @@ export class NewsPage {
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  constructor(
-    private website: OpenWebsiteService,
-    private loadingService: LoadingService,
-    private hapticService: HapticService
-  ) {
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe(
-      (isLoading) => {
-        this.isLoading = isLoading;
-      }
-    );
+  constructor(private website: OpenWebsiteService, private loadingService: LoadingService, private hapticService: HapticService) {
+    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
+      this.isLoading = isLoading;
+    });
     addIcons({ search });
   }
 

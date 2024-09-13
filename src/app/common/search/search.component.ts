@@ -1,31 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
-import {
-  IonInput,
-  IonIcon,
-  IonButton,
-  IonLabel,
-} from '@ionic/angular/standalone';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  Subject,
-  Subscription,
-} from 'rxjs';
-import {
-  trigger,
-  state,
-  style,
-  transition,
-  animate,
-} from '@angular/animations';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { IonInput, IonIcon, IonButton, IonLabel } from '@ionic/angular/standalone';
+import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
+import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
@@ -83,11 +59,9 @@ export class SearchComponent implements OnInit {
 
   async ngOnInit() {
     this.sub.add(
-      this.searchSubject
-        .pipe(debounceTime(300), distinctUntilChanged())
-        .subscribe(() => {
-          this.filterFilms();
-        })
+      this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe(() => {
+        this.filterFilms();
+      })
     );
 
     await this.loadData(this.formData);
@@ -111,11 +85,7 @@ export class SearchComponent implements OnInit {
     const hasInternet = (await Network.getStatus()).connected;
 
     if (!hasInternet && isReload) {
-      this.toastService.showToast(
-        'Unable to load data. No internet connection.',
-        'alert-outline',
-        true
-      );
+      this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
       return;
     }
 
@@ -124,24 +94,15 @@ export class SearchComponent implements OnInit {
       const serializedFormData = this.serializeFormData(this.formData);
       hashedFormData = await this.hashString(serializedFormData);
     }
-    const cacheKey = this.isNewFilms
-      ? 'newFilms'
-      : `allFilms_${hashedFormData ?? ''}`;
+    const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
     const maxAge = 12 * 60 * 60 * 1000; // 24 hours
 
-    const cachedFilms = await this.storageService.getLocalStorage(
-      cacheKey,
-      maxAge,
-      hasInternet
-    );
+    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.allFilms = await cachedFilms;
       this.filmsChange.emit(this.allFilms);
       if (!hasInternet) {
-        this.toastService.showToast(
-          'No internet connection. Showing cached data. Data could be outdated!',
-          'alert-outline'
-        );
+        this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
       }
       return;
     }
@@ -164,17 +125,13 @@ export class SearchComponent implements OnInit {
   }
 
   private async updateFilmData() {
-    const filmPromises = this.allFilms.map(
-      async (film: { filminfo_href: any }) => {
-        if (film.filminfo_href !== undefined) {
-          const filmContent = await this.webScrapingService.scrapeData(
-            film.filminfo_href
-          );
-          return { ...film, ...filmContent };
-        }
-        return film;
+    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        return { ...film, ...filmContent };
       }
-    );
+      return film;
+    });
     this.allFilms = await Promise.all(filmPromises);
   }
 
@@ -187,13 +144,7 @@ export class SearchComponent implements OnInit {
           if (this.excludedProperties.includes(key)) {
             return false;
           }
-          return (
-            value &&
-            value
-              .toString()
-              .toLowerCase()
-              .includes(this.searchQuery.toLowerCase())
-          );
+          return value && value.toString().toLowerCase().includes(this.searchQuery.toLowerCase());
         })
       );
       this.filmsChange.emit(filteredFilms);
@@ -263,9 +214,7 @@ export class SearchComponent implements OnInit {
     const data = encoder.encode(str);
     const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return hashHex;
   }
 

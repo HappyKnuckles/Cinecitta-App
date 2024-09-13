@@ -102,11 +102,7 @@ export class ProfilePage implements OnInit {
   image2 = 'assets/images/hellow.png';
   sub: Subscription = new Subscription();
   isToggled = false;
-  constructor(
-    private router: Router,
-    private http: HttpClient,
-    private website: OpenWebsiteService
-  ) {
+  constructor(private router: Router, private http: HttpClient, private website: OpenWebsiteService) {
     addIcons({
       addCircle,
       ticketOutline,
@@ -207,10 +203,7 @@ export class ProfilePage implements OnInit {
 
     this.filmsInCurrentMonth = this.history.filter((ticket) => {
       const ticketDate = new Date(ticket.buchung_vorstellung_start_datum);
-      return (
-        ticketDate.getMonth() + 1 === currentMonth &&
-        ticketDate.getFullYear() === currentYear
-      );
+      return ticketDate.getMonth() + 1 === currentMonth && ticketDate.getFullYear() === currentYear;
     });
 
     this.filmsInCurrentYear = this.history.filter((ticket) => {
