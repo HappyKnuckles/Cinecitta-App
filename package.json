@@ -5,12 +5,12 @@
   "homepage": "https://github.com/HappyKnuckles/Cine-App",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve",    
+    "prebuild": "git log -1 --pretty=%B > src/assets/commit-message.txt",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint",
-    "postbuild": "git log -1 --pretty=%B > src/assets/commit-message.txt"
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
