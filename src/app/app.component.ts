@@ -34,30 +34,30 @@ export class AppComponent implements OnDestroy {
     }
 
     initializeApp(): void {
-      // Fetch the commit message from the file
-      this.http.get('assets/commit-message.txt', { responseType: 'text' })
-      .subscribe({
-        next: (message: string) => {
-          this.commitMessage = message;
-        },
-        error: (error) => {
-          console.error('Failed to fetch commit message:', error);
-        },
-        complete: () => {
-          console.log('Commit message fetched successfully');
+      // Listen for version updates and prompt the user
+      this.swUpdate.versionUpdates.subscribe((event) => {
+        if (event.type === 'VERSION_READY') {
+          // Fetch the latest commit from GitHub
+          this.http
+            .get('https://api.github.com/repos/HappyKnuckles/Cine-App/commits/master')
+            .subscribe({
+              next: (data: any) => {
+                // Extract the commit message from the API response
+                this.commitMessage = data.commit.message;
+                if (confirm(`A new version is available. Changes: ${this.commitMessage}. Load it?`)) {
+                  window.location.reload();
+                }
+              },
+              error: (error) => {
+                console.error('Failed to fetch the latest commit:', error);
+                if (confirm('A new version is available. Load it?')) {
+                  window.location.reload();
+                }
+              },
+            });
         }
       });
-    
-  
-      // Listen for version updates and prompt the user
-      this.swUpdate.versionUpdates.subscribe(event => {
-          if (event.type === 'VERSION_READY') {
-              if (confirm(`A new version is available. Changes: ${this.commitMessage} Load it?`)) {
-              window.location.reload();
-              }
-          }
-      });
-    }     
+    }  
 
     ngOnDestroy(): void {
         // Unsubscribe from the observable to prevent memory leaks
