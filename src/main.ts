@@ -22,9 +22,9 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptorsFromDi()),
     provideAnimations(),
     provideServiceWorker('ngsw-worker.js', {
-        enabled: !isDevMode(),
-        registrationStrategy: 'registerWhenStable:30000'
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
     })
-]
+  ]
 })
   .catch(err => console.log(err));

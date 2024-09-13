@@ -250,7 +250,7 @@
             <source src="{{film.trailerUrl}}">
           </video>
           <img style="height: 119vmin;" *ngIf="!showTrailer[film.system_id]" src="{{film.film_cover_src}}"
-            (click)="showTrailers(film)" alt="Film Cover von {{film.film_titel}}" loading="lazy"/>
+            (click)="showTrailers(film)" alt="Film Cover von {{film.film_titel}}" loading="lazy" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
 
         </div>
@@ -337,13 +337,14 @@
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge">
               </ion-img>
             </span>
-              <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
-                <div class="new">NEU</div>
-              </div>
+            <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
+              <div class="new">NEU</div>
+            </div>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <img loading="lazy" src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" alt="Film Cover von {{film.film_titel}}"/>
+              <img loading="lazy" src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
+                alt="Film Cover von {{film.film_titel}}" />
             </ion-col>
             <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
               {{ ((film.film_beschreibung | extractText).length > 125 ?
@@ -367,14 +368,14 @@
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
-              <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck mini">
-                <div class="new">NEU</div>
-              </div>
+            <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck mini">
+              <div class="new">NEU</div>
+            </div>
           </ion-row>
           <ion-row>
             <ion-col size="1">
-              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
-                style="width: 10vw;" alt="Film Cover von {{film.film_titel}}" loading="lazy"/>
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" style="width: 10vw;"
+                alt="Film Cover von {{film.film_titel}}" loading="lazy" />
             </ion-col>
             <ion-col style="
             display: flex;

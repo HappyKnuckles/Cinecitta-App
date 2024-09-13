@@ -8,16 +8,16 @@ import { StartPageRoutingModule } from './start-routing.module';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from "@ionic/angular/standalone";
 
 @NgModule({
-    imports: [
-    CommonModule,
-    FormsModule,
-    StartPageRoutingModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonRefresher,
-    StartPage
-]
+	imports: [
+		CommonModule,
+		FormsModule,
+		StartPageRoutingModule,
+		IonHeader,
+		IonToolbar,
+		IonTitle,
+		IonContent,
+		IonRefresher,
+		StartPage
+	]
 })
 export class StartPageModule { }

@@ -9,33 +9,33 @@ import { FilmOverviewRoutingmodule } from './filmoverview-routing.module';
 import { IonBackdrop, IonText, IonHeader, IonToolbar, IonButton, IonIcon, IonTitle, IonModal, IonButtons, IonContent, IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonLabel, IonDatetime, IonFooter, IonRefresher, IonImg, IonPopover } from "@ionic/angular/standalone";
 
 @NgModule({
-    imports: [
-    CommonModule,
-    FormsModule,
-    FilmOverviewRoutingmodule,
-    IonBackdrop,
-    IonText,
-    IonHeader,
-    IonToolbar,
-    IonButton,
-    IonIcon,
-    IonTitle,
-    IonModal,
-    IonButtons,
-    IonContent,
-    IonGrid,
-    IonRow,
-    IonCol,
-    IonSelect,
-    IonSelectOption,
-    IonLabel,
-    IonDatetime,
-    IonFooter,
-    IonRefresher,
-    IonImg,
-    IonPopover,
-    FilmOverviewPage
-],
-    providers: []
+	imports: [
+		CommonModule,
+		FormsModule,
+		FilmOverviewRoutingmodule,
+		IonBackdrop,
+		IonText,
+		IonHeader,
+		IonToolbar,
+		IonButton,
+		IonIcon,
+		IonTitle,
+		IonModal,
+		IonButtons,
+		IonContent,
+		IonGrid,
+		IonRow,
+		IonCol,
+		IonSelect,
+		IonSelectOption,
+		IonLabel,
+		IonDatetime,
+		IonFooter,
+		IonRefresher,
+		IonImg,
+		IonPopover,
+		FilmOverviewPage
+	],
+	providers: []
 })
 export class FilmoverviewModule { }

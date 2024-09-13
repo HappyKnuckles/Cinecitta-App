@@ -11,4 +11,5 @@ export class FilmRoutService {
 
   changeFilmTitle(title: string): void {
     this.filmTitleSource.next(title);
-  }}
+  }
+}

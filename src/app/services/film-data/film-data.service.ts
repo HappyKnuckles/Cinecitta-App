@@ -46,7 +46,7 @@ export class FilmDataService {
     }
   }
 
-  async fetchFilmData(formData?: FormData ): Promise<Film[]> {
+  async fetchFilmData(formData?: FormData): Promise<Film[]> {
     this.params.com = 'anzeigen_spielplan';
     try {
       // Append the params as URL parameters
@@ -75,7 +75,7 @@ export class FilmDataService {
     } catch (error) {
       throw error;
     }
-}
+  }
 
   async deleteLeinwandEntriesWithOVFlag(): Promise<Film[]> {
     try {

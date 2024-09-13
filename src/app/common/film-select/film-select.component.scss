@@ -5,9 +5,8 @@
     width: 90%;
     margin: 20px auto;
 
-    ion-row:not(.contentRow){
+    ion-row:not(.contentRow) {
         display: flex;
         align-items: center;
     }
 }
-

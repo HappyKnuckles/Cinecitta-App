@@ -1,7 +1,8 @@
 <ion-grid class="border">
   <ion-row>
     <ion-col *ngIf="showSelect">
-      <ion-select label="Top {{topFilms.length}}" [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
+      <ion-select label="Top {{topFilms.length}}" [(ngModel)]="selectedItem"
+        (ionChange)="getFilmsByFilter(selectedItem)">
         <ion-select-option *ngFor="let item of items" [value]="item.id">
           {{ item.name }}
         </ion-select-option>
@@ -20,7 +21,7 @@
       <div style="font-size: 13px; letter-spacing: 0.2;">
         <span *ngFor="let tag of film.film_tags; let last = last">{{tag.text}}{{last ? '' : ', '}}</span>
         <div>{{film.film_dauer | transformTime}}</div>
-          <div>FSK {{film.film_fsk}}</div>
+        <div>FSK {{film.film_fsk}}</div>
       </div>
     </ion-col>
   </ion-row>

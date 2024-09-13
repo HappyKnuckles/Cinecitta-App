@@ -11,4 +11,5 @@ export class LoadingService {
 
   setLoading(isLoading: boolean): void {
     this.isLoadingSubject.next(isLoading);
-  }}
+  }
+}
