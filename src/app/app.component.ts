@@ -40,7 +40,10 @@ export class AppComponent implements OnDestroy {
             const newCommits = [];
 
             for (const commit of data) {
-              newCommits.push(commit.commit.message);
+              const commitDate = new Date(commit.commit.committer.date).toISOString();
+              if (commitDate !== lastCommitDate) {
+                newCommits.push(commit.commit.message);
+              }
             }
 
             if (newCommits.length > 0) {
