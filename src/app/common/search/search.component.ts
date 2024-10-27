@@ -84,10 +84,12 @@ export class SearchComponent implements OnInit {
   }
 
   async loadData(formData?: FormData, isReload?: boolean) {
+    this.loadingService.setLoading(true);
     const hasInternet = (await Network.getStatus()).connected;
-
     if (!hasInternet && isReload) {
       this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
+      this.loadingService.setLoading(false);
+
       return;
     }
 
@@ -106,14 +108,15 @@ export class SearchComponent implements OnInit {
       if (!hasInternet) {
         this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
       }
+      this.loadingService.setLoading(false);
+
       return;
     }
 
     try {
-      this.loadingService.setLoading(true);
       if (!this.isNewFilms) {
         this.allFilms = await this.filmData.fetchFilmData(formData);
-        await this.updateFilmData();
+        this.allFilms = await this.updateFilmData();
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
       }
@@ -134,8 +137,6 @@ export class SearchComponent implements OnInit {
     this.setOpenEvent.emit(isOpen);
   }
 
-
-
   focusInput() {
     this.searchInput?.setFocus();
   }
@@ -155,7 +156,7 @@ export class SearchComponent implements OnInit {
     this.searchQuery = '';
     this.searchSubject.next(this.searchQuery);
   }
-  
+
   private async filterFilms() {
     if (!this.searchQuery) {
       this.newFilmsChange.emit(this.allFilms);
@@ -170,8 +171,8 @@ export class SearchComponent implements OnInit {
       keys: [
         { name: 'film_titel', weight: 0.7 },
         ...Object.keys(this.allFilms[0])
-          .filter(key => !this.excludedProperties.includes(key) && key !== 'film_titel')
-          .map(key => ({ name: key, weight: 0.3 }))
+          .filter((key) => !this.excludedProperties.includes(key) && key !== 'film_titel')
+          .map((key) => ({ name: key, weight: 0.3 })),
       ],
       threshold: 0.3,
       ignoreLocation: true,
@@ -179,7 +180,7 @@ export class SearchComponent implements OnInit {
       includeMatches: true,
       includeScore: true,
       shouldSort: true,
-      useExtendedSearch: false
+      useExtendedSearch: false,
     };
 
     const fuse = new Fuse(this.allFilms, options);
@@ -217,6 +218,6 @@ export class SearchComponent implements OnInit {
       }
       return film;
     });
-    this.allFilms = await Promise.all(filmPromises);
+    return await Promise.all(filmPromises);
   }
 }
