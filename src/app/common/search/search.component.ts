@@ -11,6 +11,7 @@ import { addIcons } from 'ionicons';
 import { search } from 'ionicons/icons';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import Fuse from 'fuse.js';
 import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
 
@@ -36,7 +37,7 @@ export class SearchComponent implements OnInit {
   @Input({ required: true }) isOpen = false;
   @Input() isReload = false;
 
-  @Output() filmsChange = new EventEmitter<any[]>();
+  @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
   @ViewChild('searchInput') searchInput?: IonInput;
 
@@ -45,6 +46,7 @@ export class SearchComponent implements OnInit {
   searchQuery = '';
   sub: Subscription = new Subscription();
   isLoading = false;
+  private searchCache = new Map<string, any[]>();
 
   constructor(
     private filmData: FilmDataService,
@@ -100,7 +102,7 @@ export class SearchComponent implements OnInit {
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.allFilms = await cachedFilms;
-      this.filmsChange.emit(this.allFilms);
+      this.newFilmsChange.emit(this.allFilms);
       if (!hasInternet) {
         this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
       }
@@ -115,7 +117,7 @@ export class SearchComponent implements OnInit {
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
       }
-      this.filmsChange.emit(this.allFilms);
+      this.newFilmsChange.emit(this.allFilms);
     } catch (error) {
       console.log(error);
     } finally {
@@ -123,75 +125,6 @@ export class SearchComponent implements OnInit {
     }
     await this.storageService.setLocalStorage(cacheKey, this.allFilms);
   }
-
-  private async updateFilmData() {
-    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any }) => {
-      if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
-        return { ...film, ...filmContent };
-      }
-      return film;
-    });
-    this.allFilms = await Promise.all(filmPromises);
-  }
-
-  filterFilms() {
-    if (!this.searchQuery) {
-      this.filmsChange.emit(this.allFilms);
-    } else {
-      const filteredFilms = this.allFilms.filter((film: any) =>
-        Object.entries(film).some(([key, value]) => {
-          if (this.excludedProperties.includes(key)) {
-            return false;
-          }
-          return value && value.toString().toLowerCase().includes(this.searchQuery.toLowerCase());
-        })
-      );
-      this.filmsChange.emit(filteredFilms);
-    }
-  }
-
-  //TODO Implement better filtering and fuse.js
-  // async filterFilms() {
-  //     if (!this.searchQuery) {
-  //         this.newFilmsChange.emit(this.allFilms);
-  //         return;
-  //     }
-
-  //     const lowerCaseQuery = this.searchQuery.toLowerCase();
-  //     const keywords = lowerCaseQuery.split(' ').filter(keyword => keyword);
-
-  //     const filteredFilms = this.allFilms
-  //         .map((film: any) => {
-  //             let matchScore = 0;
-
-  //             for (const [key, value] of Object.entries(film)) {
-  //                 if (this.excludedProperties.includes(key)) continue;
-
-  //                 const stringValue = value ? value.toString().toLowerCase() : '';
-
-  //                 for (const keyword of keywords) {
-  //                     if (stringValue === keyword) {
-  //                         // Exact match
-  //                         matchScore += 3;
-  //                     } else if (stringValue.startsWith(keyword)) {
-  //                         // Starts with match
-  //                         matchScore += 2;
-  //                     } else if (stringValue.includes(keyword)) {
-  //                         // Partial match
-  //                         matchScore += 1;
-  //                     }
-  //                 }
-  //             }
-
-  //             return { film, matchScore };
-  //         })
-  //         .filter(({ matchScore }) => matchScore > 0)
-  //         .sort((a, b) => b.matchScore - a.matchScore) // Sort by relevance
-  //         .map(({ film }) => film);
-
-  //     this.newFilmsChange.emit(filteredFilms);
-  // }
 
   ngOnDestroy() {
     this.sub.unsubscribe();
@@ -201,22 +134,7 @@ export class SearchComponent implements OnInit {
     this.setOpenEvent.emit(isOpen);
   }
 
-  serializeFormData(formData: FormData): string {
-    const entries = [];
-    for (const [key, value] of (formData as any).entries()) {
-      entries.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
-    }
-    return entries.join('&');
-  }
 
-  async hashString(str: string): Promise<string> {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-  }
 
   focusInput() {
     this.searchInput?.setFocus();
@@ -236,5 +154,69 @@ export class SearchComponent implements OnInit {
   clearInput() {
     this.searchQuery = '';
     this.searchSubject.next(this.searchQuery);
+  }
+  
+  private async filterFilms() {
+    if (!this.searchQuery) {
+      this.newFilmsChange.emit(this.allFilms);
+      return;
+    }
+    // Check cache first
+    if (this.searchCache.has(this.searchQuery)) {
+      this.newFilmsChange.emit(this.searchCache.get(this.searchQuery)!);
+      return;
+    }
+    const options = {
+      keys: [
+        { name: 'film_titel', weight: 0.7 },
+        ...Object.keys(this.allFilms[0])
+          .filter(key => !this.excludedProperties.includes(key) && key !== 'film_titel')
+          .map(key => ({ name: key, weight: 0.3 }))
+      ],
+      threshold: 0.3,
+      ignoreLocation: true,
+      minMatchCharLength: 3,
+      includeMatches: true,
+      includeScore: true,
+      shouldSort: true,
+      useExtendedSearch: false
+    };
+
+    const fuse = new Fuse(this.allFilms, options);
+    const result = fuse.search(this.searchQuery);
+
+    const filteredFilms = result.map(({ item }: { item: any }) => item);
+
+    // Cache the result
+    this.searchCache.set(this.searchQuery, filteredFilms);
+
+    this.newFilmsChange.emit(filteredFilms);
+  }
+
+  private serializeFormData(formData: FormData): string {
+    const entries = [];
+    for (const [key, value] of (formData as any).entries()) {
+      entries.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
+    }
+    return entries.join('&');
+  }
+
+  private async hashString(str: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+  }
+  private async updateFilmData() {
+    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any }) => {
+      if (film.filminfo_href !== undefined) {
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        return { ...film, ...filmContent };
+      }
+      return film;
+    });
+    this.allFilms = await Promise.all(filmPromises);
   }
 }
