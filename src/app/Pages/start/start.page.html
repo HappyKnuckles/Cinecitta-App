@@ -1,20 +1,29 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Start
-    </ion-title>
+    <ion-title> Start </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
   <app-film-select #filmSelect1 [showSelect]="false" (filmClick)="onFilmClick($event)"></app-film-select>
-  <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]" [showSelect]="true"
-  (filmClick)="onFilmClick($event)"></app-film-select>
-  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true"
+  <app-film-select
+    #filmSelect2
+    [items]="genres"
+    filterType="filter[genres_tags][]"
+    [showSelect]="true"
     (filmClick)="onFilmClick($event)"></app-film-select>
-  <app-film-select #filmSelect3 [items]="flags" filterType="filter[releasetypen_flags][]" [showSelect]="true"
+  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true" (filmClick)="onFilmClick($event)"></app-film-select>
+  <app-film-select
+    #filmSelect3
+    [items]="flags"
+    filterType="filter[releasetypen_flags][]"
+    [showSelect]="true"
     (filmClick)="onFilmClick($event)"></app-film-select>
-  <app-film-select #filmSelect4 [items]="leinwandHighlights" filterType="filter[leinwand_highlight]" [showSelect]="true"
+  <app-film-select
+    #filmSelect4
+    [items]="leinwandHighlights"
+    filterType="filter[leinwand_highlight]"
+    [showSelect]="true"
     (filmClick)="onFilmClick($event)"></app-film-select>
 </ion-content>

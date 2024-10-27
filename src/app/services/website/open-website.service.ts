@@ -3,10 +3,9 @@ import { Browser } from '@capacitor/browser';
 import { isPlatform } from '@ionic/angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OpenWebsiteService {
-
   async openExternalWebsite(url: string): Promise<void> {
     const options = {
       toolbarColor: '#1d979f',

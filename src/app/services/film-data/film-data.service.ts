@@ -18,9 +18,7 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
-  constructor(private http: HttpClient, private webScrapingService: WebscraperService
-
-  ) { }
+  constructor(private http: HttpClient, private webScrapingService: WebscraperService) {}
 
   async fetchNewFilms(): Promise<newFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen';
@@ -46,13 +44,11 @@ export class FilmDataService {
     }
   }
 
-  async fetchFilmData(formData?: FormData ): Promise<Film[]> {
+  async fetchFilmData(formData?: FormData): Promise<Film[]> {
     this.params.com = 'anzeigen_spielplan';
     try {
       // Append the params as URL parameters
-      const fullURL = `${this.url}?${new URLSearchParams(
-        this.params
-      ).toString()}`;
+      const fullURL = `${this.url}?${new URLSearchParams(this.params).toString()}`;
 
       const formBody = this.formDataToUrlEncoded(formData);
 
@@ -75,7 +71,7 @@ export class FilmDataService {
     } catch (error) {
       throw error;
     }
-}
+  }
 
   async deleteLeinwandEntriesWithOVFlag(): Promise<Film[]> {
     try {
@@ -96,11 +92,7 @@ export class FilmDataService {
         if (doubleFilms.has(film.film_titel) && film.film_ist_ov === '0') {
           film.theater.forEach((theater: Theater) => {
             const leinwaende = theater.leinwaende.filter(
-              (leinwand: Leinwand) =>
-                leinwand.release_flags &&
-                !leinwand.release_flags.some(
-                  (flag: { flag_name: string }) => flag.flag_name === 'OV'
-                )
+              (leinwand: Leinwand) => leinwand.release_flags && !leinwand.release_flags.some((flag: { flag_name: string }) => flag.flag_name === 'OV')
             );
 
             theater.leinwaende = leinwaende;

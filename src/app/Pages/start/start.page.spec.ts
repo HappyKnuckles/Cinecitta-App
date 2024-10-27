@@ -2,20 +2,20 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StartPage } from './start.page';
 
 describe('Tab1Page', () => {
-    let component: StartPage;
-    let fixture: ComponentFixture<StartPage>;
+  let component: StartPage;
+  let fixture: ComponentFixture<StartPage>;
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            imports: [StartPage]
-        }).compileComponents();
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [StartPage],
+    }).compileComponents();
 
-        fixture = TestBed.createComponent(StartPage);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+    fixture = TestBed.createComponent(StartPage);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-    });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
 });

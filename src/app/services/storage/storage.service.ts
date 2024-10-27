@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage-angular';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class StorageService {
-  
   constructor(private storage: Storage) {
     this.init();
   }
@@ -22,9 +21,12 @@ export class StorageService {
     await this.storage.set(key, data);
   }
 
-  async getLocalStorage(key: string, maxAge: number): Promise<any | null> {
+  async getLocalStorage(key: string, maxAge: number, hasInternet: boolean): Promise<any | null> {
     const data = await this.storage.get(key);
     if (data) {
+      if (!hasInternet) {
+        return data.value;
+      }
       const age = new Date().getTime() - data.timestamp;
       if (age < maxAge) {
         return data.value;
