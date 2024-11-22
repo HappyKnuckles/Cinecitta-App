@@ -116,13 +116,17 @@ export class SearchComponent implements OnInit {
     try {
       if (!this.isNewFilms) {
         this.allFilms = await this.filmData.fetchFilmData(formData);
-        this.allFilms = await this.updateFilmData();
+        this.newFilmsChange.emit(this.allFilms);
+        this.loadingService.setLoading(false);
+
+        await this.updateFilmData();
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
+        this.newFilmsChange.emit(this.allFilms);
       }
-      this.newFilmsChange.emit(this.allFilms);
     } catch (error) {
       console.log(error);
+      this.toastService.showToast('Error loading films. Try again later.', 'alert-outline', true);
     } finally {
       this.loadingService.setLoading(false);
     }
@@ -210,14 +214,17 @@ export class SearchComponent implements OnInit {
     const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return hashHex;
   }
-  private async updateFilmData() {
-    const filmPromises = this.allFilms.map(async (film: { filminfo_href: any }) => {
+
+  private async updateFilmData(): Promise<void> {
+    const filmPromises = this.allFilms.map(async (film, index) => {
       if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
-        return { ...film, ...filmContent };
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href, this.storageService);
+        this.allFilms[index] = { ...film, ...filmContent };
+        this.newFilmsChange.emit(this.allFilms);
       }
-      return film;
     });
-    return await Promise.all(filmPromises);
+
+    await Promise.all(filmPromises);
+
   }
 }

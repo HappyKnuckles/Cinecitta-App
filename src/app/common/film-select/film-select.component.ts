@@ -84,7 +84,7 @@ export class FilmSelectComponent {
   private async updateFilmData(): Promise<any> {
     const filmPromises = this.topFilms.map(async (film: { filminfo_href: string }) => {
       if (film.filminfo_href !== undefined) {
-        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href);
+        const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href, this.storageService);
         return { ...film, ...filmContent };
       }
       return film;
@@ -92,7 +92,7 @@ export class FilmSelectComponent {
     this.topFilms = await Promise.all(filmPromises);
   }
 
-  getTopFilms(films: Film[]): Film[] {
+  private getTopFilms(films: Film[]): Film[] {
     const filmMap = new Map<string, Film>();
     films.forEach((film) => {
       if (!filmMap.has(film.film_titel)) {

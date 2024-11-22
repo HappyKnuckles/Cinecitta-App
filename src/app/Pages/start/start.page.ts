@@ -76,6 +76,7 @@ export class StartPage implements AfterViewInit {
         this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
       }
       console.log(error);
+      this.toastService.showToast('Error loading films. Try again later.', 'alert-outline', true);
     } finally {
       this.loadingService.setLoading(false);
     }
