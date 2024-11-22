@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnDestroy } from '@angular/core';
 import { SearchComponent } from 'src/app/common/search/search.component';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { newFilm } from '../../models/filmModel';
@@ -51,7 +51,7 @@ import { ImpactStyle } from '@capacitor/haptics';
     ExtractTextPipe,
   ],
 })
-export class NewsPage {
+export class NewsPage implements OnDestroy {
   newFilms: newFilm[] = [];
   showFull: boolean[] = [];
   isLoading = false;
@@ -75,6 +75,7 @@ export class NewsPage {
 
   handleRefresh(event: any): void {
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout(async () => {
       if (this.searchComponent) {
         await this.searchComponent.loadData(undefined, true);

@@ -7,16 +7,15 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
-import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
-import { has, is } from 'cheerio/lib/api/traversing';
 
 @Component({
   selector: 'app-film-select',
   templateUrl: './film-select.component.html',
   styleUrls: ['./film-select.component.scss'],
   standalone: true,
-  imports: [IonGrid, IonRow, NgIf, IonCol, IonSelect, FormsModule, NgFor, IonSelectOption, TransformTimePipe],
+  imports: [IonItem, IonGrid, IonRow, NgIf, IonCol, IonSelect, FormsModule, NgFor, IonSelectOption, TransformTimePipe, IonRippleEffect],
 })
 export class FilmSelectComponent {
   @Input() items!: any[];
@@ -69,7 +68,7 @@ export class FilmSelectComponent {
       this.topFilms = this.getTopFilms(films);
       await this.updateFilmData();
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       this.loadingService.setLoading(false);
     }

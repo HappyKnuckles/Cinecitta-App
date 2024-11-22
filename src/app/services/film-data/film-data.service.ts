@@ -62,7 +62,7 @@ export class FilmDataService {
       if (response.ok) {
         const data = await response.json();
         this.filmData = data?.daten?.items;
-        await this.deleteLeinwandEntriesWithOVFlag();
+        this.deleteLeinwandEntriesWithOVFlag();
 
         return this.filmData;
       } else {
@@ -73,7 +73,7 @@ export class FilmDataService {
     }
   }
 
-  async deleteLeinwandEntriesWithOVFlag(): Promise<Film[]> {
+  deleteLeinwandEntriesWithOVFlag(): Film[] {
     try {
       // Track film titles that appear more than once
       const doubleFilms: Set<string> = new Set();

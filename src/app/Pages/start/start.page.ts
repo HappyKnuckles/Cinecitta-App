@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, QueryList, ViewChildren, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
@@ -7,7 +7,6 @@ import { Router } from '@angular/router';
 import { FilmSelectComponent } from 'src/app/common/film-select/film-select.component';
 import { FilmSelectComponent as FilmSelectComponent_1 } from '../../common/film-select/film-select.component';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from '@ionic/angular/standalone';
-import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
@@ -18,7 +17,7 @@ import { ImpactStyle } from '@capacitor/haptics';
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, FilmSelectComponent_1],
 })
-export class StartPage implements AfterViewInit {
+export class StartPage implements AfterViewInit, OnDestroy {
   @ViewChildren(FilmSelectComponent)
   filmSelectComponents!: QueryList<FilmSelectComponent>;
   private loadingSubscription: Subscription;
@@ -50,6 +49,7 @@ export class StartPage implements AfterViewInit {
 
   handleRefresh(event: any): void {
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     setTimeout(async () => {
       await this.fetchDataForAllComponents(true);
       event.target.complete();
@@ -75,7 +75,7 @@ export class StartPage implements AfterViewInit {
       if (error.message === 'No internet connection') {
         this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
       }
-      console.log(error);
+      console.error(error);
       this.toastService.showToast('Error loading films. Try again later.', 'alert-outline', true);
     } finally {
       this.loadingService.setLoading(false);

@@ -16,7 +16,17 @@ export class StorageService {
   async save(key: string, value: any): Promise<void> {
     await this.storage.set(key, value);
   }
-  
+
+  async removeAllOldScrapeData(): Promise<void> {
+    await this.storage.forEach((value, key) => {
+      if (key.startsWith('de')) {
+        if (value.expirationDate < new Date()) {
+          this.storage.remove(key);
+        }
+      }
+    });
+  }
+
   async get(key: string): Promise<any> {
     return await this.storage.get(key);
   }

@@ -167,12 +167,9 @@ export class ProfilePage implements OnInit {
 
       // Extract cookies from the response's Set-Cookie header
       const setCookieHeader = response.headers.get('set-cookie');
-      console.log(setCookieHeader);
       // Save cookies in local storage
       localStorage.setItem('appCookies', setCookieHeader);
 
-      // Perform any additional actions upon successful login
-      console.log('Login successful');
       return true;
     } catch (error) {
       console.error(error);
@@ -246,7 +243,6 @@ export class ProfilePage implements OnInit {
       );
       const ticketData = response?.daten?.items ?? [];
       this.history = ticketData;
-      console.log(this.history);
 
       // Store the ticket data in local storage for future use
       localStorage.setItem('ticketData', JSON.stringify(ticketData));

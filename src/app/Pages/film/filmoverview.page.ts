@@ -22,6 +22,7 @@ import {
   IonRefresher,
   IonImg,
   IonPopover,
+  IonRippleEffect,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import * as Filtertags from '../../models/filtertags';
@@ -222,11 +223,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   handleRefresh(event: any): void {
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
-    setTimeout(async () => {
+    setTimeout(() => {
       this.isReload = true;
-      await this.loadFilmData();
-      this.searchInput.clearInput();
-      event.target.complete();
+      this.loadFilmData().then(() => {
+        this.searchInput.clearInput();
+        event.target.complete();
+      });
     }, 100);
   }
 
@@ -362,7 +364,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async confirm(): Promise<void> {
-    this.showAllTags = this.showAllTags.map((_) => false);
+    this.showAllTags = this.showAllTags.map(() => false);
     this.setOpen(false);
 
     if (this.films.length === 0) {
@@ -377,7 +379,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   cancel(): void {
     this.showAllTags = Array(this.filters.length).fill(false);
-    this.showAllTags = this.showAllTags.map((_) => false);
+    this.showAllTags = this.showAllTags.map(() => false);
     this.setOpen(false);
   }
 
@@ -393,7 +395,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.endTime = '03:00';
 
     // Reset background color of tags
-    this.showAllTags = this.showAllTags.map((_) => false);
+    this.showAllTags = this.showAllTags.map(() => false);
     this.closeTimes();
 
     await this.loadFilmData();
@@ -454,6 +456,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async loadFilmData(): Promise<void> {
     this.formData = this.appendSelectedFiltersToFormData();
   }
@@ -516,6 +519,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async onTimeChange(isInit?: boolean): Promise<void> {
     this.isReload = false;
     let startHour = this.convertTimeToNumeric(this.startTime);
@@ -542,6 +546,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       if (this.debounceTimeout) {
         clearTimeout(this.debounceTimeout);
       }
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       this.debounceTimeout = setTimeout(async () => {
         await this.loadFilmData();
       }, 300); // Adjust the debounce delay as needed (300ms in this example)

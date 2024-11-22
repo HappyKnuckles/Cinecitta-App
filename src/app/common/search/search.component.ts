@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, OnChanges, OnDestroy } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonLabel } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -29,7 +29,7 @@ import { ToastService } from 'src/app/services/toast/toast.service';
   standalone: true,
   imports: [IonInput, FormsModule, IonIcon, NgIf, IonButton, IonLabel],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formData!: FormData;
   @Input() isNewFilms = false;
   @Input() excludedProperties: any[] = [];
@@ -125,7 +125,7 @@ export class SearchComponent implements OnInit {
         this.newFilmsChange.emit(this.allFilms);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       this.toastService.showToast('Error loading films. Try again later.', 'alert-outline', true);
     } finally {
       this.loadingService.setLoading(false);
@@ -161,7 +161,7 @@ export class SearchComponent implements OnInit {
     this.searchSubject.next(this.searchQuery);
   }
 
-  private async filterFilms() {
+  private filterFilms() {
     if (!this.searchQuery) {
       this.newFilmsChange.emit(this.allFilms);
       return;
@@ -225,6 +225,5 @@ export class SearchComponent implements OnInit {
     });
 
     await Promise.all(filmPromises);
-
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoadingService } from './services/loader/loading.service';
 import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
@@ -6,6 +6,7 @@ import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular
 import { ToastComponent } from './common/toast/toast.component';
 import { SwUpdate } from '@angular/service-worker';
 import { HttpClient } from '@angular/common/http';
+import { StorageService } from './services/storage/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -14,16 +15,20 @@ import { HttpClient } from '@angular/common/http';
   standalone: true,
   imports: [IonApp, NgIf, IonBackdrop, IonSpinner, IonRouterOutlet, ToastComponent],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   isLoading = false;
   commitMessage: string = '';
   private loadingSubscription: Subscription;
 
-  constructor(private loadingService: LoadingService, private swUpdate: SwUpdate, private http: HttpClient) {
+  constructor(private loadingService: LoadingService, private swUpdate: SwUpdate, private http: HttpClient, private storageService: StorageService) {
     this.initializeApp();
     this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
       this.isLoading = isLoading;
     });
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.storageService.removeAllOldScrapeData();
   }
 
   initializeApp(): void {

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import * as cheerio from 'cheerio';
 import { StorageService } from '../storage/storage.service';
 
 @Injectable({
@@ -15,9 +14,9 @@ export class WebscraperService {
       }
     }
 
-    const destination = "https://web-scraper-zeta.vercel.app/api/scraper";
+    const destination = 'https://web-scraper-zeta.vercel.app/api/scraper';
     const url = `${destination}?url=${filmHref}`;
-    
+
     try {
       const response = await fetch(url);
       if (response.status === 200) {
@@ -25,7 +24,7 @@ export class WebscraperService {
 
         const expirationDate = new Date();
         expirationDate.setMonth(expirationDate.getMonth() + 6);
-        const savedData = { ...data, expirationDate }
+        const savedData = { ...data, expirationDate };
         await storageService.save(filmHref, savedData);
 
         return data;

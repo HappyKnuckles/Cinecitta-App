@@ -32,6 +32,7 @@
 </ion-header>
 
 <!-- Filter Modal -->
+<!-- TODO change isOpen to accordions + ion items-->
 <ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative">
   <ng-template>
     <ion-header>
@@ -268,6 +269,7 @@
             loading="lazy" />
           <span class="description">{{film.film_beschreibung | extractText}}</span>
         </div>
+        <!-- TODO ab hier nur accordion anstatt opentimes -->
         <div (click)="openTimes(film.system_id, i)" style="display: flex; margin-top: 10px; justify-content: center">
           <ion-icon *ngIf="!isTimesOpen[film.system_id]" name="chevron-down"></ion-icon>
           <ion-icon *ngIf="isTimesOpen[film.system_id]" name="chevron-up"></ion-icon>
