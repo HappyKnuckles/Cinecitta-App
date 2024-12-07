@@ -22,7 +22,6 @@ import {
   IonRefresher,
   IonImg,
   IonPopover,
-  IonRippleEffect,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import * as Filtertags from '../../models/filtertags';
