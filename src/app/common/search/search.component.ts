@@ -45,7 +45,6 @@ export class SearchComponent implements OnInit, OnChanges, OnDestroy {
   private searchSubject = new Subject<string>();
   searchQuery = '';
   sub: Subscription = new Subscription();
-  isLoading = false;
   private searchCache = new Map<string, any[]>();
 
   constructor(

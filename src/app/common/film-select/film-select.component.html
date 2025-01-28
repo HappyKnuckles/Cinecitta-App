@@ -1,3 +1,4 @@
+@if (!loadingService.isLoading) {
 <ion-grid class="border">
   <ion-row>
     <ion-col *ngIf="showSelect">
@@ -30,3 +31,38 @@
   </ion-row>
 </ion-grid>
 <!-- [ngStyle]="{'background-image': 'url(' + topFilms[0]?.film_cover_src + ')'}" -->
+} @else {
+<ion-grid class="border">
+  <ion-row>
+    <ion-col *ngIf="showSelect">
+      <ion-item lines="none" style="border-radius: 7px">
+        <ion-select label="Top {{ topFilms.length }}" [(ngModel)]="selectedItem" (ionChange)="getFilmsByFilter(selectedItem)">
+          <ion-select-option *ngFor="let item of items" [value]="item.id">
+            {{ item.name }}
+          </ion-select-option>
+        </ion-select></ion-item
+      >
+    </ion-col>
+    <ion-col *ngIf="!showSelect">Top {{ topFilms.length }}</ion-col>
+  </ion-row>
+  <ion-row *ngFor="let film of topFilms; let i = index" class="contentRow ion-activatable">
+    <ion-col size="1" style="display: flex; align-items: center; justify-content: center">
+      <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
+    </ion-col>
+    <ion-col size="2" style="display: flex; align-items: center; justify-content: center">
+      <ion-skeleton-text animated style="width: 70px; height: 70px"></ion-skeleton-text>
+    </ion-col>
+    <ion-col style="display: flex; flex-direction: column; justify-content: space-between">
+      <ion-ripple-effect></ion-ripple-effect>
+      <div>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+      </div>
+      <div style="font-size: 13px; letter-spacing: 0.2">
+        <ion-skeleton-text animated style="width: 70%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 50%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 30%; height: 20px"></ion-skeleton-text>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+}

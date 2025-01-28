@@ -1,10 +1,9 @@
-import { Component, ViewChild, OnDestroy } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { SearchComponent } from 'src/app/common/search/search.component';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { newFilm } from '../../models/filmModel';
 import * as Filtertags from '../../models/filtertags';
 import { LoadingService } from 'src/app/services/loader/loading.service';
-import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { search } from 'ionicons/icons';
 import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
@@ -22,6 +21,7 @@ import {
   IonRow,
   IonImg,
   IonCol,
+  IonSkeletonText,
 } from '@ionic/angular/standalone';
 import { NgIf, NgFor } from '@angular/common';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
@@ -33,6 +33,7 @@ import { ImpactStyle } from '@capacitor/haptics';
   styleUrls: ['newspage.page.scss'],
   standalone: true,
   imports: [
+    IonSkeletonText,
     NgIf,
     IonText,
     IonHeader,
@@ -51,26 +52,17 @@ import { ImpactStyle } from '@capacitor/haptics';
     ExtractTextPipe,
   ],
 })
-export class NewsPage implements OnDestroy {
+export class NewsPage {
   newFilms: newFilm[] = [];
   showFull: boolean[] = [];
-  isLoading = false;
-  private loadingSubscription: Subscription;
   isSearchOpen = false;
   excluded = Filtertags.excludedFilmValues;
 
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  constructor(private website: OpenWebsiteService, private loadingService: LoadingService, private hapticService: HapticService) {
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-    });
+  constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
     addIcons({ search });
-  }
-
-  ngOnDestroy(): void {
-    this.loadingSubscription.unsubscribe();
   }
 
   handleRefresh(event: any): void {

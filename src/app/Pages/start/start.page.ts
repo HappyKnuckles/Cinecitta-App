@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, QueryList, ViewChildren, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
@@ -17,34 +16,24 @@ import { ImpactStyle } from '@capacitor/haptics';
   standalone: true,
   imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, FilmSelectComponent_1],
 })
-export class StartPage implements AfterViewInit, OnDestroy {
+export class StartPage implements AfterViewInit {
   @ViewChildren(FilmSelectComponent)
   filmSelectComponents!: QueryList<FilmSelectComponent>;
-  private loadingSubscription: Subscription;
-  isLoading = false;
   genres = Filtertags.genresTag;
   flags = Filtertags.flags;
   leinwandHighlights = Filtertags.leinwandHighlights;
   extras = Filtertags.extras;
 
   constructor(
-    private loadingService: LoadingService,
+    public loadingService: LoadingService,
     private filmRouter: FilmRoutService,
     private router: Router,
     private toastService: ToastService,
     private hapticService: HapticService
-  ) {
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-    });
-  }
+  ) {}
 
   async ngAfterViewInit(): Promise<void> {
     await this.fetchDataForAllComponents();
-  }
-
-  ngOnDestroy(): void {
-    this.loadingSubscription.unsubscribe();
   }
 
   handleRefresh(event: any): void {

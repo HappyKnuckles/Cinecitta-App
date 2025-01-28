@@ -73,7 +73,7 @@ export class FilmDataService {
     }
   }
 
-  deleteLeinwandEntriesWithOVFlag(): Film[] {
+  private deleteLeinwandEntriesWithOVFlag(): Film[] {
     try {
       // Track film titles that appear more than once
       const doubleFilms: Set<string> = new Set();
@@ -106,7 +106,7 @@ export class FilmDataService {
     }
   }
 
-  formDataToUrlEncoded(formData: any): string {
+  private formDataToUrlEncoded(formData: any): string {
     const formBody = [];
     for (const pair of formData.entries()) {
       const encodedKey = encodeURIComponent(pair[0]);

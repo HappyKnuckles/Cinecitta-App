@@ -1,5 +1,5 @@
 <ion-text
-  *ngIf="newFilms.length === 0 && isLoading === false"
+  *ngIf="newFilms.length === 0 && loadingService.isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 999">
   Keine Filme verfügbar
 </ion-text>
@@ -21,6 +21,7 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"> </ion-refresher>
   <!-- Filmcontainer -->
   <div class="content">
+    @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer small">
         <div class="border">
@@ -64,5 +65,36 @@
         </div>
       </div>
     </ion-grid>
+    } @else {
+    <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
+      <div class="filmContainer small">
+        <div class="border">
+          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+            <span style="padding: 0 5px">
+              <ion-skeleton-text animated style="width: 100px; height: 20px"></ion-skeleton-text>
+            </span>
+            <span style="margin-left: 5px">
+              <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
+            </span>
+          </ion-row>
+          <ion-row style="padding: 0 10px">
+            <ion-col size="4">
+              <ion-skeleton-text animated style="width: 100%; height: 150px"></ion-skeleton-text>
+              <span style="display: flex; justify-content: center; color: #a3d9d5">
+                <ion-skeleton-text animated style="width: 70px; height: 20px"></ion-skeleton-text>
+              </span>
+            </ion-col>
+            <ion-col class="description" size="8">
+              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+              <ion-skeleton-text animated style="width: 80%; height: 20px"></ion-skeleton-text>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </ion-grid>
+    }
   </div>
 </ion-content>

@@ -7,7 +7,7 @@ import { StorageService } from 'src/app/services/storage/storage.service';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
-import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem } from '@ionic/angular/standalone';
+import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem, IonSkeletonText } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
 
 @Component({
@@ -15,21 +15,33 @@ import { Network } from '@capacitor/network';
   templateUrl: './film-select.component.html',
   styleUrls: ['./film-select.component.scss'],
   standalone: true,
-  imports: [IonItem, IonGrid, IonRow, NgIf, IonCol, IonSelect, FormsModule, NgFor, IonSelectOption, TransformTimePipe, IonRippleEffect],
+  imports: [
+    IonSkeletonText,
+    IonItem,
+    IonGrid,
+    IonRow,
+    NgIf,
+    IonCol,
+    IonSelect,
+    FormsModule,
+    NgFor,
+    IonSelectOption,
+    TransformTimePipe,
+    IonRippleEffect,
+  ],
 })
 export class FilmSelectComponent {
   @Input() items!: any[];
   @Input() showSelect!: boolean;
   @Input() filterType!: string;
   @Output() filmClick = new EventEmitter<any>();
-  isLoading = false;
   topFilms: Film[] = [];
   selectedItem!: string;
   constructor(
     private filmData: FilmDataService,
     private webScrapingService: WebscraperService,
     private storageService: StorageService,
-    private loadingService: LoadingService
+    public loadingService: LoadingService
   ) {}
 
   async loadData(isReload?: boolean): Promise<boolean> {

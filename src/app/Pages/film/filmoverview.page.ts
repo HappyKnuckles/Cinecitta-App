@@ -22,6 +22,7 @@ import {
   IonRefresher,
   IonImg,
   IonPopover,
+  IonSkeletonText,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import * as Filtertags from '../../models/filtertags';
@@ -50,6 +51,7 @@ import { Network } from '@capacitor/network';
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
   imports: [
+    IonSkeletonText,
     NgIf,
     IonBackdrop,
     IonText,
@@ -95,7 +97,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   films: Film[] = [];
   message = '';
   isReload = false;
-  isLoading = false;
   isTimesOpen: { [key: string]: boolean } = {};
   isSearchOpen = false;
   isModalOpen = false;
@@ -113,7 +114,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
-  private loadingSubscription: Subscription;
   private routerSubscription: Subscription = new Subscription();
   private debounceTimeout: any;
 
@@ -123,7 +123,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
     private website: OpenWebsiteService,
-    private loadingService: LoadingService,
+    public loadingService: LoadingService,
     private router: Router,
     private toastService: ToastService,
     private hapticService: HapticService
@@ -137,13 +137,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       removeOutline,
       informationCircleOutline,
     });
-
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-    });
   }
 
   async ngOnInit(): Promise<void> {
+    const viewType = localStorage.getItem('viewType');
+    if (viewType) {
+      this.detailView = [viewType === ViewType.Detail, viewType === ViewType.Kurz, viewType === ViewType.Mini];
+    }
     // so lassen?
     this.routerSubscription.add(
       this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
@@ -209,7 +209,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // }
 
   ngOnDestroy(): void {
-    this.loadingSubscription.unsubscribe();
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
@@ -241,6 +240,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[0] = true;
           this.detailView[1] = false;
           this.detailView[2] = false;
+          localStorage.setItem('viewType', ViewType.Detail);
         },
       });
     }
@@ -252,6 +252,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[0] = false;
           this.detailView[1] = true;
           this.detailView[2] = false;
+          localStorage.setItem('viewType', ViewType.Kurz);
         },
       });
     }
@@ -263,6 +264,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[0] = false;
           this.detailView[1] = false;
           this.detailView[2] = true;
+          localStorage.setItem('viewType', ViewType.Mini);
         },
       });
     }

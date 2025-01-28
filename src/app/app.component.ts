@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoadingService } from './services/loader/loading.service';
-import { Subscription } from 'rxjs';
 import { NgIf } from '@angular/common';
 import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet } from '@ionic/angular/standalone';
 import { ToastComponent } from './common/toast/toast.component';
@@ -15,16 +14,11 @@ import { StorageService } from './services/storage/storage.service';
   standalone: true,
   imports: [IonApp, NgIf, IonBackdrop, IonSpinner, IonRouterOutlet, ToastComponent],
 })
-export class AppComponent implements OnDestroy, OnInit {
-  isLoading = false;
+export class AppComponent implements OnInit {
   commitMessage: string = '';
-  private loadingSubscription: Subscription;
 
-  constructor(private loadingService: LoadingService, private swUpdate: SwUpdate, private http: HttpClient, private storageService: StorageService) {
+  constructor(public loadingService: LoadingService, private swUpdate: SwUpdate, private http: HttpClient, private storageService: StorageService) {
     this.initializeApp();
-    this.loadingSubscription = this.loadingService.isLoading$.subscribe((isLoading) => {
-      this.isLoading = isLoading;
-    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -68,10 +62,5 @@ export class AppComponent implements OnDestroy, OnInit {
         });
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    // Unsubscribe from the observable to prevent memory leaks
-    this.loadingSubscription.unsubscribe();
   }
 }
