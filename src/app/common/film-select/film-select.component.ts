@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, signal } from '@angular/core';
 import { Film } from 'src/app/models/filmModel';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { LoadingService } from 'src/app/services/loader/loading.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
@@ -9,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
 import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem, IonSkeletonText } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
+import { ToastService } from 'src/app/services/toast/toast.service';
 
 @Component({
   selector: 'app-film-select',
@@ -30,24 +30,30 @@ import { Network } from '@capacitor/network';
     IonRippleEffect,
   ],
 })
-export class FilmSelectComponent {
+export class FilmSelectComponent implements OnInit {
   @Input() items!: any[];
   @Input() showSelect!: boolean;
   @Input() filterType!: string;
   @Output() filmClick = new EventEmitter<any>();
   topFilms: Film[] = [];
   selectedItem!: string;
+  isLoading = signal(false);
   constructor(
     private filmData: FilmDataService,
     private webScrapingService: WebscraperService,
     private storageService: StorageService,
-    public loadingService: LoadingService
-  ) {}
+    public toastService: ToastService
+  ) {
+  }
 
+  async ngOnInit(): Promise<void> {
+    await this.getFilmsByFilter(this.selectedItem)   
+  }
   async loadData(isReload?: boolean): Promise<boolean> {
     if (this.items && this.items.length > 0) {
       this.selectedItem = this.items[0].id;
     }
+
     return await this.getFilmsByFilter(this.selectedItem, isReload);
   }
 
@@ -75,14 +81,16 @@ export class FilmSelectComponent {
       formData.append(this.filterType, data);
     }
     try {
-      this.loadingService.setLoading(true);
+      this.isLoading.set(true);
       films = await this.filmData.fetchFilmData(formData);
       this.topFilms = this.getTopFilms(films);
       await this.updateFilmData();
     } catch (error) {
       console.error(error);
+      this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
+
     } finally {
-      this.loadingService.setLoading(false);
+      this.isLoading.set(false);
     }
     await this.storageService.setLocalStorage(cacheKey, this.topFilms);
     return false;

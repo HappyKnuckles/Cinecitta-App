@@ -1,5 +1,4 @@
-<ion-text
-  *ngIf="newFilms.length === 0 && loadingService.isLoading === false"
+<ion-text *ngIf="newFilms.length === 0 && loadingService.isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 999">
   Keine Filme verfügbar
 </ion-text>
@@ -14,21 +13,24 @@
       </ion-button>
     </div>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded" (newFilmsChange)="newFilms = $event"></app-search>
+  <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded"
+    (newFilmsChange)="search($event)"></app-search>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"> </ion-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <!-- Filmcontainer -->
   <div class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer small">
         <div class="border">
-          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
-            <span style="padding: 0 5px"
-              >{{film.film_titel}}
-              <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null"> Rang {{film.filmchart_platzierung_aktuell}} </ng-container>
+          <ion-row
+            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+            <span style="padding: 0 5px">{{film.film_titel}}
+              <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null"> Rang
+                {{film.filmchart_platzierung_aktuell}} </ng-container>
             </span>
             <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
@@ -36,27 +38,28 @@
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
-              <img
-                style="margin-bottom: 5px"
-                src="{{film.film_cover_src}}"
-                (click)="openExternalWebsite(film.filminfo_href)"
-                loading="lazy"
+              <img style="margin-bottom: 5px" src="{{film.film_cover_src}}"
+                (click)="openExternalWebsite(film.filminfo_href)" loading="lazy"
                 alt="Film Cover von {{film.film_titel}}" />
               <span style="display: flex; justify-content: center; color: #a3d9d5">{{film.film_centerstart_zeit}}</span>
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''" (click)="showFull[i] = true">
-              {{ ((film.film_beschreibung | extractText).length > 125 ? ((film.film_beschreibung | extractText).slice(0, 125) + '...') :
+            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''"
+              (click)="showFull[i] = true">
+              {{ ((film.film_beschreibung | extractText).length > 125 ? ((film.film_beschreibung | extractText).slice(0,
+              125) + '...') :
               (film.film_beschreibung | extractText)) }}
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung !== ''" (click)="showFull[i] = false"
-              >{{ film.film_beschreibung | extractText}}
+            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung !== ''"
+              (click)="showFull[i] = false">{{ film.film_beschreibung | extractText}}
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung === ''" (click)="showFull[i] = true">
-              {{ ((film.film_kurztext | extractText).length > 125 ? ((film.film_kurztext | extractText).slice(0, 125) + '...') : (film.film_kurztext |
+            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung === ''"
+              (click)="showFull[i] = true">
+              {{ ((film.film_kurztext | extractText).length > 125 ? ((film.film_kurztext | extractText).slice(0, 125) +
+              '...') : (film.film_kurztext |
               extractText)) }}
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung === ''" (click)="showFull[i] = false"
-              >{{ film.film_kurztext | extractText}}
+            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung === ''"
+              (click)="showFull[i] = false">{{ film.film_kurztext | extractText}}
             </ion-col>
             <!-- <ion-col class="description" size="8" *ngIf="film.film_beschreibung === '' && film.film_kurztext === ''">
               {{film.film_synopsis | extractText}}
@@ -69,7 +72,8 @@
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
       <div class="filmContainer small">
         <div class="border">
-          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+          <ion-row
+            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
             <span style="padding: 0 5px">
               <ion-skeleton-text animated style="width: 100px; height: 20px"></ion-skeleton-text>
             </span>

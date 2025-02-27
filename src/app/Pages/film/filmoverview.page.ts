@@ -22,7 +22,7 @@ import {
   IonRefresher,
   IonImg,
   IonPopover,
-  IonSkeletonText,
+  IonSkeletonText, IonRefresherContent
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import * as Filtertags from '../../models/filtertags';
@@ -50,7 +50,7 @@ import { Network } from '@capacitor/network';
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonBackdrop,
@@ -87,7 +87,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
-
   showStartTimePicker = false;
   showEndTimePicker = false;
   formData: FormData = new FormData();
@@ -116,7 +115,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   excluded = Filtertags.excludedFilmValues;
   private routerSubscription: Subscription = new Subscription();
   private debounceTimeout: any;
-
   intervalId: any;
 
   constructor(
@@ -144,6 +142,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     if (viewType) {
       this.detailView = [viewType === ViewType.Detail, viewType === ViewType.Kurz, viewType === ViewType.Mini];
     }
+
+    this.setDefaultSelectedFilterValues();
+    await this.onTimeChange(true);
+    this.checkTimes();
+    this.startPeriodicCheck();
     // so lassen?
     this.routerSubscription.add(
       this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
@@ -152,10 +155,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         }
       })
     );
-    this.setDefaultSelectedFilterValues();
-    await this.onTimeChange(true);
-    this.checkTimes();
-    this.startPeriodicCheck();
   }
 
   startPeriodicCheck() {
@@ -217,6 +216,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   private setDefaultSelectedFilterValues(): void {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
+  }
+
+  search(event: any) {
+    this.films = event;
+    this.content.scrollToTop(300);
   }
 
   handleRefresh(event: any): void {

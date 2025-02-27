@@ -28,7 +28,7 @@
     [showFilterButton]="true"
     [formData]="formData"
     [excludedProperties]="excluded"
-    (newFilmsChange)="films = $event"></app-search>
+    (newFilmsChange)="search($event)"></app-search>
 </ion-header>
 
 <!-- Filter Modal -->
@@ -182,7 +182,8 @@
 </ion-modal>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"></ion-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
+</ion-refresher>
   <!-- Detailview -->
   <div *ngIf="detailView[0]" class="content">
     @if (!loadingService.isLoading) {

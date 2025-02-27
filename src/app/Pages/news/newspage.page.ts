@@ -21,7 +21,7 @@ import {
   IonRow,
   IonImg,
   IonCol,
-  IonSkeletonText,
+  IonSkeletonText, IonRefresherContent
 } from '@ionic/angular/standalone';
 import { NgIf, NgFor } from '@angular/common';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
@@ -32,7 +32,7 @@ import { ImpactStyle } from '@capacitor/haptics';
   templateUrl: 'newspage.page.html',
   styleUrls: ['newspage.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonText,
@@ -53,6 +53,7 @@ import { ImpactStyle } from '@capacitor/haptics';
   ],
 })
 export class NewsPage {
+  @ViewChild(IonContent) content!: IonContent;
   newFilms: newFilm[] = [];
   showFull: boolean[] = [];
   isSearchOpen = false;
@@ -84,6 +85,11 @@ export class NewsPage {
     } else {
       this.searchComponent.blurInput();
     }
+  }
+
+  search(event: any): void {
+    this.newFilms = event;
+    this.content.scrollToTop(300);
   }
 
   async openExternalWebsite(url: string): Promise<void> {

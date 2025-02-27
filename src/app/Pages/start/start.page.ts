@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
 import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { Router } from '@angular/router';
-import { FilmSelectComponent } from 'src/app/common/film-select/film-select.component';
-import { FilmSelectComponent as FilmSelectComponent_1 } from '../../common/film-select/film-select.component';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from '@ionic/angular/standalone';
+import { FilmSelectComponent } from '../../common/film-select/film-select.component';
+import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { ToastService } from 'src/app/services/toast/toast.service';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
@@ -14,9 +13,9 @@ import { ImpactStyle } from '@capacitor/haptics';
   templateUrl: 'start.page.html',
   styleUrls: ['start.page.scss'],
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, FilmSelectComponent_1],
+  imports: [IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, FilmSelectComponent],
 })
-export class StartPage implements AfterViewInit {
+export class StartPage {
   @ViewChildren(FilmSelectComponent)
   filmSelectComponents!: QueryList<FilmSelectComponent>;
   genres = Filtertags.genresTag;
@@ -30,11 +29,7 @@ export class StartPage implements AfterViewInit {
     private router: Router,
     private toastService: ToastService,
     private hapticService: HapticService
-  ) {}
-
-  async ngAfterViewInit(): Promise<void> {
-    await this.fetchDataForAllComponents();
-  }
+  ) { }
 
   handleRefresh(event: any): void {
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
@@ -51,8 +46,6 @@ export class StartPage implements AfterViewInit {
   }
 
   async fetchDataForAllComponents(isReload?: boolean): Promise<void> {
-    this.loadingService.setLoading(true);
-
     try {
       const loadPromises = this.filmSelectComponents.map((component) => component.loadData(isReload));
       const results = await Promise.all(loadPromises);
@@ -66,8 +59,6 @@ export class StartPage implements AfterViewInit {
       }
       console.error(error);
       this.toastService.showToast('Error loading films. Try again later.', 'alert-outline', true);
-    } finally {
-      this.loadingService.setLoading(false);
     }
   }
 }
