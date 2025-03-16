@@ -49,6 +49,7 @@ export class FilmSelectComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     await this.getFilmsByFilter(this.selectedItem)   
   }
+
   async loadData(isReload?: boolean): Promise<boolean> {
     if (this.items && this.items.length > 0) {
       this.selectedItem = this.items[0].id;
@@ -59,38 +60,35 @@ export class FilmSelectComponent implements OnInit {
 
   async getFilmsByFilter(data?: string, isReload?: boolean): Promise<boolean> {
     this.isLoading.set(true);
-    const cacheKey = `films-${this.filterType}-${data}`;
-    const maxAge = 12 * 60 * 60 * 1000;
-    const hasInternet = (await Network.getStatus()).connected;
+    try{
+      const cacheKey = `films-${this.filterType}-${data}`;
+      const maxAge = 12 * 60 * 60 * 1000;
+      const hasInternet = (await Network.getStatus()).connected;
 
-    if (!hasInternet && isReload) {
-      this.isLoading.set(false);
-      throw new Error('No internet connection');
-    }
+      if (!hasInternet && isReload) {
+        throw new Error('No internet connection');
+      }
 
-    const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
-    if ((cachedFilms && !isReload) || !hasInternet) {
-      this.topFilms = this.getTopFilms(await cachedFilms);
-      this.isLoading.set(false);
-      return !hasInternet;
-    }
+      const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
+      if ((cachedFilms && !isReload) || !hasInternet) {
+        this.topFilms = this.getTopFilms(await cachedFilms);
+        return !hasInternet;
+      }
 
-    const formData = new FormData();
-    formData.append('get_filter_aktiv', 'true');
-    formData.append('filter[ovfilme]', '0');
-    formData.append('filter[leinwand_highlight]', '0');
-    let films: Film[] = [];
-    if (this.filterType && data) {
-      formData.append(this.filterType, data);
-    }
-    try {
-      films = await this.filmData.fetchFilmData(formData);
-      this.topFilms = this.getTopFilms(films);
-      await this.updateFilmData();
+      const formData = new FormData();
+      formData.append('get_filter_aktiv', 'true');
+      formData.append('filter[ovfilme]', '0');
+      formData.append('filter[leinwand_highlight]', '0');
+      let films: Film[] = [];
+      if (this.filterType && data) {
+        formData.append(this.filterType, data);
+      }
+        films = await this.filmData.fetchFilmData(formData);
+        this.topFilms = this.getTopFilms(films);
+        await this.updateFilmData();
     } catch (error) {
       console.error(error);
       this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
-
     } finally {
       this.isLoading.set(false);
     }
