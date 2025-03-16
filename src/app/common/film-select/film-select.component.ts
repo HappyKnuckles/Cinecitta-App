@@ -64,12 +64,14 @@ export class FilmSelectComponent implements OnInit {
     const hasInternet = (await Network.getStatus()).connected;
 
     if (!hasInternet && isReload) {
+      this.isLoading.set(false);
       throw new Error('No internet connection');
     }
 
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.topFilms = this.getTopFilms(await cachedFilms);
+      this.isLoading.set(false);
       return !hasInternet;
     }
 
