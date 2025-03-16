@@ -47,7 +47,7 @@ export class FilmSelectComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.getFilmsByFilter(this.selectedItem)   
+    await this.getFilmsByFilter(this.selectedItem)
   }
 
   async loadData(isReload?: boolean): Promise<boolean> {
@@ -60,9 +60,9 @@ export class FilmSelectComponent implements OnInit {
 
   async getFilmsByFilter(data?: string, isReload?: boolean): Promise<boolean> {
     this.isLoading.set(true);
-    try{
-      const cacheKey = `films-${this.filterType}-${data}`;
-      const maxAge = 12 * 60 * 60 * 1000;
+    const cacheKey = `films-${this.filterType}-${data}`;
+    const maxAge = 12 * 60 * 60 * 1000;
+    try {
       const hasInternet = (await Network.getStatus()).connected;
 
       if (!hasInternet && isReload) {
@@ -83,9 +83,9 @@ export class FilmSelectComponent implements OnInit {
       if (this.filterType && data) {
         formData.append(this.filterType, data);
       }
-        films = await this.filmData.fetchFilmData(formData);
-        this.topFilms = this.getTopFilms(films);
-        await this.updateFilmData();
+      films = await this.filmData.fetchFilmData(formData);
+      this.topFilms = this.getTopFilms(films);
+      await this.updateFilmData();
     } catch (error) {
       console.error(error);
       this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
