@@ -58,6 +58,7 @@ export class FilmSelectComponent implements OnInit {
   }
 
   async getFilmsByFilter(data?: string, isReload?: boolean): Promise<boolean> {
+    this.isLoading.set(true);
     const cacheKey = `films-${this.filterType}-${data}`;
     const maxAge = 12 * 60 * 60 * 1000;
     const hasInternet = (await Network.getStatus()).connected;
@@ -81,7 +82,6 @@ export class FilmSelectComponent implements OnInit {
       formData.append(this.filterType, data);
     }
     try {
-      this.isLoading.set(true);
       films = await this.filmData.fetchFilmData(formData);
       this.topFilms = this.getTopFilms(films);
       await this.updateFilmData();
