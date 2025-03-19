@@ -32,7 +32,7 @@ private swUpdate: SwUpdate, private http: HttpClient, private storageService: St
       if (event.type === 'VERSION_READY') {
         const lastCommitDate = localStorage.getItem('lastCommitDate');
         const sinceParam = lastCommitDate ? `&since=${lastCommitDate}` : '';
-        const apiUrl = `https://api.github.com/repos/HappyKnuckles/bowling-stats/commits?sha=master${sinceParam}`;
+        const apiUrl = `https://api.github.com/repos/HappyKnuckles/cine-app/commits?sha=master${sinceParam}`;
 
         // Fetch the latest commits from the master branch on GitHub
         this.http.get(apiUrl).subscribe({
