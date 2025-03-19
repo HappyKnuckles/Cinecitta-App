@@ -47,7 +47,9 @@ export class FilmSelectComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    this.selectedItem = this.items[0].id;
+    if (this.items && this.items.length > 0) {
+      this.selectedItem = this.items[0].id;
+    }
     await this.getFilmsByFilter(this.selectedItem)
   }
 
