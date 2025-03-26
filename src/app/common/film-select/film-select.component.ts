@@ -37,7 +37,7 @@ export class FilmSelectComponent implements OnInit {
   @Output() filmClick = new EventEmitter<any>();
   topFilms: Film[] = [];
   selectedItem!: string;
-  isLoading = signal(false);
+  isLoading = signal(true);
   constructor(
     private filmData: FilmDataService,
     private webScrapingService: WebscraperService,
