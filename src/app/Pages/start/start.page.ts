@@ -1,7 +1,6 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import * as Filtertags from '../../models/filtertags';
-import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { Router } from '@angular/router';
 import { FilmSelectComponent } from '../../common/film-select/film-select.component';
 import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
@@ -25,7 +24,6 @@ export class StartPage {
 
   constructor(
     public loadingService: LoadingService,
-    private filmRouter: FilmRoutService,
     private router: Router,
     private toastService: ToastService,
     private hapticService: HapticService
@@ -41,8 +39,8 @@ export class StartPage {
   }
 
   onFilmClick(film: any): void {
-    this.filmRouter.changeFilmTitle(film.film_titel);
-    this.router.navigate(['/tabs/film']);
+    // this.filmRouter.changeFilmTitle(film.film_titel);
+    this.router.navigate(['/tabs/film'], {queryParams: { search: film.film_titel}});
   }
 
   async fetchDataForAllComponents(isReload?: boolean): Promise<void> {

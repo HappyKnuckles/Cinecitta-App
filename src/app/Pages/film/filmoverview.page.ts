@@ -31,8 +31,8 @@ import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
-import { Subscription, filter } from 'rxjs';
-import { NavigationEnd, Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
 import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
@@ -122,9 +122,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private alertController: AlertController,
     private website: OpenWebsiteService,
     public loadingService: LoadingService,
-    private router: Router,
     private toastService: ToastService,
-    private hapticService: HapticService
+    private hapticService: HapticService,
+    private route: ActivatedRoute
   ) {
     addIcons({
       ellipsisVertical,
@@ -135,6 +135,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       removeOutline,
       informationCircleOutline,
     });
+   
   }
 
   async ngOnInit(): Promise<void> {
@@ -147,13 +148,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.onTimeChange(true);
     this.checkTimes();
     this.startPeriodicCheck();
-    // so lassen?
-    this.routerSubscription.add(
-      this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event: any) => {
-        if (event.url.includes('/tabs/film') && this.searchInput.searchQuery !== '') {
-          this.isSearchOpen = true;
-        }
-      })
+ 
+    this.route.queryParams.subscribe((params) => {
+      if (params['search']) {
+        this.isSearchOpen = true;
+      }
+    }
     );
   }
 

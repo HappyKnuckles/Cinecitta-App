@@ -1,19 +1,19 @@
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild, OnChanges, OnDestroy } from '@angular/core';
-import { IonInput, IonIcon, IonButton, IonLabel } from '@ionic/angular/standalone';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input } from '@angular/core';
+import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { FilmRoutService } from 'src/app/services/film-rout/film-rout.service';
 import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { StorageService } from 'src/app/services/storage/storage.service';
 import { addIcons } from 'ionicons';
-import { search } from 'ionicons/icons';
-import { NgIf } from '@angular/common';
+import { search, filter, filterOutline } from 'ionicons/icons';
+import { NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -27,16 +27,15 @@ import { ToastService } from 'src/app/services/toast/toast.service';
     ]),
   ],
   standalone: true,
-  imports: [IonInput, FormsModule, IonIcon, NgIf, IonButton, IonLabel],
+  imports: [FormsModule, IonIcon, NgIf, IonButton, IonSearchbar, NgStyle],
 })
-export class SearchComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() formData!: FormData;
+export class SearchComponent implements OnInit, OnDestroy {
+  formData = input<FormData>();
   @Input() isNewFilms = false;
   @Input() excludedProperties: any[] = [];
   @Input() showFilterButton = false;
   @Input({ required: true }) isOpen = false;
   @Input() isReload = false;
-
   @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
   @ViewChild('searchInput') searchInput?: IonInput;
@@ -49,13 +48,14 @@ export class SearchComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor(
     private filmData: FilmDataService,
-    private filmRouter: FilmRoutService,
     private webScrapingService: WebscraperService,
     private loadingService: LoadingService,
     private storageService: StorageService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private route: ActivatedRoute
+
   ) {
-    addIcons({ search });
+    addIcons({ filterOutline, filter, search });
   }
 
   async ngOnInit() {
@@ -65,20 +65,15 @@ export class SearchComponent implements OnInit, OnChanges, OnDestroy {
       })
     );
 
-    await this.loadData(this.formData);
+    await this.loadData(this.formData());
 
     if (!this.isNewFilms) {
-      this.sub.add(
-        this.filmRouter.currentFilmTitle.subscribe((title) => {
-          this.onSearchChange(title);
-        })
+      this.route.queryParams.subscribe((params) => {
+        if (params['search']) {
+          this.onSearchChange(params['search']);
+        }
+      }
       );
-    }
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-    if (changes['formData'] && !changes['formData'].isFirstChange()) {
-      await this.loadData(this.formData, this.isReload);
     }
   }
 
@@ -94,7 +89,7 @@ export class SearchComponent implements OnInit, OnChanges, OnDestroy {
 
     let hashedFormData: string | undefined;
     if (formData) {
-      const serializedFormData = this.serializeFormData(this.formData);
+      const serializedFormData = this.serializeFormData(this.formData()!);
       hashedFormData = await this.hashString(serializedFormData);
     }
     const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;

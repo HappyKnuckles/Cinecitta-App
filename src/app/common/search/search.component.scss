@@ -1,27 +1,16 @@
-.search {
-  --padding-start: 35px;
-  position: relative;
-  pointer-events: auto;
-  height: 50px;
+.searchContainer {
+  display: flex;
 
-  ion-icon {
-    font-size: 20px;
-    color: #a3d9d5;
-    position: absolute;
-    left: 2%;
-    top: 30%;
+  .search {
+    --padding-start: 35px;
+    position: relative;
+    pointer-events: auto;
+    height: 65px;
+    min-height: 0px;
   }
 
-  .filterBtn {
-    position: absolute;
-    right: 5%;
-    top: 10%;
-    --border-radius: 7px;
-    height: 65%;
-    width: 15%;
-    opacity: 0.8;
-    z-index: 5;
-    font-size: 15px;
-    letter-spacing: 0.5px;
+  ion-icon {
+    font-size: 28px;
+    color: #a3d9d5;
   }
 }
