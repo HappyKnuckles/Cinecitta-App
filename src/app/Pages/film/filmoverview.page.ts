@@ -113,7 +113,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
-  private routerSubscription: Subscription = new Subscription();
   private debounceTimeout: any;
   intervalId: any;
 
