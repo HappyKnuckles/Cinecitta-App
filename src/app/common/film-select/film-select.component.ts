@@ -9,6 +9,7 @@ import { NgIf, NgFor } from '@angular/common';
 import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem, IonSkeletonText } from '@ionic/angular/standalone';
 import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-film-select',
@@ -42,7 +43,8 @@ export class FilmSelectComponent implements OnInit {
     private filmData: FilmDataService,
     private webScrapingService: WebscraperService,
     private storageService: StorageService,
-    public toastService: ToastService
+    public toastService: ToastService,
+    private router: Router
   ) {
   }
 
@@ -100,7 +102,7 @@ export class FilmSelectComponent implements OnInit {
   }
 
   onFilmClick(film: Film): void {
-    this.filmClick.emit(film);
+    this.router.navigate(['/tabs/film'], { queryParams: { search: film.film_titel } });
   }
 
   private async updateFilmData(): Promise<any> {

@@ -13,7 +13,7 @@ import { FormsModule } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { Network } from '@capacitor/network';
 import { ToastService } from 'src/app/services/toast/toast.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-search',
@@ -52,7 +52,8 @@ export class SearchComponent implements OnInit, OnDestroy {
     private loadingService: LoadingService,
     private storageService: StorageService,
     private toastService: ToastService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
 
   ) {
     addIcons({ filterOutline, filter, search });
@@ -68,9 +69,17 @@ export class SearchComponent implements OnInit, OnDestroy {
     await this.loadData(this.formData());
 
     if (!this.isNewFilms) {
-      this.route.queryParams.subscribe((params) => {
+      this.route.queryParams.pipe(distinctUntilChanged()).subscribe((params) => {
         if (params['search']) {
           this.onSearchChange(params['search']);
+     
+            
+            // Clear the search query parameter
+            this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { search: null },
+            queryParamsHandling: 'merge'
+            });
         }
       }
       );
