@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="cancel()"><ion-icon name="chevron-back"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Filter</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="reset()" [strong]="true">Reset</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen="true">
+  <ion-list>
+    <ion-item>
+      <ion-select label="Zeitraum" interface="action-sheet"  [(ngModel)]="selectedTageAuswahl">
+        <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id"> {{ wahl.name }} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Genre" [(ngModel)]="selectedGenres" [multiple]="true" placeholder="Alle">
+        <ion-select-option *ngFor="let genre of genresTag" [value]="genre.id"> {{ genre.name }} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Kinosaal" interface="action-sheet" [(ngModel)]="selectedLeinwandHighlights">
+        <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id"> {{ highlight.name }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Sound" [(ngModel)]="selectedFlags" [multiple]="true" placeholder="Alle">
+        <ion-select-option *ngFor="let flag of flags" [value]="flag.id"> {{ flag.name }} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Barrierefreie Optionen" [(ngModel)]="selectedBehindertenTags" [multiple]="true" placeholder="Alle">
+        <ion-select-option *ngFor="let behindertenTag of behindertenTags" [value]="behindertenTag.id"> {{
+          behindertenTag.name }} </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-select label="Extras" [(ngModel)]="selectedExtras" [multiple]="true" placeholder="Alle">
+        <ion-select-option *ngFor="let extra of extras" [value]="extra.id"> {{ extra.name }} </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+</ion-content>
+<ion-footer style="position: fixed; bottom: 0;">
+    <ion-button expand="block" (click)="confirm()" style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px">Bestätigen</ion-button>
+</ion-footer>

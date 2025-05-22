@@ -44,12 +44,15 @@ import { ToastService } from 'src/app/services/toast/toast.service';
 import { HapticService } from 'src/app/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
 import { Network } from '@capacitor/network';
+import { FilmFilterComponent } from "../../common/film-filter/film-filter.component";
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
+  providers: [ModalController],
   imports: [IonRefresherContent,
     IonSkeletonText,
     NgIf,
@@ -80,8 +83,7 @@ import { Network } from '@capacitor/network';
     IonImg,
     IonPopover,
     ExtractTextPipe,
-    TransformTimePipe,
-  ],
+    TransformTimePipe, FilmFilterComponent],
 })
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
@@ -136,7 +138,19 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     });
    
   }
-
+  log(data: any) {
+    const filters = data.detail.data.data;
+    this.selectedFilters.genresTags = filters.selectedGenres;
+    this.selectedFilters.leinwandHighlights = filters.selectedLeinwandHighlights;
+    this.selectedFilters.extras = filters.selectedExtras;
+    this.selectedFilters.flags = filters.selectedFlags;
+    this.selectedFilters.behindertenTags = filters.selectedBehindertenTags;
+    this.selectedFilters.tageAuswahl = filters.selectedTageAuswahl;
+    this.startTime = filters.selectedStartTime;
+    this.endTime = filters.selectedEndTime;
+    this.loadFilmData();
+    console.log(filters);
+  }
   async ngOnInit(): Promise<void> {
     const viewType = localStorage.getItem('viewType');
     if (viewType) {

@@ -33,9 +33,9 @@
 
 <!-- Filter Modal -->
 <!-- TODO change isOpen to accordions + ion items-->
-<ion-modal [isOpen]="isModalOpen" class="modal" style="position: relative">
+<ion-modal [isOpen]="isModalOpen" (didDismiss)="log($event)" class="modal" style="position: relative">
   <ng-template>
-    <ion-header>
+    <!-- <ion-header>
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-button (click)="setOpen(false)"><ion-icon name="chevron-back"></ion-icon></ion-button>
@@ -177,7 +177,8 @@
       <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px" (click)="confirm()"
         >Bestätigen ({{films.length}})
       </ion-button>
-    </ion-footer>
+    </ion-footer> -->
+    <app-film-filter></app-film-filter>
   </ng-template>
 </ion-modal>
 
