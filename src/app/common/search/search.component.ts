@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -57,6 +57,10 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ) {
     addIcons({ filterOutline, filter, search });
+
+    effect(() => {
+      this.loadData(this.formData(), this.isReload);
+    }, { allowSignalWrites: true })
   }
 
   async ngOnInit() {
@@ -72,14 +76,13 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.route.queryParams.pipe(distinctUntilChanged()).subscribe((params) => {
         if (params['search']) {
           this.onSearchChange(params['search']);
-     
-            
-            // Clear the search query parameter
-            this.router.navigate([], {
+
+          // Clear the search query parameter
+          this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { search: null },
             queryParamsHandling: 'merge'
-            });
+          });
         }
       }
       );
