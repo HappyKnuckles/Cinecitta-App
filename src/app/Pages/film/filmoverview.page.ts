@@ -31,7 +31,6 @@ import { Film, Leinwand, Theater } from '../../models/filmModel';
 import { ViewType } from '../../models/viewEnum';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { LoadingService } from 'src/app/services/loader/loading.service';
-import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';

@@ -1,5 +1,5 @@
 <div class="searchContainer" [@openClose]="!isOpen ? true : false">
-  <ion-searchbar class="search" maxlength="40" #searchInput placeholder="Search" [(ngModel)]="searchQuery"
+  <ion-searchbar disabled="{{ !isOpen }}" class="search" maxlength="40" #searchInput placeholder="Search" [(ngModel)]="searchQuery"
     (ngModelChange)="onSearchChange($event)" showCancelButton="focus" [ngStyle]="{width: isNewFilms ? '100%' : '90%'}">
   </ion-searchbar>
   <ion-button disabled="{{ !isOpen }}" size="small" *ngIf="showFilterButton" class="filterBtn" id="filter-modal"
