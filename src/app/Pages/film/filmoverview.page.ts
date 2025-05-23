@@ -46,6 +46,7 @@ import { ImpactStyle } from '@capacitor/haptics';
 import { Network } from '@capacitor/network';
 import { FilmFilterComponent } from "../../common/film-filter/film-filter.component";
 import { ModalController } from '@ionic/angular';
+import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 
 @Component({
   selector: 'app-filmoverview',
@@ -125,7 +126,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    public filmDataService: FilmDataService
   ) {
     addIcons({
       ellipsisVertical,
@@ -148,8 +150,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       this.detailView = [viewType === ViewType.Detail, viewType === ViewType.Kurz, viewType === ViewType.Mini];
     }
 
-    this.setDefaultSelectedFilterValues();
-    await this.onTimeChange(true);
+    // this.setDefaultSelectedFilterValues();
+    // await this.onTimeChange(true);
     this.checkTimes();
     this.startPeriodicCheck();
  
@@ -229,13 +231,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   handleRefresh(event: any): void {
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
-    setTimeout(() => {
-      this.isReload = true;
-      this.loadFilmData().then(() => {
-        this.searchInput.clearInput();
-        event.target.complete();
-      });
-    }, 100);
+    // setTimeout(() => {
+    //   this.isReload = true;
+    //   this.loadFilmData().then(() => {
+    //     this.searchInput.clearInput();
+    //     event.target.complete();
+    //   });
+    // }, 100);
   }
 
   async presentActionSheet(): Promise<void> {
@@ -466,35 +468,35 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async loadFilmData(): Promise<void> {
-    this.formData = this.appendSelectedFiltersToFormData();
-  }
+  // async loadFilmData(): Promise<void> {
+  //   this.formData = this.appendSelectedFiltersToFormData();
+  // }
 
-  appendSelectedFiltersToFormData(): FormData {
-    const formData = new FormData();
+  // appendSelectedFiltersToFormData(): FormData {
+  //   const formData = new FormData();
 
-    formData.append('get_filter_aktiv', 'false');
-    formData.append('filter[ovfilme]', '0');
-    console.log(this.selectedFilters)
-    // Append selected filters to the form data
-    this.selectedFilters.genresTags.forEach((id: number) => formData.append('filter[genres_tags][]', id.toString()));
-    if (this.selectedFilters.leinwandHighlights.length > 0) {
-      formData.append('filter[leinwand_highlight]', this.selectedFilters.leinwandHighlights[0].toString());
-    }
-    if (this.selectedFilters.tageAuswahl.length > 0) {
-      formData.append('filter[tage_auswahl]', this.selectedFilters.tageAuswahl[0]);
-    }
-    this.selectedFilters.extras.forEach((extra: string) => formData.append('filter[extra][]', extra));
-    this.selectedFilters.flags.forEach((id: number) => formData.append('filter[releasetypen_flags][]', id.toString()));
-    this.selectedFilters.behindertenTags.forEach((id: number) => formData.append('filter[barrierefrei_tags][]', id.toString()));
+  //   formData.append('get_filter_aktiv', 'false');
+  //   formData.append('filter[ovfilme]', '0');
+  //   console.log(this.selectedFilters)
+  //   // Append selected filters to the form data
+  //   this.selectedFilters.genresTags.forEach((id: number) => formData.append('filter[genres_tags][]', id.toString()));
+  //   if (this.selectedFilters.leinwandHighlights.length > 0) {
+  //     formData.append('filter[leinwand_highlight]', this.selectedFilters.leinwandHighlights[0].toString());
+  //   }
+  //   if (this.selectedFilters.tageAuswahl.length > 0) {
+  //     formData.append('filter[tage_auswahl]', this.selectedFilters.tageAuswahl[0]);
+  //   }
+  //   this.selectedFilters.extras.forEach((extra: string) => formData.append('filter[extra][]', extra));
+  //   this.selectedFilters.flags.forEach((id: number) => formData.append('filter[releasetypen_flags][]', id.toString()));
+  //   this.selectedFilters.behindertenTags.forEach((id: number) => formData.append('filter[barrierefrei_tags][]', id.toString()));
 
-    const startTimeNumeric = this.convertTimeToNumeric(this.startTime);
-    const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
-    formData.append('filter[rangeslider][]', String(startTimeNumeric));
-    formData.append('filter[rangeslider][]', String(endTimeNumeric));
+  //   const startTimeNumeric = this.convertTimeToNumeric(this.startTime);
+  //   const endTimeNumeric = this.convertTimeToNumeric(this.endTime);
+  //   formData.append('filter[rangeslider][]', String(startTimeNumeric));
+  //   formData.append('filter[rangeslider][]', String(endTimeNumeric));
 
-    return formData;
-  }
+  //   return formData;
+  // }
 
   // async toggleSelection(id: any, filterType: string): Promise<void> {
   //   this.isReload = false;
@@ -529,51 +531,51 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async onTimeChange(isInit?: boolean): Promise<void> {
-    this.isReload = false;
-    let startHour = this.convertTimeToNumeric(this.startTime);
-    let endHour = this.convertTimeToNumeric(this.endTime);
-    const formatHour = (hour: number) => hour.toString().padStart(2, '0');
-    this.formattedEndTime = `${formatHour(endHour)}:00`;
+  // async onTimeChange(isInit?: boolean): Promise<void> {
+  //   this.isReload = false;
+  //   let startHour = this.convertTimeToNumeric(this.startTime);
+  //   let endHour = this.convertTimeToNumeric(this.endTime);
+  //   const formatHour = (hour: number) => hour.toString().padStart(2, '0');
+  //   this.formattedEndTime = `${formatHour(endHour)}:00`;
 
-    // Ensure endHour is always at least one hour higher than startHour
-    if (endHour <= startHour) {
-      endHour = startHour + 1;
+  //   // Ensure endHour is always at least one hour higher than startHour
+  //   if (endHour <= startHour) {
+  //     endHour = startHour + 1;
 
-      if (endHour > 23) {
-        endHour -= 24;
-      }
-      if (startHour > 23) {
-        startHour -= 24;
-      }
-      this.endTime = `${formatHour(endHour)}:00`;
-      this.startTime = `${formatHour(startHour)}:00`;
-    }
+  //     if (endHour > 23) {
+  //       endHour -= 24;
+  //     }
+  //     if (startHour > 23) {
+  //       startHour -= 24;
+  //     }
+  //     this.endTime = `${formatHour(endHour)}:00`;
+  //     this.startTime = `${formatHour(startHour)}:00`;
+  //   }
 
-    // Debounce loadFilmData
-    if (!isInit) {
-      if (this.debounceTimeout) {
-        clearTimeout(this.debounceTimeout);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      this.debounceTimeout = setTimeout(async () => {
-        await this.loadFilmData();
-      }, 300); // Adjust the debounce delay as needed (300ms in this example)
-    }
-  }
+  //   // Debounce loadFilmData
+  //   if (!isInit) {
+  //     if (this.debounceTimeout) {
+  //       clearTimeout(this.debounceTimeout);
+  //     }
+  //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  //     this.debounceTimeout = setTimeout(async () => {
+  //       await this.loadFilmData();
+  //     }, 300); // Adjust the debounce delay as needed (300ms in this example)
+  //   }
+  // }
 
-  convertTimeToNumeric(timeStr: string): number {
-    // Split the time string into hours and minutes
-    const [hoursStr] = timeStr.split(':');
-    const hours = parseInt(hoursStr, 10);
+  // convertTimeToNumeric(timeStr: string): number {
+  //   // Split the time string into hours and minutes
+  //   const [hoursStr] = timeStr.split(':');
+  //   const hours = parseInt(hoursStr, 10);
 
-    // Convert the time to numeric representation
-    let numericTime = hours;
+  //   // Convert the time to numeric representation
+  //   let numericTime = hours;
 
-    // Special case: If the time is below 10 add 24
-    if (hours < 10) {
-      numericTime += 24;
-    }
-    return numericTime;
-  }
+  //   // Special case: If the time is below 10 add 24
+  //   if (hours < 10) {
+  //     numericTime += 24;
+  //   }
+  //   return numericTime;
+  // }
 }

@@ -188,7 +188,7 @@
   <!-- Detailview -->
   <div *ngIf="detailView[0]" class="content">
     @if (!loadingService.isLoading) {
-    <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
+    <div class="filmContainer" *ngFor="let film of filmDataService.films(); let i = index; let first = first">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}" *ngIf="hasScreenings(film)">
         <div class="filmSpecific">
           <ion-grid class="infoGrid">

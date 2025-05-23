@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { SearchComponent } from 'src/app/common/search/search.component';
 import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
-import { newFilm } from '../../models/filmModel';
+import { NewFilm } from '../../models/filmModel';
 import * as Filtertags from '../../models/filtertags';
 import { LoadingService } from 'src/app/services/loader/loading.service';
 import { addIcons } from 'ionicons';
@@ -54,7 +54,7 @@ import { ImpactStyle } from '@capacitor/haptics';
 })
 export class NewsPage {
   @ViewChild(IonContent) content!: IonContent;
-  newFilms: newFilm[] = [];
+  newFilms: NewFilm[] = [];
   showFull: boolean[] = [];
   isSearchOpen = false;
   excluded = Filtertags.excludedFilmValues;

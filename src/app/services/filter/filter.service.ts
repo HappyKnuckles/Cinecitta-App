@@ -34,8 +34,6 @@ export class FilterService {
 
   #filteredFilms = computed(async () => {
     const formData = this.formData();
-    console.log("hi")
-    console.log(await this.filterFilms(formData));
     return await this.filterFilms(formData);
   })
 
@@ -44,7 +42,9 @@ export class FilterService {
   }
 
   formData = computed(() => {
-    const currentFilters = this.filters();
+    console.log('formData computed IS RE-EVALUATING NOW'); // <-- ADD THIS LOG
+
+    const currentFilters = this.#filters();
     const formData = new FormData();
 
     formData.append('get_filter_aktiv', 'false');
@@ -82,12 +82,7 @@ export class FilterService {
     return this.#filters;
   }
   constructor(private filmDataService: FilmDataService) {  
-    
-    this.setDefaultFilters();
-    effect(() => {
-      const currentFilters = this.filters();
-      console.log('Current filters:', currentFilters);
-    })
+    this.filters.set(this.setDefaultFilters());
  }
 
   setDefaultFilters() {
@@ -100,12 +95,14 @@ export class FilterService {
   }
 
   resetFilters() {
-    this.filters.set({...this.defaultFilters});
+    this.filters.update(() => ({...this.defaultFilters}));
   }
 
   async filterFilms(formData: FormData){
+    console.log('filterFilms called with formData:', formData);
     return await this.filmDataService.fetchFilmData(formData);
   }
+
   convertTimeToNumeric(timeStr: string): number {
     // Split the time string into hours and minutes
     const [hoursStr] = timeStr.split(':');

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Film, Leinwand, Theater, newFilm } from 'src/app/models/filmModel';
+import { Film, Leinwand, NewFilm, Theater } from 'src/app/models/filmModel';
 import { WebscraperService } from '../scraper/webscraper.service';
 
 @Injectable({
@@ -18,9 +18,12 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
+  newFilms = signal<NewFilm[]>([]);
+  films = signal<Film[]>([]);
+
   constructor(private http: HttpClient, private webScrapingService: WebscraperService) {}
 
-  async fetchNewFilms(): Promise<newFilm[]> {
+  async fetchNewFilms(): Promise<NewFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen';
     const formData = new URLSearchParams();
     formData.append('filter[genres_tags_not][]', '185305');
@@ -37,7 +40,7 @@ export class FilmDataService {
           headers: headers,
         })
       );
-
+      this.newFilms.set(response?.daten?.items ?? []);
       return response?.daten?.items ?? [];
     } catch (error) {
       throw error;
@@ -63,7 +66,7 @@ export class FilmDataService {
         const data = await response.json();
         this.filmData = data?.daten?.items;
         this.deleteLeinwandEntriesWithOVFlag();
-
+        this.films.set(this.filmData);
         return this.filmData;
       } else {
         throw new Error(`HTTP Error: ${response.status}`);
@@ -108,6 +111,7 @@ export class FilmDataService {
 
   private formDataToUrlEncoded(formData: any): string {
     const formBody = [];
+    console.log(formData);
     for (const pair of formData.entries()) {
       const encodedKey = encodeURIComponent(pair[0]);
       const encodedValue = encodeURIComponent(pair[1]);

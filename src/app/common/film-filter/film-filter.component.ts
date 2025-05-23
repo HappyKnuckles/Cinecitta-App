@@ -36,12 +36,11 @@ export class FilmFilterComponent  {
   }
 
   updateFilter<T extends keyof Filter>(key: T, value: unknown) {
-    console.log(key, value);
     this.filterService.filters.update((filters) => ({ ...filters, [key]: value }));
   }
 
   cancel() {
-    this.filterService.filters.set(localStorage.getItem('filter') ? JSON.parse(localStorage.getItem('filter')!) : this.filterService.filters());
+    this.filterService.filters.update(() => localStorage.getItem('filter') ? JSON.parse(localStorage.getItem('filter')!) : this.filterService.filters());
     this.modalCtrl.dismiss();
   }
 
