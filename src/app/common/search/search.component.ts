@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -57,12 +57,19 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   ) {
     addIcons({ filterOutline, filter, search });
+    effect(() => {
+      this.loadData(this.formData(), this.isReload);
+    
+  }, { allowSignalWrites: true })
   }
 
   async ngOnInit() {
     this.sub.add(
       this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe(() => {
         this.filterFilms();
+        if(this.searchQuery !== ''){
+          this.filterFilms()
+        }
       })
     );
 

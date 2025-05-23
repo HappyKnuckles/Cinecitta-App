@@ -4,6 +4,7 @@ import { ModalController } from '@ionic/angular';
 import { IonButton, IonButtons, IonTitle, IonToolbar, IonHeader, IonIcon, IonContent, IonSelectOption, IonSelect, IonList, IonItem, IonModal, IonFooter, IonPicker, IonLabel } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FilmDataService } from 'src/app/services/film-data/film-data.service';
 
 @Component({
   selector: 'app-film-filter',
@@ -25,7 +26,7 @@ export class FilmFilterComponent implements OnInit {
   defaultFilters = Filtertags.selectedFilters;
   selectedTags = model([]);
   selectedGenres = model([]);
-  selectedLeinwandHighlights = model(this.leinwandHighlights[0].id);
+  selectedLeinwandHighlights = model([this.leinwandHighlights[0].id]);
   selectedExtras = model([]);
   selectedFlags = model([]);
   selectedBehindertenTags = model([]);
@@ -33,17 +34,10 @@ export class FilmFilterComponent implements OnInit {
   selectedStartTime = model('10:00');
   selectedEndTime = model('03:00');
 
-  constructor(private modalCtrl: ModalController) { }
+  constructor(private modalCtrl: ModalController, private filmData: FilmDataService) { }
 
 ngOnInit(): void {
     console.log('ngOnInit');
-    console.log(this.selectedTags());
-  console.log(this.selectedGenres());
-  console.log(this.selectedLeinwandHighlights());
-  console.log(this.selectedExtras());
-  console.log(this.selectedFlags());
-  console.log(this.selectedBehindertenTags());
-  console.log(this.selectedTageAuswahl());
 }
 
   reset() {
@@ -54,21 +48,52 @@ ngOnInit(): void {
     this.modalCtrl.dismiss();
   }
 
-  confirm() {
-    this.modalCtrl.dismiss({
-      data: {
-        selectedTags: this.selectedTags(),
-        selectedGenres: this.selectedGenres(),
-        selectedLeinwandHighlights: this.selectedLeinwandHighlights(),
-        selectedExtras: this.selectedExtras(),
-        selectedFlags: this.selectedFlags(),
-        selectedBehindertenTags: this.selectedBehindertenTags(),
-        selectedTageAuswahl: this.selectedTageAuswahl(),
-        selectedStartTime: this.selectedStartTime(),
-        selectedEndTime: this.selectedEndTime(),}
-    });
+  async confirm() {
+    const formData = this.getFormData();
+    this.modalCtrl.dismiss(formData)
+    console.log(await this.filmData.fetchFilmData(formData))
   }
 
+  getFormData(){
+      const formData = new FormData();
+
+      formData.append('get_filter_aktiv', 'false');
+      formData.append('filter[ovfilme]', '0');
+      // Append selected filters to the form data
+      this.selectedGenres().forEach((id: number) => formData.append('filter[genres_tags][]', id.toString()));
+      if (this.selectedLeinwandHighlights().length > 0) {
+        formData.append('filter[leinwand_highlight]', this.selectedLeinwandHighlights()[0].toString());
+      }
+      if (this.selectedTageAuswahl().length > 0) {
+        formData.append('filter[tage_auswahl]', this.selectedTageAuswahl()[0]);
+      }
+      this.selectedExtras().forEach((extra: string) => formData.append('filter[extra][]', extra));
+      this.selectedFlags().forEach((id: number) => formData.append('filter[releasetypen_flags][]', id.toString()));
+      this.selectedBehindertenTags().forEach((id: number) => formData.append('filter[barrierefrei_tags][]', id.toString()));
+
+    const startTimeNumeric = this.convertTimeToNumeric(this.selectedStartTime());
+      const endTimeNumeric = this.convertTimeToNumeric(this.selectedEndTime());
+      formData.append('filter[rangeslider][]', String(startTimeNumeric));
+      formData.append('filter[rangeslider][]', String(endTimeNumeric));
+
+      return formData;
+    
+  }
+
+  convertTimeToNumeric(timeStr: string): number {
+    // Split the time string into hours and minutes
+    const [hoursStr] = timeStr.split(':');
+    const hours = parseInt(hoursStr, 10);
+
+    // Convert the time to numeric representation
+    let numericTime = hours;
+
+    // Special case: If the time is below 10 add 24
+    if (hours < 10) {
+      numericTime += 24;
+    }
+    return numericTime;
+  }
 
 
 

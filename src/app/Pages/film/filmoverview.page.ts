@@ -139,17 +139,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
    
   }
   log(data: any) {
-    const filters = data.detail.data.data;
-    this.selectedFilters.genresTags = filters.selectedGenres;
-    this.selectedFilters.leinwandHighlights = filters.selectedLeinwandHighlights;
-    this.selectedFilters.extras = filters.selectedExtras;
-    this.selectedFilters.flags = filters.selectedFlags;
-    this.selectedFilters.behindertenTags = filters.selectedBehindertenTags;
-    this.selectedFilters.tageAuswahl = filters.selectedTageAuswahl;
-    this.startTime = filters.selectedStartTime;
-    this.endTime = filters.selectedEndTime;
-    this.loadFilmData();
-    console.log(filters);
+    const filters = data.detail.data;
+    this.formData = filters;
   }
   async ngOnInit(): Promise<void> {
     const viewType = localStorage.getItem('viewType');
@@ -484,7 +475,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
     formData.append('get_filter_aktiv', 'false');
     formData.append('filter[ovfilme]', '0');
-
+    console.log(this.selectedFilters)
     // Append selected filters to the form data
     this.selectedFilters.genresTags.forEach((id: number) => formData.append('filter[genres_tags][]', id.toString()));
     if (this.selectedFilters.leinwandHighlights.length > 0) {
