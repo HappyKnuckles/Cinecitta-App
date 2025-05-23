@@ -1,12 +1,25 @@
 export * from './filtertags';
-export const selectedFilters: any = {
+export const selectedFilters: Filter = {
   genresTags: [],
   tageAuswahl: [],
   leinwandHighlights: [],
   extras: [],
   flags: [],
   behindertenTags: [],
+  startTime: '10:00',
+  endTime: '03:00',
 };
+
+export interface Filter {
+  genresTags: number[];
+  tageAuswahl: string[];
+  leinwandHighlights: number[];
+  extras: string[];
+  flags: number[];
+  behindertenTags: number[];
+  startTime: string;
+  endTime: string;
+}
 
 export const filters = ['Zeitraum', 'Genre', 'Kinosaal', 'Sound', 'Barrierefreie Optionen', 'Extras', 'Zeiten'];
 

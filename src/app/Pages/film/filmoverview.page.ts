@@ -218,8 +218,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   private setDefaultSelectedFilterValues(): void {
-    this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
-    this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
+    // this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
+    // this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
   search(event: any) {
@@ -394,20 +394,20 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   async reset(): Promise<void> {
     // Reset selected filters
-    this.selectedFilters.genresTags = [];
-    this.selectedFilters.leinwandHighlights = 171984;
-    this.selectedFilters.tageAuswahl = '';
-    this.selectedFilters.extras = [];
-    this.selectedFilters.flags = [];
-    this.selectedFilters.behindertenTags = [];
-    this.startTime = '10:00';
-    this.endTime = '03:00';
+    // this.selectedFilters.genresTags = [];
+    // this.selectedFilters.leinwandHighlights = 171984;
+    // this.selectedFilters.tageAuswahl = '';
+    // this.selectedFilters.extras = [];
+    // this.selectedFilters.flags = [];
+    // this.selectedFilters.behindertenTags = [];
+    // this.startTime = '10:00';
+    // this.endTime = '03:00';
 
-    // Reset background color of tags
-    this.showAllTags = this.showAllTags.map(() => false);
-    this.closeTimes();
+    // // Reset background color of tags
+    // this.showAllTags = this.showAllTags.map(() => false);
+    // this.closeTimes();
 
-    await this.loadFilmData();
+    // await this.loadFilmData();
   }
 
   hasScreenings(film: Film): boolean {
@@ -496,37 +496,37 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     return formData;
   }
 
-  async toggleSelection(id: any, filterType: string): Promise<void> {
-    this.isReload = false;
-    if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
-      // For Kinosaal tag or other non-time filters
-      this.selectedFilters[filterType] = [id];
-    } else {
-      // For other time-related filters (if any)
-      const index = this.selectedFilters[filterType].indexOf(id);
-      if (index > -1) {
-        // Remove the id if already selected
-        this.selectedFilters[filterType].splice(index, 1);
-      } else {
-        // Add the id if not selected
-        this.selectedFilters[filterType].push(id);
-      }
-    }
-    await this.loadFilmData();
-  }
+  // async toggleSelection(id: any, filterType: string): Promise<void> {
+  //   this.isReload = false;
+  //   if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
+  //     // For Kinosaal tag or other non-time filters
+  //     this.selectedFilters[filterType] = [id];
+  //   } else {
+  //     // For other time-related filters (if any)
+  //     const index = this.selectedFilters[filterType].indexOf(id);
+  //     if (index > -1) {
+  //       // Remove the id if already selected
+  //       this.selectedFilters[filterType].splice(index, 1);
+  //     } else {
+  //       // Add the id if not selected
+  //       this.selectedFilters[filterType].push(id);
+  //     }
+  //   }
+  //   await this.loadFilmData();
+  // }
 
-  isSelected(id: any, filterType: string): boolean {
-    if (filterType === 'leinwandHighlights') {
-      // For Kinosaal tag
-      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === 171984);
-    } else if (filterType === 'tageAuswahl') {
-      // For tageAuswahl tag
-      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === '');
-    } else {
-      // For other tags
-      return this.selectedFilters[filterType].includes(id);
-    }
-  }
+  // isSelected(id: any, filterType: string): boolean {
+  //   if (filterType === 'leinwandHighlights') {
+  //     // For Kinosaal tag
+  //     return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === 171984);
+  //   } else if (filterType === 'tageAuswahl') {
+  //     // For tageAuswahl tag
+  //     return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === '');
+  //   } else {
+  //     // For other tags
+  //     return this.selectedFilters[filterType].includes(id);
+  //   }
+  // }
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async onTimeChange(isInit?: boolean): Promise<void> {

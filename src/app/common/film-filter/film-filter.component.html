@@ -13,34 +13,34 @@
 <ion-content fullscreen="true">
   <ion-list>
     <ion-item>
-      <ion-select label="Zeitraum" interface="action-sheet"  [(ngModel)]="selectedTageAuswahl">
+      <ion-select label="Zeitraum" interface="action-sheet"  [ngModel]="filterService.filters().tageAuswahl" (ionChange)="updateFilter('tageAuswahl', $event.detail.value)">
         <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id"> {{ wahl.name }} </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-select label="Genre" [(ngModel)]="selectedGenres" [multiple]="true" placeholder="Alle">
+      <ion-select label="Genre" [ngModel]="filterService.filters().genresTags" [multiple]="true" (ionChange)="updateFilter('genresTags', $event.detail.value)" placeholder="Alle">
         <ion-select-option *ngFor="let genre of genresTag" [value]="genre.id"> {{ genre.name }} </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-select label="Kinosaal" interface="action-sheet" [(ngModel)]="selectedLeinwandHighlights">
+      <ion-select label="Kinosaal" interface="action-sheet" [ngModel]="filterService.filters().leinwandHighlights" (ionChange)="updateFilter('leinwandHighlights', $event.detail.value)">
         <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id"> {{ highlight.name }}
         </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-select label="Sound" [(ngModel)]="selectedFlags" [multiple]="true" placeholder="Alle">
+      <ion-select label="Sound" [ngModel]="filterService.filters().flags" [multiple]="true" placeholder="Alle" (ionChange)="updateFilter('flags', $event.detail.value)">
         <ion-select-option *ngFor="let flag of flags" [value]="flag.id"> {{ flag.name }} </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-select label="Barrierefreie Optionen" [(ngModel)]="selectedBehindertenTags" [multiple]="true" placeholder="Alle">
+      <ion-select label="Barrierefreie Optionen" [ngModel]="filterService.filters().behindertenTags" [multiple]="true" (ionChange)="updateFilter('behindertenTags', $event.detail.value)" placeholder="Alle">
         <ion-select-option *ngFor="let behindertenTag of behindertenTags" [value]="behindertenTag.id"> {{
           behindertenTag.name }} </ion-select-option>
       </ion-select>
     </ion-item>
     <ion-item>
-      <ion-select label="Extras" [(ngModel)]="selectedExtras" [multiple]="true" placeholder="Alle">
+      <ion-select label="Extras" [ngModel]="filterService.filters().extras" [multiple]="true" (ionChange)="updateFilter('extras', $event.detail.value)" placeholder="Alle">
         <ion-select-option *ngFor="let extra of extras" [value]="extra.id"> {{ extra.name }} </ion-select-option>
       </ion-select>
     </ion-item>
