@@ -25,25 +25,23 @@ import {
   IonSkeletonText, IonRefresherContent
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
-import * as Filtertags from '../../models/filtertags';
-import { SearchComponent } from 'src/app/common/search/search.component';
-import { Film, Leinwand, Theater } from '../../models/filmModel';
-import { ViewType } from '../../models/viewEnum';
-import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
-import { LoadingService } from 'src/app/services/loader/loading.service';
+import { ImpactStyle } from '@capacitor/haptics';
+import { Network } from '@capacitor/network';
+import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
-import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
-import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
-import { FormsModule } from '@angular/forms';
-import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
-import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
-import { ToastService } from 'src/app/services/toast/toast.service';
-import { HapticService } from 'src/app/services/haptic/haptic.service';
-import { ImpactStyle } from '@capacitor/haptics';
-import { Network } from '@capacitor/network';
-
+import { Film, Theater, Leinwand } from 'src/app/core/models/filmModel';
+import { ViewType } from 'src/app/core/models/viewEnum';
+import { HapticService } from 'src/app/core/services/haptic/haptic.service';
+import { LoadingService } from 'src/app/core/services/loader/loading.service';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
+import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
+import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
+import * as Filtertags from 'src/app/core/models/filtertags';
 @Component({
   selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
@@ -59,7 +57,7 @@ import { Network } from '@capacitor/network';
     IonButton,
     IonIcon,
     IonTitle,
-    SearchComponent_1,
+    SearchComponent,
     IonModal,
     IonButtons,
     IonContent,

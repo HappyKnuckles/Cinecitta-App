@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { LoadingService } from './services/loader/loading.service';
 import { NgIf } from '@angular/common';
-import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet, AlertController } from '@ionic/angular/standalone';
-import { ToastComponent } from './common/toast/toast.component';
-import { SwUpdate } from '@angular/service-worker';
 import { HttpClient } from '@angular/common/http';
-import { StorageService } from './services/storage/storage.service';
+import { Component, OnInit } from '@angular/core';
+
 import { DomSanitizer } from '@angular/platform-browser';
+import { SwUpdate } from '@angular/service-worker';
+import { IonApp, IonBackdrop, IonSpinner, IonRouterOutlet, AlertController } from '@ionic/angular/standalone';
+import { LoadingService } from './core/services/loader/loading.service';
+import { StorageService } from './core/services/storage/storage.service';
+import { ToastComponent } from './shared/components/toast/toast.component';
 
 @Component({
   selector: 'app-root',

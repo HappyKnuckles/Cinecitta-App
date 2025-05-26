@@ -1,32 +1,16 @@
+import { NgIf, NgFor } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { SearchComponent } from 'src/app/common/search/search.component';
-import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
-import { newFilm } from '../../models/filmModel';
-import * as Filtertags from '../../models/filtertags';
-import { LoadingService } from 'src/app/services/loader/loading.service';
+import { ImpactStyle } from '@capacitor/haptics';
+import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { search } from 'ionicons/icons';
-import { ExtractTextPipe } from '../../Pipes/extract-text/extract-text.pipe';
-import { SearchComponent as SearchComponent_1 } from '../../common/search/search.component';
-import {
-  IonText,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButton,
-  IonIcon,
-  IonContent,
-  IonRefresher,
-  IonGrid,
-  IonRow,
-  IonImg,
-  IonCol,
-  IonSkeletonText, IonRefresherContent
-} from '@ionic/angular/standalone';
-import { NgIf, NgFor } from '@angular/common';
-import { HapticService } from 'src/app/services/haptic/haptic.service';
-import { ImpactStyle } from '@capacitor/haptics';
-
+import { NewFilm } from 'src/app/core/models/filmModel';
+import { HapticService } from 'src/app/core/services/haptic/haptic.service';
+import { LoadingService } from 'src/app/core/services/loader/loading.service';
+import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
+import * as Filtertags from 'src/app/core/models/filtertags';
 @Component({
   selector: 'app-newspage',
   templateUrl: 'newspage.page.html',
@@ -41,7 +25,7 @@ import { ImpactStyle } from '@capacitor/haptics';
     IonTitle,
     IonButton,
     IonIcon,
-    SearchComponent_1,
+    SearchComponent,
     IonContent,
     IonRefresher,
     NgFor,
@@ -54,7 +38,7 @@ import { ImpactStyle } from '@capacitor/haptics';
 })
 export class NewsPage {
   @ViewChild(IonContent) content!: IonContent;
-  newFilms: newFilm[] = [];
+  newFilms: NewFilm[] = [];
   showFull: boolean[] = [];
   isSearchOpen = false;
   excluded = Filtertags.excludedFilmValues;

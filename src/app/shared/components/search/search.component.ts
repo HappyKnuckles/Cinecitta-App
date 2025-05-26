@@ -2,18 +2,20 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, i
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
-import { LoadingService } from 'src/app/services/loader/loading.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { addIcons } from 'ionicons';
-import { search, filter, filterOutline } from 'ionicons/icons';
+
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Fuse from 'fuse.js';
+import { addIcons } from 'ionicons';
+import { filterOutline, filter, search } from 'ionicons/icons';
+import { FilmDataService } from 'src/app/core/services/film-data/film-data.service';
+import { LoadingService } from 'src/app/core/services/loader/loading.service';
+import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
+import { StorageService } from 'src/app/core/services/storage/storage.service';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { Network } from '@capacitor/network';
-import { ToastService } from 'src/app/services/toast/toast.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { SearchBlurDirective } from 'src/app/core/directives/search-blur/search-blur.directive';
 
 @Component({
   selector: 'app-search',
@@ -27,7 +29,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     ]),
   ],
   standalone: true,
-  imports: [FormsModule, IonIcon, NgIf, IonButton, IonSearchbar, NgStyle],
+  imports: [FormsModule, IonIcon, NgIf, IonButton, IonSearchbar, NgStyle, SearchBlurDirective],
 })
 export class SearchComponent implements OnInit, OnDestroy {
   formData = input<FormData>();

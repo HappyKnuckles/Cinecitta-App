@@ -1,8 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Film, Leinwand, Theater, newFilm } from 'src/app/models/filmModel';
 import { WebscraperService } from '../scraper/webscraper.service';
+import { Film, Leinwand, NewFilm, Theater } from '../../models/filmModel';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class FilmDataService {
 
   constructor(private http: HttpClient, private webScrapingService: WebscraperService) {}
 
-  async fetchNewFilms(): Promise<newFilm[]> {
+  async fetchNewFilms(): Promise<NewFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen';
     const formData = new URLSearchParams();
     formData.append('filter[genres_tags_not][]', '185305');

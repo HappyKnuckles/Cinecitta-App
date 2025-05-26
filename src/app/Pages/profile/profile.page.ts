@@ -18,7 +18,6 @@ import {
   IonButton,
 } from '@ionic/angular/standalone';
 import { Subscription, firstValueFrom } from 'rxjs';
-import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
 import { addIcons } from 'ionicons';
 import {
   addCircle,
@@ -34,6 +33,7 @@ import {
   arrowForwardOutline,
 } from 'ionicons/icons';
 import { NgIf, NgFor } from '@angular/common';
+import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 
 @Component({
   selector: 'app-profile',

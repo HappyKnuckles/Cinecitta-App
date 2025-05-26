@@ -116,7 +116,7 @@ interface Tags {
   href: string;
 }
 
-export interface newFilm {
+export interface NewFilm {
   film_id: string;
   film_titel: string;
   film_kurztitel: string;

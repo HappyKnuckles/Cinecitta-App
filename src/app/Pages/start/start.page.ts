@@ -1,11 +1,11 @@
-import { Component, QueryList, ViewChildren } from '@angular/core';
-import { LoadingService } from 'src/app/services/loader/loading.service';
-import * as Filtertags from '../../models/filtertags';
-import { FilmSelectComponent } from '../../common/film-select/film-select.component';
-import { IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
-import { ToastService } from 'src/app/services/toast/toast.service';
-import { HapticService } from 'src/app/services/haptic/haptic.service';
-import { ImpactStyle } from '@capacitor/haptics';
+import { Component, ViewChildren, QueryList } from "@angular/core";
+import { ImpactStyle } from "@capacitor/haptics";
+import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher } from "@ionic/angular/standalone";
+import { HapticService } from "src/app/core/services/haptic/haptic.service";
+import { LoadingService } from "src/app/core/services/loader/loading.service";
+import { ToastService } from "src/app/core/services/toast/toast.service";
+import { FilmSelectComponent } from "src/app/shared/components/film-select/film-select.component";
+import * as Filtertags from "src/app/core/models/filtertags";
 @Component({
   selector: 'app-tab1',
   templateUrl: 'start.page.html',

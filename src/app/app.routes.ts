@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import { TabsPage } from './tabs/tabs.page';
 
 export const routes: Routes = [
   {
@@ -8,19 +8,19 @@ export const routes: Routes = [
     children: [
       {
         path: 'start',
-        loadComponent: () => import('../Pages/start/start.page').then((m) => m.StartPage),
+        loadComponent: () => import('./pages/start/start.page').then((m) => m.StartPage),
       },
       {
         path: 'film',
-        loadComponent: () => import('../Pages/film/filmoverview.page').then((m) => m.FilmOverviewPage),
+        loadComponent: () => import('./pages/film/filmoverview.page').then((m) => m.FilmOverviewPage),
       },
       {
         path: 'news',
-        loadComponent: () => import('../Pages/news/newspage.page').then((m) => m.NewsPage),
+        loadComponent: () => import('./pages/news/newspage.page').then((m) => m.NewsPage),
       },
       {
         path: 'profile',
-        loadComponent: () => import('../Pages/profile/profile.page').then((m) => m.ProfilePage),
+        loadComponent: () => import('./pages/profile/profile.page').then((m) => m.ProfilePage),
       },
       {
         path: '',

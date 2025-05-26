@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, Output, OnInit, signal } from '@angular/core';
-import { Film } from 'src/app/models/filmModel';
-import { FilmDataService } from 'src/app/services/film-data/film-data.service';
-import { WebscraperService } from 'src/app/services/scraper/webscraper.service';
-import { StorageService } from 'src/app/services/storage/storage.service';
-import { TransformTimePipe } from '../../Pipes/time-transformer/transform-time.pipe';
-import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor } from '@angular/common';
-import { IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect, IonItem, IonSkeletonText } from '@ionic/angular/standalone';
-import { Network } from '@capacitor/network';
-import { ToastService } from 'src/app/services/toast/toast.service';
+import { Component, EventEmitter, Input, Output, OnInit, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { IonSkeletonText, IonItem, IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect } from '@ionic/angular/standalone';
+import { Film } from 'src/app/core/models/filmModel';
+import { FilmDataService } from 'src/app/core/services/film-data/film-data.service';
+import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
+import { StorageService } from 'src/app/core/services/storage/storage.service';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
+import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
+import { Network } from '@capacitor/network';
 
 @Component({
   selector: 'app-film-select',
