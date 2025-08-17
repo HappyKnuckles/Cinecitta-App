@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { Film, NewFilm } from '../../models/filmModel';
 import { FilmDataService } from '../film-data/film-data.service';
 import { StorageService } from '../storage/storage.service';
+import { LoadingService } from '../loader/loading.service';
 import { Network } from '@capacitor/network';
 import { WebscraperService } from '../scraper/webscraper.service';
 import Fuse from 'fuse.js';
@@ -14,7 +15,6 @@ export class FilmStateService {
   private _films = signal<Film[]>([]);
   private _newFilms = signal<NewFilm[]>([]);
   private _filteredFilms = signal<Film[]>([]);
-  private _isLoading = signal<boolean>(false);
   private _searchQuery = signal<string>('');
   private _searchCache = new Map<string, Film[]>();
 
@@ -22,18 +22,18 @@ export class FilmStateService {
   readonly films = computed(() => this._films());
   readonly newFilms = computed(() => this._newFilms());
   readonly filteredFilms = computed(() => this._filteredFilms());
-  readonly isLoading = computed(() => this._isLoading());
   readonly searchQuery = computed(() => this._searchQuery());
 
   constructor(
     private filmDataService: FilmDataService,
     private storageService: StorageService,
-    private webScrapingService: WebscraperService
+    private webScrapingService: WebscraperService,
+    private loadingService: LoadingService
   ) {}
 
   // Load all films with optional form data
   async loadFilms(formData?: FormData, isReload: boolean = false, excludedProperties: string[] = []): Promise<void> {
-    this._isLoading.set(true);
+    this.loadingService.setLoading(true);
     
     try {
       const hasInternet = (await Network.getStatus()).connected;
@@ -75,13 +75,13 @@ export class FilmStateService {
       console.error('Error loading films:', error);
       throw error;
     } finally {
-      this._isLoading.set(false);
+      this.loadingService.setLoading(false);
     }
   }
 
   // Load new films
   async loadNewFilms(isReload: boolean = false): Promise<void> {
-    this._isLoading.set(true);
+    this.loadingService.setLoading(true);
     
     try {
       const hasInternet = (await Network.getStatus()).connected;
@@ -110,7 +110,7 @@ export class FilmStateService {
       console.error('Error loading new films:', error);
       throw error;
     } finally {
-      this._isLoading.set(false);
+      this.loadingService.setLoading(false);
     }
   }
 

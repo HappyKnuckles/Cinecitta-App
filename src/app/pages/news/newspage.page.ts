@@ -8,6 +8,8 @@ import { NewFilm } from 'src/app/core/models/filmModel';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { FilmStateService } from 'src/app/core/services/film-state/film-state.service';
+import { UIStateService } from 'src/app/core/services/ui-state/ui-state.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
@@ -38,15 +40,22 @@ import * as Filtertags from 'src/app/core/models/filtertags';
 })
 export class NewsPage {
   @ViewChild(IonContent) content!: IonContent;
-  newFilms: NewFilm[] = [];
-  showFull: boolean[] = [];
-  isSearchOpen = false;
+  @ViewChild(SearchComponent, { static: false }) searchComponent!: SearchComponent;
+  
   excluded = Filtertags.excludedFilmValues;
 
-  @ViewChild(SearchComponent, { static: false })
-  searchComponent!: SearchComponent;
+  // Computed properties from services
+  newFilms = this.filmStateService.newFilms;
+  isSearchOpen = this.uiStateService.isSearchOpen;
+  showFull = this.uiStateService.showFull;
 
-  constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
+  constructor(
+    private website: OpenWebsiteService,
+    public loadingService: LoadingService,
+    private hapticService: HapticService,
+    private filmStateService: FilmStateService,
+    public uiStateService: UIStateService
+  ) {
     addIcons({ search });
   }
 
@@ -63,17 +72,13 @@ export class NewsPage {
   }
 
   openSearch(): void {
-    this.isSearchOpen = !this.isSearchOpen;
-    if (this.isSearchOpen) {
+    const isCurrentlyOpen = this.isSearchOpen();
+    this.uiStateService.setSearchOpen(!isCurrentlyOpen);
+    if (!isCurrentlyOpen) {
       this.searchComponent.focusInput();
     } else {
       this.searchComponent.blurInput();
     }
-  }
-
-  search(event: any): void {
-    this.newFilms = event;
-    this.content.scrollToTop(300);
   }
 
   async openExternalWebsite(url: string): Promise<void> {
