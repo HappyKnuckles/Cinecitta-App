@@ -144,6 +144,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   async ngOnInit(): Promise<void> {
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange(true);
+    
+    // Load initial film data
+    await this.loadFilmData();
+    
     this.checkTimes();
     this.startPeriodicCheck();
  
@@ -465,6 +469,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // eslint-disable-next-line @typescript-eslint/require-await
   async loadFilmData(): Promise<void> {
     this.formData = this.appendSelectedFiltersToFormData();
+    // Load films into the centralized state service
+    await this.filmStateService.loadFilms(this.formData, this.isReload, this.excluded);
   }
 
   appendSelectedFiltersToFormData(): FormData {
