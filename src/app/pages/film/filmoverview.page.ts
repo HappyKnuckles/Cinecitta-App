@@ -145,8 +145,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange(true);
     
-    // Load initial film data
-    await this.loadFilmData();
+    // Note: Data loading is handled by SearchComponent through formData input
     
     this.checkTimes();
     this.startPeriodicCheck();
@@ -219,6 +218,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   private setDefaultSelectedFilterValues(): void {
     this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
+  }
+
+  search(event: any): void {
+    // Update films from search component
+    // The centralized service is already updated, just trigger reactivity
+    this.content.scrollToTop(300);
   }
 
   handleRefresh(event: any): void {
@@ -408,6 +413,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
     this.closeTimes();
 
+    // Update formData which will trigger SearchComponent to reload
     await this.loadFilmData();
   }
 
@@ -468,9 +474,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async loadFilmData(): Promise<void> {
+    // Update formData which will trigger SearchComponent to reload via input binding
     this.formData = this.appendSelectedFiltersToFormData();
-    // Load films into the centralized state service
-    await this.filmStateService.loadFilms(this.formData, this.isReload, this.excluded);
+    // Note: Actual data loading is handled by SearchComponent through formData input binding
   }
 
   appendSelectedFiltersToFormData(): FormData {

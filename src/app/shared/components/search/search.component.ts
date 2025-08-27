@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect, inject } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -34,6 +34,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Input() showFilterButton = false;
   @Input({ required: true }) isOpen = false;
   @Input() isReload = false;
+  @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
   @ViewChild('searchInput') searchInput?: IonInput;
 
@@ -50,9 +51,19 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {
     addIcons({ filterOutline, filter, search });
 
+    // Effect to load data when form data changes
     effect(() => {
       this.loadData(this.formData(), this.isReload);
-    }, { allowSignalWrites: true })
+    }, { allowSignalWrites: true });
+
+    // Effect to emit films when they change  
+    effect(() => {
+      const films = this.isNewFilms ? this.filmStateService.newFilms() : this.filmStateService.filteredFilms();
+      // Use setTimeout to avoid change detection issues
+      setTimeout(() => {
+        this.newFilmsChange.emit(films);
+      }, 0);
+    });
   }
 
   async ngOnInit() {

@@ -68,7 +68,7 @@ export class FilmStateService {
       // Update film data with additional content
       await this.updateFilmData();
       
-      // Apply current search filter
+      // Apply current search filter to new data
       this.applyCurrentSearch(excludedProperties);
       
     } catch (error) {
