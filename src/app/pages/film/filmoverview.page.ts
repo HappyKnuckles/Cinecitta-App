@@ -38,6 +38,8 @@ import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { FilmStateService } from 'src/app/core/services/film-state/film-state.service';
+import { UIStateService } from 'src/app/core/services/ui-state/ui-state.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
@@ -84,22 +86,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
-  showStartTimePicker = false;
-  showEndTimePicker = false;
+  
   formData: FormData = new FormData();
   startTime = '10:00';
   endTime = '03:00';
   formattedEndTime = '';
-  films: Film[] = [];
   message = '';
   isReload = false;
-  isTimesOpen: { [key: string]: boolean } = {};
-  isSearchOpen = false;
-  isModalOpen = false;
-  detailView: boolean[] = [true, false, false];
-  showFull: boolean[] = [];
-  showAllTags: boolean[] = [];
-  showTrailer: { [key: string]: boolean } = {};
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -113,6 +106,18 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   private debounceTimeout: any;
   intervalId: any;
 
+  // Computed properties from services
+  films = this.filmStateService.filteredFilms;
+  isSearchOpen = this.uiStateService.isSearchOpen;
+  isModalOpen = this.uiStateService.isModalOpen;
+  detailView = this.uiStateService.detailView;
+  showStartTimePicker = this.uiStateService.showStartTimePicker;
+  showEndTimePicker = this.uiStateService.showEndTimePicker;
+  showFull = this.uiStateService.showFull;
+  showAllTags = this.uiStateService.showAllTags;
+  showTrailer = this.uiStateService.showTrailer;
+  isTimesOpen = this.uiStateService.isTimesOpen;
+
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,
@@ -120,7 +125,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private filmStateService: FilmStateService,
+    public uiStateService: UIStateService
   ) {
     addIcons({
       ellipsisVertical,
@@ -135,19 +142,17 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   async ngOnInit(): Promise<void> {
-    const viewType = localStorage.getItem('viewType');
-    if (viewType) {
-      this.detailView = [viewType === ViewType.Detail, viewType === ViewType.Kurz, viewType === ViewType.Mini];
-    }
-
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange(true);
+    
+    // Note: Data loading is handled by SearchComponent through formData input
+    
     this.checkTimes();
     this.startPeriodicCheck();
  
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
-        this.isSearchOpen = true;
+        this.uiStateService.setSearchOpen(true);
       }
     }
     );
@@ -162,8 +167,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // TODO make more efficient maybe sort films before checking times or map films to a dictionary
   checkTimes() {
     const now = new Date();
+    const films = this.films();
 
-    this.films.forEach((film) => {
+    films.forEach((film) => {
       film.theater.forEach((theater) => {
         theater.leinwaende.forEach((leinwand) => {
           leinwand.vorstellungen.forEach((vorstellung) => {
@@ -214,8 +220,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
-  search(event: any) {
-    this.films = event;
+  search($event: any): void {
+    // Update films from search component
+    // The centralized service is already updated, just trigger reactivity
     this.content.scrollToTop(300);
   }
 
@@ -233,38 +240,31 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   async presentActionSheet(): Promise<void> {
     const buttons = [];
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
-    if (!this.detailView[0]) {
+    const detailView = this.detailView();
+    
+    if (!detailView[0]) {
       buttons.push({
         text: ViewType.Detail,
         handler: () => {
-          this.detailView[0] = true;
-          this.detailView[1] = false;
-          this.detailView[2] = false;
-          localStorage.setItem('viewType', ViewType.Detail);
+          this.uiStateService.setDetailView(0);
         },
       });
     }
 
-    if (!this.detailView[1]) {
+    if (!detailView[1]) {
       buttons.push({
         text: ViewType.Kurz,
         handler: () => {
-          this.detailView[0] = false;
-          this.detailView[1] = true;
-          this.detailView[2] = false;
-          localStorage.setItem('viewType', ViewType.Kurz);
+          this.uiStateService.setDetailView(1);
         },
       });
     }
 
-    if (!this.detailView[2]) {
+    if (!detailView[2]) {
       buttons.push({
         text: ViewType.Mini,
         handler: () => {
-          this.detailView[0] = false;
-          this.detailView[1] = false;
-          this.detailView[2] = true;
-          localStorage.setItem('viewType', ViewType.Mini);
+          this.uiStateService.setDetailView(2);
         },
       });
     }
@@ -309,8 +309,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   openTimes(film_id: string, index: number): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-    this.isTimesOpen[film_id] = !this.isTimesOpen[film_id];
-    if (this.isTimesOpen[film_id]) {
+    const currentState = this.isTimesOpen();
+    this.uiStateService.setTimesOpen(film_id, !currentState[film_id]);
+    if (!currentState[film_id]) {
       setTimeout(() => {
         this.scrollToGrid(index);
       }, 300);
@@ -318,8 +319,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   openSearch(): void {
-    this.isSearchOpen = !this.isSearchOpen;
-    if (this.isSearchOpen) {
+    const isCurrentlyOpen = this.isSearchOpen();
+    this.uiStateService.setSearchOpen(!isCurrentlyOpen);
+    if (!isCurrentlyOpen) {
       this.searchInput.focusInput();
     } else {
       this.searchInput.blurInput();
@@ -328,7 +330,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   showTrailers(film: Film): void {
     if (film.trailerUrl) {
-      this.showTrailer[film.system_id] = !this.showTrailer[film.system_id];
+      const currentState = this.showTrailer();
+      this.uiStateService.setShowTrailer(film.system_id, !currentState[film.system_id]);
     } else {
       this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
     }
@@ -338,14 +341,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     const hasInternet = (await Network.getStatus()).connected;
     if (hasInternet) {
       this.hapticService.vibrate(ImpactStyle.Medium, 200);
-      this.isModalOpen = isOpen;
+      this.uiStateService.setModalOpen(isOpen);
     } else {
       this.toastService.showToast("Can't use filters. No internet connection.", 'alert-outline', true);
     }
   }
 
   showTags(index: number): void {
-    this.showAllTags[index] = !this.showAllTags[index];
+    const currentState = this.showAllTags();
+    this.uiStateService.setShowAllTags(index, !currentState[index]);
   }
 
   async openExternalWebsite(url: string): Promise<void> {
@@ -357,30 +361,38 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   openStartTimePicker(): void {
-    this.showStartTimePicker = !this.showStartTimePicker;
+    const current = this.showStartTimePicker();
+    this.uiStateService.setShowStartTimePicker(!current);
   }
 
   openEndTimePicker(): void {
-    this.showEndTimePicker = !this.showEndTimePicker;
+    const current = this.showEndTimePicker();
+    this.uiStateService.setShowEndTimePicker(!current);
   }
 
   async confirm(): Promise<void> {
-    this.showAllTags = this.showAllTags.map(() => false);
+    // Reset all tags to collapsed state
+    const showAllTagsArray = this.showAllTags();
+    for (let i = 0; i < showAllTagsArray.length; i++) {
+      this.uiStateService.setShowAllTags(i, false);
+    }
     this.setOpen(false);
 
-    if (this.films.length === 0) {
+    if (this.films().length === 0) {
       await this.showNoMoviesPopup();
     }
   }
 
   closeTimes(): void {
-    this.showStartTimePicker = false;
-    this.showEndTimePicker = false;
+    this.uiStateService.setShowStartTimePicker(false);
+    this.uiStateService.setShowEndTimePicker(false);
   }
 
   cancel(): void {
-    this.showAllTags = Array(this.filters.length).fill(false);
-    this.showAllTags = this.showAllTags.map(() => false);
+    // Reset all tags to collapsed state
+    for (let i = 0; i < this.filters.length; i++) {
+      this.uiStateService.setShowAllTags(i, false);
+    }
     this.setOpen(false);
   }
 
@@ -396,9 +408,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.endTime = '03:00';
 
     // Reset background color of tags
-    this.showAllTags = this.showAllTags.map(() => false);
+    for (let i = 0; i < this.filters.length; i++) {
+      this.uiStateService.setShowAllTags(i, false);
+    }
     this.closeTimes();
 
+    // Update formData which will trigger SearchComponent to reload
     await this.loadFilmData();
   }
 
@@ -459,7 +474,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @typescript-eslint/require-await
   async loadFilmData(): Promise<void> {
+    // Update formData which will trigger SearchComponent to reload via input binding
     this.formData = this.appendSelectedFiltersToFormData();
+    // Note: Actual data loading is handled by SearchComponent through formData input binding
   }
 
   appendSelectedFiltersToFormData(): FormData {

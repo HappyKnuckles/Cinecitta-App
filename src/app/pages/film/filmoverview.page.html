@@ -1,6 +1,6 @@
-<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%" (ionBackdropTap)="cancel()"></ion-backdrop>
+<ion-backdrop *ngIf="isModalOpen()" style="opacity: 0.3; z-index: 11; height: 200%" (ionBackdropTap)="cancel()"></ion-backdrop>
 <ion-text
-  *ngIf="films.length === 0 && loadingService.isLoading === false"
+  *ngIf="films().length === 0 && loadingService.isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 999">
   Keine Filme verfügbar
 </ion-text>
@@ -22,7 +22,7 @@
     </div>
   </ion-toolbar>
   <app-search
-    [isOpen]="isSearchOpen"
+    [isOpen]="isSearchOpen()"
     [isReload]="isReload"
     (setOpenEvent)="setOpen($event)"
     [showFilterButton]="true"
@@ -33,7 +33,7 @@
 
 <!-- Filter Modal -->
 <!-- TODO change isOpen to accordions + ion items-->
-<ion-modal [isOpen]="isModalOpen" class="modal">
+<ion-modal [isOpen]="isModalOpen()" class="modal">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -52,7 +52,7 @@
           <ion-row style="margin: 0 5px" (click)="showTags(i)">
             <ion-col style="font-weight: 600" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter }}</ion-col>
             <ion-col style="justify-content: end; display: flex" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">
-              <ion-icon class="open" [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
+              <ion-icon class="open" [name]="showAllTags()[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
             </ion-col>
             <ion-select
               class="open"
@@ -76,7 +76,7 @@
             </ion-select>
           </ion-row>
 
-          <ng-container *ngIf="!showAllTags[i]">
+          <ng-container *ngIf="!showAllTags()[i]">
             <ion-row *ngIf="filter === 'Genre' && selectedFilters.genresTags.length > 0" class="filterRow">
               <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px">
                 <ion-label
@@ -104,7 +104,7 @@
             </ion-row>
           </ng-container>
 
-          <ng-container *ngIf="showAllTags[i]">
+          <ng-container *ngIf="showAllTags()[i]">
             <ion-row *ngIf="filter === 'Genre'" class="filterRow">
               <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px">
                 <ion-label class="tags" [ngClass]="{ selected: isSelected(genre.id, 'genresTags') }" (click)="toggleSelection(genre.id, 'genresTags')"
@@ -175,7 +175,7 @@
     </ion-content>
     <ion-footer>
       <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px" (click)="confirm()"
-        >Bestätigen ({{films.length}})
+        >Bestätigen ({{films().length}})
       </ion-button>
     </ion-footer>
   </ng-template>
@@ -185,13 +185,13 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
 </ion-refresher>
   <!-- Detailview -->
-  <div *ngIf="detailView[0]" class="content">
+  <div *ngIf="detailView()[0]" class="content">
     @if (!loadingService.isLoading) {
-    <div class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
+    <div class="filmContainer" *ngFor="let film of films(); let i = index; let first = first">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}" *ngIf="hasScreenings(film)">
         <div class="filmSpecific">
           <ion-grid class="infoGrid">
-            <ion-row class="infoRow" *ngIf="!showTrailer[film.system_id]">
+            <ion-row class="infoRow" *ngIf="!showTrailer()[film.system_id]">
               <ion-col *ngIf="film.film_ist_ov === '1'" class="titel ion-text-left">
                 OV
                 <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
@@ -262,19 +262,19 @@
             </ion-row>
           </ion-grid>
           <ion-button
-            *ngIf="showTrailer[film.system_id]"
+            *ngIf="showTrailer()[film.system_id]"
             (click)="showTrailers(film)"
             fill="clear"
             style="position: absolute; z-index: 10; margin-top: -5px">
             <ion-icon name="chevron-back"></ion-icon>
           </ion-button>
           <!-- TODO find good unit for height-->
-          <video *ngIf="showTrailer[film.system_id]" controls style="height: 120.3vmin; width: 85vw" poster="{{film.trailerPreviewUrl}}">
+          <video *ngIf="showTrailer()[film.system_id]" controls style="height: 120.3vmin; width: 85vw" poster="{{film.trailerPreviewUrl}}">
             <source src="{{film.trailerUrl}}" />
           </video>
           <img
             style="height: 119vmin"
-            *ngIf="!showTrailer[film.system_id]"
+            *ngIf="!showTrailer()[film.system_id]"
             src="{{film.film_cover_src}}"
             (click)="showTrailers(film)"
             alt="Film Cover von {{film.film_titel}}"
@@ -283,11 +283,11 @@
         </div>
         <!-- TODO ab hier nur accordion anstatt opentimes -->
         <div (click)="openTimes(film.system_id, i)" style="display: flex; margin-top: 10px; justify-content: center">
-          <ion-icon *ngIf="!isTimesOpen[film.system_id]" name="chevron-down"></ion-icon>
-          <ion-icon *ngIf="isTimesOpen[film.system_id]" name="chevron-up"></ion-icon>
+          <ion-icon *ngIf="!isTimesOpen()[film.system_id]" name="chevron-down"></ion-icon>
+          <ion-icon *ngIf="isTimesOpen()[film.system_id]" name="chevron-up"></ion-icon>
         </div>
 
-        <ion-grid *ngIf="isTimesOpen[film.system_id]" [id]="'gridRef-' + i">
+        <ion-grid *ngIf="isTimesOpen()[film.system_id]" [id]="'gridRef-' + i">
           <ion-row class="weekdays">
             <ion-col *ngFor="let weekday of film.film_wochentage"> {{ weekday?.tag_text }} </ion-col>
           </ion-row>
@@ -361,9 +361,9 @@
 
   <!-- Kurzview -->
   <!-- TODO Add info Button-->
-  <div *ngIf="detailView[1]" class="content">
+  <div *ngIf="detailView()[1]" class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of films(); let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
@@ -383,11 +383,11 @@
                 (click)="openExternalWebsite(film.filminfo_href)"
                 alt="Film Cover von {{film.film_titel}}" />
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
+            <ion-col class="description" size="8" *ngIf="!showFull()[i]" (click)="uiStateService.setShowFull(i, true)">
               {{ ((film.film_beschreibung | extractText).length > 125 ? ((film.film_beschreibung | extractText).slice(0, 125) + '...') :
               (film.film_beschreibung | extractText)) }}
             </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i]" (click)="showFull[i] = false"
+            <ion-col class="description" size="8" *ngIf="showFull()[i]" (click)="uiStateService.setShowFull(i, false)"
               >{{ film.film_beschreibung | extractText}}
             </ion-col>
           </ion-row>
@@ -428,9 +428,9 @@
   </div>
 
   <!-- Miniview -->
-  <div *ngIf="detailView[2]" class="content">
+  <div *ngIf="detailView()[2]" class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of films(); let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
