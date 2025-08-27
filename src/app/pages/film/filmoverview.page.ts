@@ -220,7 +220,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
   }
 
-  search(event: any): void {
+  search($event: any): void {
     // Update films from search component
     // The centralized service is already updated, just trigger reactivity
     this.content.scrollToTop(300);

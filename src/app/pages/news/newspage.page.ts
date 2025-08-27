@@ -4,7 +4,6 @@ import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { search } from 'ionicons/icons';
-import { NewFilm } from 'src/app/core/models/filmModel';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
@@ -79,6 +78,12 @@ export class NewsPage {
     } else {
       this.searchComponent.blurInput();
     }
+  }
+
+  search($event: any): void {
+    // Update films from search component  
+    // The centralized service is already updated, just trigger reactivity
+    this.content.scrollToTop(300);
   }
 
   async openExternalWebsite(url: string): Promise<void> {

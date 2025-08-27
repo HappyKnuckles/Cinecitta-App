@@ -27,7 +27,8 @@
     (setOpenEvent)="setOpen($event)"
     [showFilterButton]="true"
     [formData]="formData"
-    [excludedProperties]="excluded"></app-search>
+    [excludedProperties]="excluded"
+    (newFilmsChange)="search($event)"></app-search>
 </ion-header>
 
 <!-- Filter Modal -->

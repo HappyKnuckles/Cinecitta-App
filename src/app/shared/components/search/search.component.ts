@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 import { trigger, state, style, transition, animate } from '@angular/animations';
@@ -63,6 +63,14 @@ export class SearchComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.newFilmsChange.emit(films);
       }, 0);
+    });
+
+    // Effect to sync search query from service to component
+    effect(() => {
+      const serviceSearchQuery = this.filmStateService.searchQuery();
+      if (this.searchQuery !== serviceSearchQuery) {
+        this.searchQuery = serviceSearchQuery;
+      }
     });
   }
 
@@ -130,6 +138,6 @@ export class SearchComponent implements OnInit, OnDestroy {
 
   clearInput() {
     this.searchQuery = '';
-    this.searchSubject.next(this.searchQuery);
+    this.filmStateService.clearSearch();
   }
 }
