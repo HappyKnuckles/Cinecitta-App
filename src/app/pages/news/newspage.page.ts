@@ -3,7 +3,7 @@ import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { search } from 'ionicons/icons';
+import { search, heart, heartOutline } from 'ionicons/icons';
 import { NewFilm } from 'src/app/core/models/filmModel';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
@@ -49,7 +49,7 @@ export class NewsPage implements AfterViewInit {
   searchComponent!: SearchComponent;
 
   constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
-    addIcons({ search });
+    addIcons({ search, heart, heartOutline });
     
     // Set loading to false so mock data is displayed
     this.loadingService.setLoading(false);

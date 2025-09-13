@@ -150,7 +150,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           film_ist_ov: '0',
           film_hauptfilm: '1',
           theater: []
-        } as Film,
+        } as any,
         {
           system_id: 'film-mock2',
           film_titel: 'Dune: Part Two', 
@@ -161,7 +161,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           film_ist_ov: '1',
           film_hauptfilm: '1',
           theater: []
-        } as Film
+        } as any
       ];
     }, 1000);
   }
