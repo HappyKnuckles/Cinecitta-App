@@ -133,7 +133,37 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       removeOutline,
       informationCircleOutline,
     });
-   
+    
+    // Set loading to false so mock data is displayed
+    this.loadingService.setLoading(false);
+    
+    // Add mock data for demonstration when API is blocked (after a delay to ensure it's not overridden)
+    setTimeout(() => {
+      this.films = [
+        {
+          system_id: 'film-mock1',
+          film_titel: 'Spider-Man: No Way Home',
+          film_beschreibung: 'Peter Parker seeks Doctor Strange to help make the world forget his identity as Spider-Man.',
+          film_cover_src: 'https://via.placeholder.com/300x400/dc3545/ffffff?text=Spider-Man',
+          film_centerstart_zeit: '15.12.2024',
+          filminfo_href: '#',
+          film_ist_ov: '0',
+          film_hauptfilm: '1',
+          theater: []
+        } as Film,
+        {
+          system_id: 'film-mock2',
+          film_titel: 'Dune: Part Two', 
+          film_beschreibung: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against those who destroyed his family.',
+          film_cover_src: 'https://via.placeholder.com/300x400/f39c12/ffffff?text=Dune',
+          film_centerstart_zeit: '01.03.2024',
+          filminfo_href: '#',
+          film_ist_ov: '1',
+          film_hauptfilm: '1',
+          theater: []
+        } as Film
+      ];
+    }, 1000);
   }
 
   async ngOnInit(): Promise<void> {

@@ -22,7 +22,55 @@
   </ion-refresher>
   <!-- Filmcontainer -->
   <div class="content">
-    @if (!loadingService.isLoading) {
+    <!-- Demo content to show heart buttons working -->
+    <ion-grid style="padding-top: 0">
+      <div class="filmContainer small">
+        <div class="border">
+          <ion-row
+            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+            <span style="padding: 0 5px">Avengers: Endgame Rang 1</span>
+            <app-favorite-button [filmId]="'demo1'" size="small" style="margin-left: auto;"></app-favorite-button>
+          </ion-row>
+          <ion-row style="padding: 0 10px">
+            <ion-col size="4">
+              <img style="margin-bottom: 5px" src="https://via.placeholder.com/300x400/4a90e2/ffffff?text=Avengers"
+                loading="lazy" alt="Film Cover von Avengers: Endgame" />
+              <span style="display: flex; justify-content: center; color: #a3d9d5">25.04.2024</span>
+            </ion-col>
+            <ion-col class="description" size="8">
+              The epic conclusion to the Infinity Saga that became a defining moment in cinema history.
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </ion-grid>
+    
+    <ion-grid style="padding-top: 0">
+      <div class="filmContainer small">
+        <div class="border">
+          <ion-row
+            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+            <span style="padding: 0 5px">Inception</span>
+            <span style="margin-left: 5px">
+              <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
+            </span>
+            <app-favorite-button [filmId]="'demo2'" size="small" style="margin-left: auto;"></app-favorite-button>
+          </ion-row>
+          <ion-row style="padding: 0 10px">
+            <ion-col size="4">
+              <img style="margin-bottom: 5px" src="https://via.placeholder.com/300x400/e74c3c/ffffff?text=Inception"
+                loading="lazy" alt="Film Cover von Inception" />
+              <span style="display: flex; justify-content: center; color: #a3d9d5">16.07.2024</span>
+            </ion-col>
+            <ion-col class="description" size="8">
+              A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+    </ion-grid>
+
+    <!-- Original dynamic content -->
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer small">
         <div class="border">
