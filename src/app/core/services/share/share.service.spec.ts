@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { OpenWebsiteService } from './open-website.service';
+import { ShareService } from './share.service';
 
-describe('OpenWebsiteService', () => {
-  let service: OpenWebsiteService;
+describe('ShareService', () => {
+  let service: ShareService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(OpenWebsiteService);
+    service = TestBed.inject(ShareService);
   });
 
   it('should be created', () => {

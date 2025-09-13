@@ -31,11 +31,12 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
+import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline, shareOutline } from 'ionicons/icons';
 import { Film, Theater, Leinwand } from 'src/app/core/models/filmModel';
 import { ViewType } from 'src/app/core/models/viewEnum';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
+import { ShareService } from 'src/app/core/services/share/share.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
@@ -120,6 +121,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
+    private shareService: ShareService,
     private route: ActivatedRoute
   ) {
     addIcons({
@@ -130,6 +132,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       chevronDown,
       removeOutline,
       informationCircleOutline,
+      shareOutline,
     });
    
   }
@@ -567,5 +570,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       numericTime += 24;
     }
     return numericTime;
+  }
+
+  async shareFilm(film: Film): Promise<void> {
+    try {
+      this.hapticService.vibrate(ImpactStyle.Light, 100);
+      await this.shareService.shareFilm(film, this.startTime, this.endTime);
+    } catch (error) {
+      console.error('Error sharing film:', error);
+      this.toastService.showToast('Fehler beim Teilen des Films', 'alert-outline', true);
+    }
   }
 }
