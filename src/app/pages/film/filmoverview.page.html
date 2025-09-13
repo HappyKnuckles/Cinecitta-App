@@ -205,6 +205,9 @@
                 </div>
               </ion-col>
               <ion-col class="ion-text-right">
+                <ion-button fill="clear" size="small" (click)="shareFilm(film)" style="margin-right: 5px;">
+                  <ion-icon name="share-outline"></ion-icon>
+                </ion-button>
                 <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
               </ion-col>
               <ion-popover [trigger]="'popover' + film.system_id" id="popover">
@@ -374,6 +377,9 @@
             <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
               <div class="new">NEU</div>
             </div>
+            <ion-button fill="clear" size="small" (click)="shareFilm(film)" style="margin-left: auto; position: absolute; right: 10px; top: -5px;">
+              <ion-icon name="share-outline"></ion-icon>
+            </ion-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
@@ -458,9 +464,13 @@
                 margin-bottom: 10px;
                 padding: 0 30px;
                 color: #a3d9d5;
+                position: relative;
               "
-              >{{film.film_titel}}</ion-col
-            >
+              >{{film.film_titel}}
+              <ion-button fill="clear" size="small" (click)="shareFilm(film)" style="position: absolute; right: 0;">
+                <ion-icon name="share-outline"></ion-icon>
+              </ion-button>
+            </ion-col>
           </ion-row>
         </div>
       </div>
