@@ -80,16 +80,37 @@ export class StartPage {
 
   private async loadFavorites(): Promise<void> {
     try {
-      // For the demo, we'll just show empty or load sample data
-      // In a real implementation, you would need to fetch all films data
-      // and filter based on favorites
-      this.favoriteFilms = [];
-      this.favoriteNewFilms = [];
+      // Get favorite film IDs from storage
+      const favoriteIds = await this.favoritesService.getFavorites();
+      
+      // For now, we'll simulate favorite films with the IDs that are stored
+      // In a real app, you would fetch all films and filter by these IDs
       this.currentFavorites = [];
       this.upcomingFavorites = [];
       
-      // Show a message that favorites would be loaded here
-      console.log('Favorites functionality is implemented, but needs actual film data to display');
+      // Create mock favorite films based on stored IDs for demonstration
+      for (const id of favoriteIds) {
+        if (id.startsWith('demo')) {
+          // Create a mock NewFilm for demos
+          const mockFilm = {
+            system_id: id,
+            film_titel: id === 'demo1' ? 'Avengers: Endgame' : 'Inception',
+            film_cover_src: id === 'demo1' 
+              ? 'https://via.placeholder.com/150x225/4a90e2/ffffff?text=Avengers'
+              : 'https://via.placeholder.com/150x225/e74c3c/ffffff?text=Inception',
+            film_centerstart_zeit: id === 'demo1' ? '25.04.2024' : '16.07.2024',
+            film_beschreibung: id === 'demo1' 
+              ? 'The epic conclusion to the Infinity Saga that became a defining moment in cinema history.'
+              : 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.',
+            film_ist_ov: id === 'demo2' ? '1' : '0',
+            filmchart_platzierung_aktuell: id === 'demo1' ? '1' : null,
+            filminfo_href: '',
+            film_kurztext: '',
+            film_synopsis: ''
+          } as NewFilm;
+          this.upcomingFavorites.push(mockFilm);
+        }
+      }
       
     } catch (error) {
       console.error('Error loading favorites:', error);

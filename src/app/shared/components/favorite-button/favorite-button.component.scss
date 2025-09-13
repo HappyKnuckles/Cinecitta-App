@@ -7,6 +7,7 @@
 
 .heart-icon {
   transition: color 0.3s ease, transform 0.2s ease;
+  color: #2ce8f4; /* Match info button color */
 }
 
 .favorite-button.is-favorite .heart-icon {
@@ -15,19 +16,15 @@
 }
 
 .heart-icon.small {
-  font-size: 18px;
+  font-size: 30px; /* Match info button size */
 }
 
 .heart-icon.medium {
-  font-size: 22px;
+  font-size: 30px; /* Match info button size */
 }
 
 .heart-icon.large {
-  font-size: 26px;
-}
-
-.favorite-button:not(.is-favorite) .heart-icon {
-  color: var(--ion-color-medium);
+  font-size: 30px; /* Match info button size */
 }
 
 .favorite-button:hover .heart-icon {

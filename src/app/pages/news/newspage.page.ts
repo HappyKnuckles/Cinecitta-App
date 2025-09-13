@@ -1,5 +1,5 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -38,7 +38,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     ExtractTextPipe,
   ],
 })
-export class NewsPage implements AfterViewInit {
+export class NewsPage {
   @ViewChild(IonContent) content!: IonContent;
   newFilms: NewFilm[] = [];
   showFull: boolean[] = [];
@@ -50,90 +50,6 @@ export class NewsPage implements AfterViewInit {
 
   constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
     addIcons({ search, heart, heartOutline });
-    
-    // Set loading to false so mock data is displayed
-    this.loadingService.setLoading(false);
-    
-    // Add mock data for demonstration when API is blocked (after a delay to ensure it's not overridden)
-    setTimeout(() => {
-      this.newFilms = [
-        {
-          system_id: 'mock1',
-          film_titel: 'Avengers: Endgame',
-          film_centerstart_zeit: '25.04.2024',
-          film_cover_src: 'https://via.placeholder.com/300x400/4a90e2/ffffff?text=Avengers',
-          film_beschreibung: 'The epic conclusion to the Infinity Saga that became a defining moment in cinema history.',
-          film_kurztext: 'Epic superhero finale',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: '1'
-        } as NewFilm,
-        {
-          system_id: 'mock2', 
-          film_titel: 'Inception',
-          film_centerstart_zeit: '16.07.2024',
-          film_cover_src: 'https://via.placeholder.com/300x400/e74c3c/ffffff?text=Inception',
-          film_beschreibung: 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.',
-          film_kurztext: 'Mind-bending thriller',
-          filminfo_href: '#',
-          film_ist_ov: '1',
-          filmchart_platzierung_aktuell: null
-        } as NewFilm,
-        {
-          system_id: 'mock3',
-          film_titel: 'The Dark Knight',
-          film_centerstart_zeit: '18.07.2024', 
-          film_cover_src: 'https://via.placeholder.com/300x400/2c3e50/ffffff?text=Batman',
-          film_beschreibung: 'Batman faces the Joker, a criminal mastermind who wants to plunge Gotham City into anarchy.',
-          film_kurztext: 'Batman vs Joker',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: '3'
-        } as NewFilm
-      ];
-    }, 1000);
-  }
-
-  ngAfterViewInit() {
-    // Override with mock data after the search component has loaded
-    setTimeout(() => {
-      this.newFilms = [
-        {
-          system_id: 'mock1',
-          film_titel: 'Avengers: Endgame',
-          film_centerstart_zeit: '25.04.2024',
-          film_cover_src: 'https://via.placeholder.com/300x400/4a90e2/ffffff?text=Avengers',
-          film_beschreibung: 'The epic conclusion to the Infinity Saga that became a defining moment in cinema history.',
-          film_kurztext: 'Epic superhero finale',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: '1'
-        } as NewFilm,
-        {
-          system_id: 'mock2', 
-          film_titel: 'Inception',
-          film_centerstart_zeit: '16.07.2024',
-          film_cover_src: 'https://via.placeholder.com/300x400/e74c3c/ffffff?text=Inception',
-          film_beschreibung: 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.',
-          film_kurztext: 'Mind-bending thriller',
-          filminfo_href: '#',
-          film_ist_ov: '1',
-          filmchart_platzierung_aktuell: null
-        } as NewFilm,
-        {
-          system_id: 'mock3',
-          film_titel: 'The Dark Knight',
-          film_centerstart_zeit: '18.07.2024', 
-          film_cover_src: 'https://via.placeholder.com/300x400/2c3e50/ffffff?text=Batman',
-          film_beschreibung: 'Batman faces the Joker, a criminal mastermind who wants to plunge Gotham City into anarchy.',
-          film_kurztext: 'Batman vs Joker',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: '3'
-        } as NewFilm
-      ];
-      console.log('Mock data set:', this.newFilms);
-    }, 2000);
   }
 
   handleRefresh(event: any): void {
