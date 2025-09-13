@@ -19,106 +19,118 @@
           <!-- Zeitraum Filter -->
           <ion-row *ngIf="filter === 'Zeitraum'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="action-sheet"
-                [(ngModel)]="selectedFilters.tageAuswahl"
-                (ngModelChange)="onSingleSelectChange($event, 'tageAuswahl')"
-                placeholder="{{tageAuswahl[0].name}}">
-                <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id">
-                  {{ wahl.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="action-sheet"
+                  [(ngModel)]="selectedFilters.tageAuswahl"
+                  (ngModelChange)="onSingleSelectChange($event, 'tageAuswahl')"
+                  placeholder="{{tageAuswahl[0].name}}">
+                  <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id">
+                    {{ wahl.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
           <!-- Genre Filter -->
           <ion-row *ngIf="filter === 'Genre'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="alert"
-                [(ngModel)]="selectedFilters.genresTags"
-                (ngModelChange)="onFilterChange()"
-                multiple="true"
-                placeholder="Genre auswählen">
-                <ion-select-option *ngFor="let genre of genresTag" [value]="genre.id">
-                  {{ genre.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="alert"
+                  [(ngModel)]="selectedFilters.genresTags"
+                  (ngModelChange)="onFilterChange()"
+                  multiple="true"
+                  placeholder="Genre auswählen">
+                  <ion-select-option *ngFor="let genre of genresTag" [value]="genre.id">
+                    {{ genre.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
           <!-- Kinosaal Filter -->
           <ion-row *ngIf="filter === 'Kinosaal'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="action-sheet"
-                [(ngModel)]="selectedFilters.leinwandHighlights"
-                (ngModelChange)="onSingleSelectChange($event, 'leinwandHighlights')"
-                placeholder="{{leinwandHighlights[0].name}}">
-                <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id">
-                  {{ highlight.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="action-sheet"
+                  [(ngModel)]="selectedFilters.leinwandHighlights"
+                  (ngModelChange)="onSingleSelectChange($event, 'leinwandHighlights')"
+                  placeholder="{{leinwandHighlights[0].name}}">
+                  <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id">
+                    {{ highlight.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
           <!-- Sound Filter -->
           <ion-row *ngIf="filter === 'Sound'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="alert"
-                [(ngModel)]="selectedFilters.flags"
-                (ngModelChange)="onFilterChange()"
-                multiple="true"
-                placeholder="Sound-Optionen auswählen">
-                <ion-select-option *ngFor="let flag of flags" [value]="flag.id">
-                  {{ flag.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="alert"
+                  [(ngModel)]="selectedFilters.flags"
+                  (ngModelChange)="onFilterChange()"
+                  multiple="true"
+                  placeholder="Sound-Optionen auswählen">
+                  <ion-select-option *ngFor="let flag of flags" [value]="flag.id">
+                    {{ flag.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
           <!-- Barrierefreie Optionen Filter -->
           <ion-row *ngIf="filter === 'Barrierefreie Optionen'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="alert"
-                [(ngModel)]="selectedFilters.behindertenTags"
-                (ngModelChange)="onFilterChange()"
-                multiple="true"
-                placeholder="Barrierefreie Optionen auswählen">
-                <ion-select-option *ngFor="let behindertenTag of behindertenTags" [value]="behindertenTag.id">
-                  {{ behindertenTag.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="alert"
+                  [(ngModel)]="selectedFilters.behindertenTags"
+                  (ngModelChange)="onFilterChange()"
+                  multiple="true"
+                  placeholder="Barrierefreie Optionen auswählen">
+                  <ion-select-option *ngFor="let behindertenTag of behindertenTags" [value]="behindertenTag.id">
+                    {{ behindertenTag.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
           <!-- Extras Filter -->
           <ion-row *ngIf="filter === 'Extras'" style="margin: 0 5px">
             <ion-col>
-              <ion-select
-                class="open"
-                label="{{filter}}"
-                interface="alert"
-                [(ngModel)]="selectedFilters.extras"
-                (ngModelChange)="onFilterChange()"
-                multiple="true"
-                placeholder="Extras auswählen">
-                <ion-select-option *ngFor="let extra of extras" [value]="extra.id">
-                  {{ extra.name }}
-                </ion-select-option>
-              </ion-select>
+              <ion-item>
+                <ion-select
+                  class="open"
+                  label="{{filter}}"
+                  interface="alert"
+                  [(ngModel)]="selectedFilters.extras"
+                  (ngModelChange)="onFilterChange()"
+                  multiple="true"
+                  placeholder="Extras auswählen">
+                  <ion-select-option *ngFor="let extra of extras" [value]="extra.id">
+                    {{ extra.name }}
+                  </ion-select-option>
+                </ion-select>
+              </ion-item>
             </ion-col>
           </ion-row>
 
