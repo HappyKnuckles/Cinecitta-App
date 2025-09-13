@@ -9,6 +9,7 @@ import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { FavoriteButtonComponent } from 'src/app/shared/components/favorite-button/favorite-button.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
 @Component({
@@ -26,6 +27,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonButton,
     IonIcon,
     SearchComponent,
+    FavoriteButtonComponent,
     IonContent,
     IonRefresher,
     NgFor,

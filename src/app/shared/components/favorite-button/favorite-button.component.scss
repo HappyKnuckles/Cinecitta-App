@@ -1,0 +1,35 @@
+.favorite-button {
+  --padding-start: 8px;
+  --padding-end: 8px;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+.heart-icon {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.favorite-button.is-favorite .heart-icon {
+  color: #ff4757;
+  transform: scale(1.1);
+}
+
+.heart-icon.small {
+  font-size: 18px;
+}
+
+.heart-icon.medium {
+  font-size: 22px;
+}
+
+.heart-icon.large {
+  font-size: 26px;
+}
+
+.favorite-button:not(.is-favorite) .heart-icon {
+  color: var(--ion-color-medium);
+}
+
+.favorite-button:hover .heart-icon {
+  transform: scale(1.1);
+}

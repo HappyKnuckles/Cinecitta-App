@@ -204,7 +204,8 @@
                   <div class="new">NEU</div>
                 </div>
               </ion-col>
-              <ion-col class="ion-text-right">
+              <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
+                <app-favorite-button [filmId]="film.system_id" size="small"></app-favorite-button>
                 <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
               </ion-col>
               <ion-popover [trigger]="'popover' + film.system_id" id="popover">
@@ -366,7 +367,7 @@
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
       <div class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
-          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
+          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; position: relative;">
             {{film.film_titel}}
             <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
@@ -374,6 +375,7 @@
             <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
               <div class="new">NEU</div>
             </div>
+            <app-favorite-button [filmId]="film.system_id" size="small" style="position: absolute; right: 10px; top: -5px;"></app-favorite-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">

@@ -1,8 +1,86 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Start </ion-title>
+    <ion-button slot="end" fill="clear" (click)="openFavoritesModal()">
+      <ion-icon name="heart" color="danger"></ion-icon>
+      Favoriten
+    </ion-button>
   </ion-toolbar>
 </ion-header>
+
+<!-- Favorites Modal -->
+<ion-modal [isOpen]="isFavoritesModalOpen" (ionModalWillDismiss)="closeFavoritesModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Meine Favoriten</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeFavoritesModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div *ngIf="upcomingFavorites.length === 0 && currentFavorites.length === 0" 
+           style="text-align: center; margin-top: 50px; color: var(--ion-color-medium);">
+        <ion-icon name="heart" size="large"></ion-icon>
+        <p>Noch keine Favoriten hinzugefügt</p>
+        <p>Füge Filme zu deinen Favoriten hinzu, indem du auf das Herz-Symbol klickst!</p>
+      </div>
+
+      <!-- Upcoming Films Section -->
+      <div *ngIf="upcomingFavorites.length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
+        <ion-grid *ngFor="let film of upcomingFavorites">
+          <div class="favorite-film-container">
+            <ion-row style="align-items: center;">
+              <ion-col size="3">
+                <ion-img [src]="film.film_cover_src" [alt]="'Cover von ' + film.film_titel" style="border-radius: 8px;"></ion-img>
+              </ion-col>
+              <ion-col size="9">
+                <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
+                <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
+                  {{ film.film_centerstart_zeit }}
+                </p>
+                <p style="margin: 5px 0; font-size: 12px;">
+                  {{ (film.film_beschreibung | extractText).length > 100 ? 
+                     (film.film_beschreibung | extractText).slice(0, 100) + '...' : 
+                     (film.film_beschreibung | extractText) }}
+                </p>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </div>
+
+      <!-- Current Films Section -->
+      <div *ngIf="currentFavorites.length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
+        <ion-grid *ngFor="let film of currentFavorites">
+          <div class="favorite-film-container">
+            <ion-row style="align-items: center;">
+              <ion-col size="3">
+                <ion-img [src]="film.film_cover_src" [alt]="'Cover von ' + film.film_titel" style="border-radius: 8px;"></ion-img>
+              </ion-col>
+              <ion-col size="9">
+                <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
+                <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
+                  {{ film.film_centerstart_zeit }}
+                </p>
+                <p style="margin: 5px 0; font-size: 12px;">
+                  {{ (film.film_beschreibung | extractText).length > 100 ? 
+                     (film.film_beschreibung | extractText).slice(0, 100) + '...' : 
+                     (film.film_beschreibung | extractText) }}
+                </p>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-grid>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-content [fullscreen]="true">
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>

@@ -1,0 +1,16 @@
+.favorite-film-container {
+  border: 1px solid var(--ion-color-light);
+  border-radius: 12px;
+  padding: 10px;
+  margin-bottom: 15px;
+  background: var(--ion-color-light-tint);
+}
+
+.favorite-film-container h4 {
+  font-weight: 600;
+}
+
+ion-modal {
+  --max-width: 90%;
+  --max-height: 80%;
+}

@@ -1,0 +1,11 @@
+<ion-button 
+  fill="clear" 
+  [size]="size" 
+  (click)="toggleFavorite()" 
+  class="favorite-button"
+  [class.is-favorite]="isFavorite">
+  <ion-icon 
+    [name]="isFavorite ? 'heart' : 'heart-outline'" 
+    [class]="'heart-icon ' + size">
+  </ion-icon>
+</ion-button>

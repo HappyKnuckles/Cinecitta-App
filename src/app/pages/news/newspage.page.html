@@ -35,6 +35,7 @@
             <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
             </span>
+            <app-favorite-button [filmId]="film.system_id" size="small" style="margin-left: auto;"></app-favorite-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
