@@ -39,6 +39,7 @@ import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { FilterComponent } from 'src/app/shared/components/filter/filter.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
@@ -58,6 +59,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonIcon,
     IonTitle,
     SearchComponent,
+    FilterComponent,
     IonModal,
     IonButtons,
     IonContent,
@@ -84,8 +86,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
   @ViewChild(IonContent, { static: false }) content!: IonContent;
   @ViewChild(SearchComponent, { static: false }) searchInput!: SearchComponent;
-  showStartTimePicker = false;
-  showEndTimePicker = false;
+  
   formData: FormData = new FormData();
   startTime = '10:00';
   endTime = '03:00';
@@ -98,16 +99,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   isModalOpen = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
-  showAllTags: boolean[] = [];
   showTrailer: { [key: string]: boolean } = {};
   selectedFilters = Filtertags.selectedFilters;
-  filters = Filtertags.filters;
-  tageAuswahl = Filtertags.tageAuswahl;
-  genresTag = Filtertags.genresTag;
-  leinwandHighlights = Filtertags.leinwandHighlights;
-  extras = Filtertags.extras;
-  flags = Filtertags.flags;
-  behindertenTags = Filtertags.behindertenTags;
   errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
   private debounceTimeout: any;
@@ -210,8 +203,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   private setDefaultSelectedFilterValues(): void {
-    this.selectedFilters.tageAuswahl = this.tageAuswahl[0].id;
-    this.selectedFilters.leinwandHighlights = this.leinwandHighlights[0].id;
+    this.selectedFilters.tageAuswahl = Filtertags.tageAuswahl[0].id;
+    this.selectedFilters.leinwandHighlights = Filtertags.leinwandHighlights[0].id;
   }
 
   search(event: any) {
@@ -344,8 +337,26 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  showTags(index: number): void {
-    this.showAllTags[index] = !this.showAllTags[index];
+  onFiltersChanged(filterData: any): void {
+    this.selectedFilters = filterData.selectedFilters;
+    this.startTime = filterData.startTime;
+    this.endTime = filterData.endTime;
+    this.onTimeChange(true);
+    this.loadFilmData();
+  }
+
+  onResetFilters(): void {
+    this.selectedFilters = {
+      genresTags: [],
+      tageAuswahl: [],
+      leinwandHighlights: [],
+      extras: [],
+      flags: [],
+      behindertenTags: []
+    };
+    this.startTime = '10:00';
+    this.endTime = '03:00';
+    this.loadFilmData();
   }
 
   async openExternalWebsite(url: string): Promise<void> {
@@ -356,16 +367,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  openStartTimePicker(): void {
-    this.showStartTimePicker = !this.showStartTimePicker;
-  }
-
-  openEndTimePicker(): void {
-    this.showEndTimePicker = !this.showEndTimePicker;
-  }
-
   async confirm(): Promise<void> {
-    this.showAllTags = this.showAllTags.map(() => false);
     this.setOpen(false);
 
     if (this.films.length === 0) {
@@ -373,14 +375,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     }
   }
 
-  closeTimes(): void {
-    this.showStartTimePicker = false;
-    this.showEndTimePicker = false;
-  }
-
   cancel(): void {
-    this.showAllTags = Array(this.filters.length).fill(false);
-    this.showAllTags = this.showAllTags.map(() => false);
     this.setOpen(false);
   }
 
@@ -394,10 +389,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.selectedFilters.behindertenTags = [];
     this.startTime = '10:00';
     this.endTime = '03:00';
-
-    // Reset background color of tags
-    this.showAllTags = this.showAllTags.map(() => false);
-    this.closeTimes();
 
     await this.loadFilmData();
   }
@@ -486,38 +477,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     formData.append('filter[rangeslider][]', String(endTimeNumeric));
 
     return formData;
-  }
-
-  async toggleSelection(id: any, filterType: string): Promise<void> {
-    this.isReload = false;
-    if (filterType === 'leinwandHighlights' || filterType === 'tageAuswahl') {
-      // For Kinosaal tag or other non-time filters
-      this.selectedFilters[filterType] = [id];
-    } else {
-      // For other time-related filters (if any)
-      const index = this.selectedFilters[filterType].indexOf(id);
-      if (index > -1) {
-        // Remove the id if already selected
-        this.selectedFilters[filterType].splice(index, 1);
-      } else {
-        // Add the id if not selected
-        this.selectedFilters[filterType].push(id);
-      }
-    }
-    await this.loadFilmData();
-  }
-
-  isSelected(id: any, filterType: string): boolean {
-    if (filterType === 'leinwandHighlights') {
-      // For Kinosaal tag
-      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === 171984);
-    } else if (filterType === 'tageAuswahl') {
-      // For tageAuswahl tag
-      return this.selectedFilters[filterType].includes(id) || (this.selectedFilters[filterType].length === 0 && id === '');
-    } else {
-      // For other tags
-      return this.selectedFilters[filterType].includes(id);
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
