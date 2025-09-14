@@ -29,15 +29,15 @@
         <p>Füge Filme zu deinen Favoriten hinzu, indem du auf das Herz-Symbol klickst!</p>
       </div>
 
-      <!-- Upcoming Films Section -->
-      <div *ngIf="upcomingFavorites.length > 0">
-        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
-        <ion-grid *ngFor="let film of upcomingFavorites">
+      <!-- Current Films Section -->
+      <div *ngIf="currentFavorites.length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
+        <ion-grid *ngFor="let film of currentFavorites">
           <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
-                  [src]="getFilmImage(film)" 
+                  [src]="(film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film')" 
                   [alt]="'Cover von ' + film.film_titel" 
                   style="border-radius: 8px;">
                 </ion-img>
@@ -56,15 +56,15 @@
         </ion-grid>
       </div>
 
-      <!-- Current Films Section -->
-      <div *ngIf="currentFavorites.length > 0">
-        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
-        <ion-grid *ngFor="let film of currentFavorites">
+      <!-- Upcoming Films Section -->
+      <div *ngIf="upcomingFavorites.length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
+        <ion-grid *ngFor="let film of upcomingFavorites">
           <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
-                  [src]="(film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film')" 
+                  [src]="getFilmImage(film)" 
                   [alt]="'Cover von ' + film.film_titel" 
                   style="border-radius: 8px;">
                 </ion-img>
