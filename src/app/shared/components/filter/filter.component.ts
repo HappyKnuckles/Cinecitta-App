@@ -95,11 +95,15 @@ export class FilterComponent implements OnInit {
         this.selectedFilters.tageAuswahl = [this.tageAuswahl[0].id];
         this.selectedFilters.leinwandHighlights = [this.leinwandHighlights[0].id];
       }
+      // Ensure time logic is applied after loading
+      this.ensureTimeLogic();
     } catch (error) {
       console.error('Error loading saved filters:', error);
       // Set default values on error
       this.selectedFilters.tageAuswahl = [this.tageAuswahl[0].id];
       this.selectedFilters.leinwandHighlights = [this.leinwandHighlights[0].id];
+      // Ensure time logic is applied even on error
+      this.ensureTimeLogic();
     }
   }
 
@@ -175,6 +179,36 @@ export class FilterComponent implements OnInit {
   }
 
   async onTimeChange(): Promise<void> {
+    this.ensureTimeLogic();
     await this.onFilterChange();
+  }
+
+  private ensureTimeLogic(): void {
+    let startHour = this.convertTimeToNumeric(this.startTime);
+    let endHour = this.convertTimeToNumeric(this.endTime);
+    const formatHour = (hour: number) => hour.toString().padStart(2, '0');
+
+    // Ensure endHour is always at least one hour higher than startHour
+    if (endHour <= startHour) {
+      endHour = startHour + 1;
+
+      if (endHour > 23) {
+        endHour -= 24;
+      }
+      if (startHour > 23) {
+        startHour -= 24;
+      }
+      this.endTime = `${formatHour(endHour)}:00`;
+      this.startTime = `${formatHour(startHour)}:00`;
+    }
+  }
+
+  private convertTimeToNumeric(timeStr: string): number {
+    // Split the time string into hours and minutes
+    const [hoursStr] = timeStr.split(':');
+    const hours = parseInt(hoursStr, 10);
+
+    // Convert the time to numeric representation
+    return hours;
   }
 }
