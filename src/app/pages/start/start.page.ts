@@ -2,6 +2,7 @@ import { Component, ViewChildren, QueryList } from "@angular/core";
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg } from "@ionic/angular/standalone";
 import { NgFor, NgIf } from "@angular/common";
+import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { heart, close } from 'ionicons/icons';
 import { HapticService } from "src/app/core/services/haptic/haptic.service";
@@ -39,7 +40,8 @@ export class StartPage {
     private toastService: ToastService,
     private hapticService: HapticService,
     private favoritesService: FavoritesService,
-    private filmDataService: FilmDataService
+    private filmDataService: FilmDataService,
+    private router: Router
   ) { 
     addIcons({ heart, close });
   }
@@ -383,8 +385,9 @@ export class StartPage {
       return 'Keine Beschreibung verfügbar';
     }
 
-    // Extract text content (remove HTML tags)
-    const extractedText = description.replace(/<[^>]*>/g, '').trim();
+    // Use ExtractTextPipe to extract clean text content (remove HTML tags)
+    const extractTextPipe = new ExtractTextPipe();
+    const extractedText = extractTextPipe.transform(description).trim();
     
     // Limit to 100 characters
     if (extractedText.length > 100) {
@@ -392,5 +395,11 @@ export class StartPage {
     }
     
     return extractedText;
+  }
+
+  navigateToFilm(film: Film | NewFilm): void {
+    this.hapticService.vibrate(ImpactStyle.Light, 100);
+    this.router.navigate(['/tabs/film'], { queryParams: { search: film.film_titel } });
+    this.closeFavoritesModal();
   }
 }

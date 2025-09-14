@@ -4,7 +4,8 @@
   --padding-top: 8px;
   --padding-bottom: 8px;
   position: relative;
-  z-index: 10; /* Ensure heart button is above other elements */
+  z-index: 15; /* Higher z-index to ensure it's above infoGrid (z-index: 5) */
+  pointer-events: auto; /* Ensure button can receive clicks */
 }
 
 .heart-icon {

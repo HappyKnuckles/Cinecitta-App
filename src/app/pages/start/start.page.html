@@ -33,7 +33,7 @@
       <div *ngIf="upcomingFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
         <ion-grid *ngFor="let film of upcomingFavorites">
-          <div class="favorite-film-container">
+          <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
@@ -60,7 +60,7 @@
       <div *ngIf="currentFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
         <ion-grid *ngFor="let film of currentFavorites">
-          <div class="favorite-film-container">
+          <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
