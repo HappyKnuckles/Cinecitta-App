@@ -137,10 +137,19 @@ export class StartPage {
         }
       }
 
-      // If no films found from API, create mock data for favorited IDs
-      if (currentFilms.length === 0 && newFilms.length === 0) {
-        for (const id of favoriteIds) {
+      // If we have favorited IDs but no films were found in either category, 
+      // create placeholder entries so users can still see their favorites
+      const foundFavoriteIds = [
+        ...this.currentFavorites.map(f => f.system_id),
+        ...this.upcomingFavorites.map(f => f.system_id)
+      ];
+      
+      const missingFavoriteIds = favoriteIds.filter(id => !foundFavoriteIds.includes(id));
+      
+      if (missingFavoriteIds.length > 0) {
+        for (const id of missingFavoriteIds) {
           const mockFilm = this.createMockFilm(id);
+          // Add to upcoming by default since we don't have date info
           this.upcomingFavorites.push(mockFilm);
         }
       }
