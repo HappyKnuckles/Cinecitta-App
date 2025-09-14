@@ -56,51 +56,6 @@ export class NewsPage implements OnInit {
     private route: ActivatedRoute
   ) {
     addIcons({ search, heart, heartOutline });
-    
-    // Set loading to false so mock data is displayed
-    this.loadingService.setLoading(false);
-    
-    // Add mock data for demonstration when API is blocked
-    setTimeout(() => {
-      this.newFilms = [
-        {
-          system_id: 'news-mock1',
-          film_titel: 'The Batman 2',
-          film_beschreibung: 'The Dark Knight returns in this highly anticipated sequel.',
-          film_cover_src: 'https://via.placeholder.com/300x400/343a40/ffffff?text=Batman+2',
-          film_centerstart_zeit: '15.06.2025',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: '1',
-          film_kurztext: 'Batman faces new challenges in Gotham City.',
-          film_synopsis: 'Full synopsis of The Batman 2...'
-        } as NewFilm,
-        {
-          system_id: 'news-mock2',
-          film_titel: 'Avatar 3',
-          film_beschreibung: 'Jake Sully and Neytiri continue their journey on Pandora.',
-          film_cover_src: 'https://via.placeholder.com/300x400/17a2b8/ffffff?text=Avatar+3',
-          film_centerstart_zeit: '20.12.2025',
-          filminfo_href: '#',
-          film_ist_ov: '1',
-          filmchart_platzierung_aktuell: '2',
-          film_kurztext: 'The next chapter in the Avatar saga.',
-          film_synopsis: 'Full synopsis of Avatar 3...'
-        } as NewFilm,
-        {
-          system_id: 'news-mock3',
-          film_titel: 'Fast & Furious 11',
-          film_beschreibung: 'The family returns for one last ride.',
-          film_cover_src: 'https://via.placeholder.com/300x400/28a745/ffffff?text=F%26F+11',
-          film_centerstart_zeit: '10.07.2025',
-          filminfo_href: '#',
-          film_ist_ov: '0',
-          filmchart_platzierung_aktuell: null,
-          film_kurztext: 'The final chapter in the Fast & Furious saga.',
-          film_synopsis: 'Full synopsis of Fast & Furious 11...'
-        } as NewFilm
-      ];
-    }, 1000);
   }
 
   ngOnInit(): void {

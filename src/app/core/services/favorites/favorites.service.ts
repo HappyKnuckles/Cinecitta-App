@@ -10,48 +10,54 @@ export class FavoritesService {
 
   constructor(private storageService: StorageService) {}
 
-  async getFavorites(): Promise<string[]> {
+  async getFavoriteFilms(): Promise<(Film | NewFilm)[]> {
     const favorites = await this.storageService.get(this.FAVORITES_KEY);
     return favorites || [];
   }
 
-  async addToFavorites(filmId: string): Promise<void> {
-    const favorites = await this.getFavorites();
-    if (!favorites.includes(filmId)) {
-      favorites.push(filmId);
+  async addToFavorites(film: Film | NewFilm): Promise<void> {
+    const favorites = await this.getFavoriteFilms();
+    const filmId = film.system_id || film.film_system_id;
+    
+    // Check if film is already in favorites
+    const exists = favorites.some(f => 
+      (f.system_id === filmId) || 
+      (f.film_system_id === filmId)
+    );
+    
+    if (!exists) {
+      favorites.push(film);
       await this.storageService.save(this.FAVORITES_KEY, favorites);
     }
   }
 
   async removeFromFavorites(filmId: string): Promise<void> {
-    const favorites = await this.getFavorites();
-    const updatedFavorites = favorites.filter(id => id !== filmId);
+    const favorites = await this.getFavoriteFilms();
+    const updatedFavorites = favorites.filter(film => 
+      film.system_id !== filmId && 
+      film.film_system_id !== filmId
+    );
     await this.storageService.save(this.FAVORITES_KEY, updatedFavorites);
   }
 
   async isFavorite(filmId: string): Promise<boolean> {
-    const favorites = await this.getFavorites();
-    return favorites.includes(filmId);
+    const favorites = await this.getFavoriteFilms();
+    return favorites.some(film => 
+      film.system_id === filmId || 
+      film.film_system_id === filmId
+    );
   }
 
-  async toggleFavorite(filmId: string): Promise<boolean> {
+  async toggleFavorite(film: Film | NewFilm): Promise<boolean> {
+    const filmId = film.system_id || film.film_system_id;
     const isFav = await this.isFavorite(filmId);
+    
     if (isFav) {
       await this.removeFromFavorites(filmId);
       return false;
     } else {
-      await this.addToFavorites(filmId);
+      await this.addToFavorites(film);
       return true;
     }
-  }
-
-  async getFavoriteFilms(allFilms: Film[]): Promise<Film[]> {
-    const favorites = await this.getFavorites();
-    return allFilms.filter(film => favorites.includes(film.system_id));
-  }
-
-  async getFavoriteNewFilms(allNewFilms: NewFilm[]): Promise<NewFilm[]> {
-    const favorites = await this.getFavorites();
-    return allNewFilms.filter(film => favorites.includes(film.system_id));
   }
 }

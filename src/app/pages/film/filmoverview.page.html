@@ -205,7 +205,7 @@
                 </div>
               </ion-col>
               <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
-                <app-favorite-button [filmId]="film.system_id" size="small"></app-favorite-button>
+                <app-favorite-button [film]="film" size="small"></app-favorite-button>
                 <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
               </ion-col>
               <ion-popover [trigger]="'popover' + film.system_id" [id]="'popover-' + film.system_id">
@@ -375,7 +375,7 @@
             <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
               <div class="new">NEU</div>
             </div>
-            <app-favorite-button [filmId]="film.system_id" size="small" style="position: absolute; right: 10px; top: -5px;"></app-favorite-button>
+            <app-favorite-button [film]="film" size="small" style="position: absolute; right: 10px; top: -5px;"></app-favorite-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
