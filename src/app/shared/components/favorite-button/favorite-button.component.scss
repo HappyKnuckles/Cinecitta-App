@@ -3,12 +3,15 @@
   --padding-end: 8px;
   --padding-top: 8px;
   --padding-bottom: 8px;
+  position: relative;
+  z-index: 10; /* Ensure heart button is above other elements */
 }
 
 .heart-icon {
   transition: color 0.3s ease, transform 0.2s ease;
   color: #2ce8f4; /* Match info button color */
   transform: translateY(-3px); /* Match info button positioning */
+  pointer-events: auto; /* Ensure click events are captured */
 }
 
 .favorite-button.is-favorite .heart-icon {

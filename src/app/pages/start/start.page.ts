@@ -116,18 +116,13 @@ export class StartPage {
       // Process favorited films from current films
       for (const film of currentFilms) {
         if (favoriteIds.includes(film.system_id)) {
-          // Check if film is upcoming based on bundesstart_datum_iso
-          if (film.film_bundesstart_datum_iso) {
-            const releaseDate = new Date(film.film_bundesstart_datum_iso);
-            if (releaseDate > currentDate) {
-              // Convert Film to NewFilm format for upcoming
-              const newFilm = this.convertFilmToNewFilm(film);
-              this.upcomingFavorites.push(newFilm);
-            } else {
-              this.currentFavorites.push(film);
-            }
+          // Check if film is upcoming based on release date
+          const isUpcoming = this.isFilmUpcoming(film);
+          if (isUpcoming) {
+            // Convert Film to NewFilm format for upcoming
+            const newFilm = this.convertFilmToNewFilm(film);
+            this.upcomingFavorites.push(newFilm);
           } else {
-            // If no release date, assume it's current
             this.currentFavorites.push(film);
           }
         }
@@ -322,6 +317,52 @@ export class StartPage {
       film_system_id: id,
       film_favored: ''
     };
+  }
+
+  private isFilmUpcoming(film: Film | NewFilm): boolean {
+    const currentDate = new Date();
+    
+    // Try different date fields in order of preference
+    let releaseDateString = '';
+    
+    if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
+      releaseDateString = film.film_bundesstart_datum_iso;
+    } else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
+      releaseDateString = film.film_bundesstart_datum;
+    } else if ('film_centerstart_zeit' in film && film.film_centerstart_zeit) {
+      releaseDateString = film.film_centerstart_zeit;
+    }
+
+    if (!releaseDateString) {
+      return false; // No date available, assume current
+    }
+
+    try {
+      // Try to parse the date string
+      let releaseDate: Date;
+      
+      // Handle different date formats
+      if (releaseDateString.includes('T') || releaseDateString.includes('Z')) {
+        // ISO format
+        releaseDate = new Date(releaseDateString);
+      } else if (releaseDateString.includes('.')) {
+        // German format DD.MM.YYYY
+        const parts = releaseDateString.split('.');
+        if (parts.length === 3) {
+          releaseDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        } else {
+          releaseDate = new Date(releaseDateString);
+        }
+      } else {
+        // Try default parsing
+        releaseDate = new Date(releaseDateString);
+      }
+
+      return releaseDate > currentDate;
+    } catch (error) {
+      console.log('Error parsing date:', releaseDateString, error);
+      return false; // If parsing fails, assume current
+    }
   }
 
   getFilmDescription(film: Film | NewFilm): string {
