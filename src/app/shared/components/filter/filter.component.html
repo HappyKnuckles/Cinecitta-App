@@ -14,7 +14,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content style="--padding-top: 15px">
-      <ion-list>
+      <ion-list style="padding: 0; margin: 0;">
         <ng-container *ngFor="let filter of filters; let i = index;">
           <!-- Zeitraum Filter -->
           <ion-item *ngIf="filter === 'Zeitraum'">
@@ -107,9 +107,15 @@
           <!-- Zeiten Filter -->
           <ion-item *ngIf="filter === 'Zeiten'">
             <div style="display: flex; justify-content: space-evenly; align-items: center; padding: 10px 0; width: 100%;">
-              <ion-button (click)="openStartTimePicker()" class="timePickerBtn">{{ startTime }}</ion-button>
+              <div style="text-align: center;">
+                <div style="font-size: 12px; color: var(--ion-color-medium); margin-bottom: 5px;">Von</div>
+                <ion-button (click)="openStartTimePicker()" class="timePickerBtn">{{ startTime }}</ion-button>
+              </div>
               <ion-icon name="remove-outline" style="margin: 0 10px;"></ion-icon>
-              <ion-button (click)="openEndTimePicker()" class="timePickerBtn">{{ endTime }}</ion-button>
+              <div style="text-align: center;">
+                <div style="font-size: 12px; color: var(--ion-color-medium); margin-bottom: 5px;">Bis</div>
+                <ion-button (click)="openEndTimePicker()" class="timePickerBtn">{{ endTime }}</ion-button>
+              </div>
             </div>
             <ion-modal [isOpen]="showStartTimePicker" (ionModalWillDismiss)="closeTimes()" class="timePickerModal">
               <ion-datetime
