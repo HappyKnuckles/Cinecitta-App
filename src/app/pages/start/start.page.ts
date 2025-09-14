@@ -103,17 +103,15 @@ export class StartPage {
         // Try to fetch current films data
         currentFilms = await this.filmDataService.fetchFilmData();
       } catch (error) {
-        console.log('Could not fetch current films data:', error);
+        // Could not fetch current films data
       }
 
       try {
         // Try to fetch new films data
         newFilms = await this.filmDataService.fetchNewFilms();
       } catch (error) {
-        console.log('Could not fetch new films data:', error);
+        // Could not fetch new films data
       }
-
-      const currentDate = new Date();
       
       // Process favorited films from current films
       for (const film of currentFilms) {
@@ -148,9 +146,28 @@ export class StartPage {
       
       if (missingFavoriteIds.length > 0) {
         for (const id of missingFavoriteIds) {
-          const mockFilm = this.createMockFilm(id);
-          // Add to upcoming by default since we don't have date info
-          this.upcomingFavorites.push(mockFilm);
+          // Try to find the film in current films dataset
+          const foundCurrentFilm = currentFilms.find(f => 
+            f.system_id === id || f.film_system_id === id
+          );
+          
+          if (foundCurrentFilm) {
+            // Add to current favorites since it was found in current films
+            this.currentFavorites.push(foundCurrentFilm);
+          } else {
+            // Check new films
+            const foundNewFilm = newFilms.find(f => 
+              f.system_id === id || f.film_system_id === id
+            );
+            
+            if (foundNewFilm) {
+              this.upcomingFavorites.push(foundNewFilm);
+            } else {
+              // Create a more informative placeholder
+              const mockFilm = this.createMockFilm(id);
+              this.upcomingFavorites.push(mockFilm);
+            }
+          }
         }
       }
       
@@ -248,24 +265,24 @@ export class StartPage {
   private createMockFilm(id: string): NewFilm {
     return {
       system_id: id,
-      film_titel: `Film ${id}`,
-      film_cover_src: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
-      film_centerstart_zeit: new Date().toLocaleDateString('de-DE'),
-      film_beschreibung: `Beschreibung für Film ${id}`,
+      film_titel: `Film nicht gefunden (ID: ${id})`,
+      film_cover_src: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film+nicht+verfügbar',
+      film_centerstart_zeit: 'Datum nicht verfügbar',
+      film_beschreibung: 'Film ist favorisiert, aber aktuell nicht in den verfügbaren Daten enthalten. Möglicherweise wurde er aus dem Programm genommen.',
+      film_kurztext: 'Film temporär nicht verfügbar',
+      film_synopsis: 'Die Details dieses Films sind momentan nicht verfügbar.',
       film_ist_ov: '0',
       filminfo_href: '',
-      film_kurztext: `Kurzbeschreibung für Film ${id}`,
-      film_synopsis: `Synopsis für Film ${id}`,
       film_id: id,
       film_kurztitel: `Film ${id}`,
       film_haupttitel: `Film ${id}`,
       film_untertitel: '',
       film_original_titel: `Film ${id}`,
       film_schlagzeile: '',
-      film_teasertext: '',
+      film_teasertext: 'Film temporär nicht verfügbar',
       film_moviedb_id: '',
       film_edis: '',
-      film_poster: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
+      film_poster: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film+nicht+verfügbar',
       film_bundesstart_datum: '',
       film_vorverkauf_zeit: '',
       film_bearbeitet: '',
@@ -332,6 +349,8 @@ export class StartPage {
 
   private isFilmUpcoming(film: Film | NewFilm): boolean {
     const currentDate = new Date();
+    // Set time to start of tomorrow for comparison - films from today should be "current"
+    const todayEnd = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
     
     // Try different date fields in order of preference
     let releaseDateString = '';
@@ -369,10 +388,48 @@ export class StartPage {
         releaseDate = new Date(releaseDateString);
       }
 
-      return releaseDate > currentDate;
+      // Film is upcoming only if it releases AFTER today (tomorrow or later)
+      return releaseDate >= todayEnd;
     } catch (error) {
-      console.log('Error parsing date:', releaseDateString, error);
       return false; // If parsing fails, assume current
+    }
+  }
+
+  getFilmDate(film: Film | NewFilm): string {
+    // Try different date fields in order of preference
+    let dateString = '';
+    
+    if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
+      dateString = film.film_bundesstart_datum_iso;
+    } else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
+      dateString = film.film_bundesstart_datum;
+    } else if ('film_centerstart_zeit' in film && film.film_centerstart_zeit) {
+      dateString = film.film_centerstart_zeit;
+    }
+
+    if (!dateString) {
+      return 'Datum nicht verfügbar';
+    }
+
+    try {
+      // Try to format the date nicely
+      let date: Date;
+      
+      if (dateString.includes('T') || dateString.includes('Z')) {
+        // ISO format
+        date = new Date(dateString);
+      } else if (dateString.includes('.')) {
+        // German format DD.MM.YYYY - already formatted
+        return dateString;
+      } else {
+        // Try default parsing
+        date = new Date(dateString);
+      }
+
+      // Format to German date format
+      return date.toLocaleDateString('de-DE');
+    } catch (error) {
+      return dateString; // Return original string if parsing fails
     }
   }
 
@@ -408,7 +465,17 @@ export class StartPage {
 
   navigateToFilm(film: Film | NewFilm): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-    this.router.navigate(['/tabs/film'], { queryParams: { search: film.film_titel } });
+    
+    // Route to the appropriate page based on film release date
+    const isUpcoming = this.isFilmUpcoming(film);
+    if (isUpcoming) {
+      // Route to news/demnächst page for upcoming films
+      this.router.navigate(['/tabs/news'], { queryParams: { search: film.film_titel } });
+    } else {
+      // Route to film page for current films
+      this.router.navigate(['/tabs/film'], { queryParams: { search: film.film_titel } });
+    }
+    
     this.closeFavoritesModal();
   }
 }
