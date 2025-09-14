@@ -83,16 +83,47 @@ export class StartPage {
       // Get favorite film IDs from storage
       const favoriteIds = await this.favoritesService.getFavorites();
       
-      // For now, we'll simulate favorite films with the IDs that are stored
-      // In a real app, you would fetch all films and filter by these IDs
+      // Clear previous favorites
       this.currentFavorites = [];
       this.upcomingFavorites = [];
       
-      // Create mock favorite films based on stored IDs for demonstration
+      // Create mock films based on stored IDs for demonstration
+      // In a real app, you would fetch all films from API and filter by these IDs
       for (const id of favoriteIds) {
-        if (id.startsWith('demo')) {
-          // Create a mock NewFilm for demos
-          const mockFilm = {
+        // Create mock film data for each favorited ID
+        let mockFilm;
+        
+        if (id === 'film-mock1') {
+          mockFilm = {
+            system_id: id,
+            film_titel: 'Spider-Man: No Way Home',
+            film_cover_src: 'https://via.placeholder.com/300x400/dc3545/ffffff?text=Spider-Man',
+            film_centerstart_zeit: '15.12.2024',
+            film_beschreibung: 'Peter Parker seeks Doctor Strange to help make the world forget his identity as Spider-Man.',
+            film_ist_ov: '0',
+            filmchart_platzierung_aktuell: null,
+            filminfo_href: '',
+            film_kurztext: '',
+            film_synopsis: ''
+          } as NewFilm;
+          this.upcomingFavorites.push(mockFilm);
+        } else if (id === 'film-mock2') {
+          mockFilm = {
+            system_id: id,
+            film_titel: 'Dune: Part Two',
+            film_cover_src: 'https://via.placeholder.com/300x400/f39c12/ffffff?text=Dune',
+            film_centerstart_zeit: '01.03.2024',
+            film_beschreibung: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against those who destroyed his family.',
+            film_ist_ov: '1',
+            filmchart_platzierung_aktuell: null,
+            filminfo_href: '',
+            film_kurztext: '',
+            film_synopsis: ''
+          } as NewFilm;
+          this.upcomingFavorites.push(mockFilm);
+        } else if (id.startsWith('demo')) {
+          // Keep demo films for backwards compatibility
+          mockFilm = {
             system_id: id,
             film_titel: id === 'demo1' ? 'Avengers: Endgame' : 'Inception',
             film_cover_src: id === 'demo1' 
@@ -104,6 +135,21 @@ export class StartPage {
               : 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.',
             film_ist_ov: id === 'demo2' ? '1' : '0',
             filmchart_platzierung_aktuell: id === 'demo1' ? '1' : null,
+            filminfo_href: '',
+            film_kurztext: '',
+            film_synopsis: ''
+          } as NewFilm;
+          this.upcomingFavorites.push(mockFilm);
+        } else {
+          // Create a generic mock film for any other favorited ID
+          mockFilm = {
+            system_id: id,
+            film_titel: `Film ${id}`,
+            film_cover_src: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
+            film_centerstart_zeit: new Date().toLocaleDateString('de-DE'),
+            film_beschreibung: `Beschreibung für Film ${id}`,
+            film_ist_ov: '0',
+            filmchart_platzierung_aktuell: null,
             filminfo_href: '',
             film_kurztext: '',
             film_synopsis: ''
