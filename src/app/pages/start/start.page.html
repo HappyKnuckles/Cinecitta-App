@@ -36,17 +36,19 @@
           <div class="favorite-film-container">
             <ion-row style="align-items: center;">
               <ion-col size="3">
-                <ion-img [src]="film.film_cover_src" [alt]="'Cover von ' + film.film_titel" style="border-radius: 8px;"></ion-img>
+                <ion-img 
+                  [src]="film.film_cover_src || film.film_poster || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film'" 
+                  [alt]="'Cover von ' + film.film_titel" 
+                  style="border-radius: 8px;">
+                </ion-img>
               </ion-col>
               <ion-col size="9">
                 <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
                 <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
-                  {{ film.film_centerstart_zeit }}
+                  {{ film.film_centerstart_zeit || 'Datum nicht verfügbar' }}
                 </p>
                 <p style="margin: 5px 0; font-size: 12px;">
-                  {{ (film.film_beschreibung | extractText).length > 100 ? 
-                     (film.film_beschreibung | extractText).slice(0, 100) + '...' : 
-                     (film.film_beschreibung | extractText) }}
+                  {{ getFilmDescription(film) }}
                 </p>
               </ion-col>
             </ion-row>
@@ -61,17 +63,19 @@
           <div class="favorite-film-container">
             <ion-row style="align-items: center;">
               <ion-col size="3">
-                <ion-img [src]="film.film_cover_src" [alt]="'Cover von ' + film.film_titel" style="border-radius: 8px;"></ion-img>
+                <ion-img 
+                  [src]="film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film'" 
+                  [alt]="'Cover von ' + film.film_titel" 
+                  style="border-radius: 8px;">
+                </ion-img>
               </ion-col>
               <ion-col size="9">
                 <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
                 <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
-                  {{ film.film_centerstart_zeit }}
+                  {{ film.film_centerstart_zeit || 'Datum nicht verfügbar' }}
                 </p>
                 <p style="margin: 5px 0; font-size: 12px;">
-                  {{ (film.film_beschreibung | extractText).length > 100 ? 
-                     (film.film_beschreibung | extractText).slice(0, 100) + '...' : 
-                     (film.film_beschreibung | extractText) }}
+                  {{ getFilmDescription(film) }}
                 </p>
               </ion-col>
             </ion-row>

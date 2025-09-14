@@ -8,6 +8,7 @@ import { HapticService } from "src/app/core/services/haptic/haptic.service";
 import { LoadingService } from "src/app/core/services/loader/loading.service";
 import { ToastService } from "src/app/core/services/toast/toast.service";
 import { FavoritesService } from "src/app/core/services/favorites/favorites.service";
+import { FilmDataService } from "src/app/core/services/film-data/film-data.service";
 import { FilmSelectComponent } from "src/app/shared/components/film-select/film-select.component";
 import { Film, NewFilm } from "src/app/core/models/filmModel";
 import { ExtractTextPipe } from "src/app/shared/pipes/extract-text/extract-text.pipe";
@@ -37,7 +38,8 @@ export class StartPage {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
-    private favoritesService: FavoritesService
+    private favoritesService: FavoritesService,
+    private filmDataService: FilmDataService
   ) { 
     addIcons({ heart, close });
   }
@@ -87,73 +89,61 @@ export class StartPage {
       this.currentFavorites = [];
       this.upcomingFavorites = [];
       
-      // Create mock films based on stored IDs for demonstration
-      // In a real app, you would fetch all films from API and filter by these IDs
-      for (const id of favoriteIds) {
-        // Create mock film data for each favorited ID
-        let mockFilm;
-        
-        if (id === 'film-mock1') {
-          mockFilm = {
-            system_id: id,
-            film_titel: 'Spider-Man: No Way Home',
-            film_cover_src: 'https://via.placeholder.com/300x400/dc3545/ffffff?text=Spider-Man',
-            film_centerstart_zeit: '15.12.2024',
-            film_beschreibung: 'Peter Parker seeks Doctor Strange to help make the world forget his identity as Spider-Man.',
-            film_ist_ov: '0',
-            filmchart_platzierung_aktuell: null,
-            filminfo_href: '',
-            film_kurztext: '',
-            film_synopsis: ''
-          } as NewFilm;
-          this.upcomingFavorites.push(mockFilm);
-        } else if (id === 'film-mock2') {
-          mockFilm = {
-            system_id: id,
-            film_titel: 'Dune: Part Two',
-            film_cover_src: 'https://via.placeholder.com/300x400/f39c12/ffffff?text=Dune',
-            film_centerstart_zeit: '01.03.2024',
-            film_beschreibung: 'Paul Atreides unites with Chani and the Fremen while seeking revenge against those who destroyed his family.',
-            film_ist_ov: '1',
-            filmchart_platzierung_aktuell: null,
-            filminfo_href: '',
-            film_kurztext: '',
-            film_synopsis: ''
-          } as NewFilm;
-          this.upcomingFavorites.push(mockFilm);
-        } else if (id.startsWith('demo')) {
-          // Keep demo films for backwards compatibility
-          mockFilm = {
-            system_id: id,
-            film_titel: id === 'demo1' ? 'Avengers: Endgame' : 'Inception',
-            film_cover_src: id === 'demo1' 
-              ? 'https://via.placeholder.com/150x225/4a90e2/ffffff?text=Avengers'
-              : 'https://via.placeholder.com/150x225/e74c3c/ffffff?text=Inception',
-            film_centerstart_zeit: id === 'demo1' ? '25.04.2024' : '16.07.2024',
-            film_beschreibung: id === 'demo1' 
-              ? 'The epic conclusion to the Infinity Saga that became a defining moment in cinema history.'
-              : 'A thief who steals corporate secrets through dream-sharing technology is given the task of planting an idea.',
-            film_ist_ov: id === 'demo2' ? '1' : '0',
-            filmchart_platzierung_aktuell: id === 'demo1' ? '1' : null,
-            filminfo_href: '',
-            film_kurztext: '',
-            film_synopsis: ''
-          } as NewFilm;
-          this.upcomingFavorites.push(mockFilm);
-        } else {
-          // Create a generic mock film for any other favorited ID
-          mockFilm = {
-            system_id: id,
-            film_titel: `Film ${id}`,
-            film_cover_src: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
-            film_centerstart_zeit: new Date().toLocaleDateString('de-DE'),
-            film_beschreibung: `Beschreibung für Film ${id}`,
-            film_ist_ov: '0',
-            filmchart_platzierung_aktuell: null,
-            filminfo_href: '',
-            film_kurztext: '',
-            film_synopsis: ''
-          } as NewFilm;
+      if (favoriteIds.length === 0) {
+        return;
+      }
+
+      // Try to fetch current films and new films
+      let currentFilms: Film[] = [];
+      let newFilms: NewFilm[] = [];
+      
+      try {
+        // Try to fetch current films data
+        currentFilms = await this.filmDataService.fetchFilmData();
+      } catch (error) {
+        console.log('Could not fetch current films data:', error);
+      }
+
+      try {
+        // Try to fetch new films data
+        newFilms = await this.filmDataService.fetchNewFilms();
+      } catch (error) {
+        console.log('Could not fetch new films data:', error);
+      }
+
+      const currentDate = new Date();
+      
+      // Process favorited films from current films
+      for (const film of currentFilms) {
+        if (favoriteIds.includes(film.system_id)) {
+          // Check if film is upcoming based on bundesstart_datum_iso
+          if (film.film_bundesstart_datum_iso) {
+            const releaseDate = new Date(film.film_bundesstart_datum_iso);
+            if (releaseDate > currentDate) {
+              // Convert Film to NewFilm format for upcoming
+              const newFilm = this.convertFilmToNewFilm(film);
+              this.upcomingFavorites.push(newFilm);
+            } else {
+              this.currentFavorites.push(film);
+            }
+          } else {
+            // If no release date, assume it's current
+            this.currentFavorites.push(film);
+          }
+        }
+      }
+
+      // Process favorited films from new films
+      for (const film of newFilms) {
+        if (favoriteIds.includes(film.system_id)) {
+          this.upcomingFavorites.push(film);
+        }
+      }
+
+      // If no films found from API, create mock data for favorited IDs
+      if (currentFilms.length === 0 && newFilms.length === 0) {
+        for (const id of favoriteIds) {
+          const mockFilm = this.createMockFilm(id);
           this.upcomingFavorites.push(mockFilm);
         }
       }
@@ -162,5 +152,204 @@ export class StartPage {
       console.error('Error loading favorites:', error);
       this.toastService.showToast('Error loading favorites', 'alert-outline', true);
     }
+  }
+
+  private convertFilmToNewFilm(film: Film): NewFilm {
+    return {
+      system_id: film.system_id,
+      film_titel: film.film_titel,
+      film_beschreibung: film.film_beschreibung,
+      film_cover_src: film.film_cover_src,
+      filminfo_href: film.filminfo_href,
+      film_ist_ov: film.film_ist_ov,
+      filmchart_platzierung_aktuell: null,
+      film_kurztext: film.film_teasertext || '',
+      film_synopsis: film.film_synopsis || '',
+      film_id: film.system_id,
+      film_kurztitel: film.film_titel,
+      film_haupttitel: film.film_titel,
+      film_untertitel: '',
+      film_original_titel: film.film_titel,
+      film_schlagzeile: film.film_schlagzeile || '',
+      film_teasertext: film.film_teasertext || '',
+      film_moviedb_id: '',
+      film_edis: film.film_edis || '',
+      film_poster: film.film_cover_src,
+      film_bundesstart_datum: film.film_bundesstart_datum || '',
+      film_centerstart_zeit: film.film_centerstart_zeit || '',
+      film_vorverkauf_zeit: film.film_vorverkauf_datum || '',
+      film_bearbeitet: film.system_bearbeit_datum || '',
+      film_dauer: film.film_dauer || '',
+      film_fsk: film.film_fsk || '',
+      film_jahr: film.film_jahr || '',
+      film_website: film.film_website || '',
+      film_produktionslaender: film.film_produktionslaender || '',
+      film_original_sprache: film.film_original_sprache || '',
+      film_distributoren: '',
+      film_studios: film.film_studios || '',
+      film_publisher: film.film_publisher || '',
+      film_chartplatzierung_min: '',
+      film_chartplatzierung_max: '',
+      film_daten_sprache: film.film_daten_sprache || '',
+      film_hauptfilm: film.film_hauptfilm || '',
+      film_ist_archiviert: '',
+      film_ist_geloescht: '',
+      system_system_id: film.system_id,
+      system_knoten_links: '',
+      system_knoten_rechts: '',
+      system_rechte_system_id: '',
+      system_modul_id: '',
+      system_klasse: '',
+      system_trennung: '',
+      system_fremd_id: '',
+      system_root_system_id: '',
+      system_name: '',
+      system_sortierung: '',
+      system_start_datum: '',
+      system_ende_datum: '',
+      system_status: '',
+      system_flags: '',
+      system_arbeitskopie_system_id: '',
+      system_kategorien_system_id: '',
+      system_erstell_login_id: '',
+      system_erstell_datum: film.system_erstell_datum || '',
+      system_bearbeit_login_id: '',
+      system_bearbeit_datum: film.system_bearbeit_datum || '',
+      system_wochentage: '',
+      bild_id: '',
+      bild_kategorie_id: '',
+      bild_name: '',
+      bild_format: '',
+      bild_pfad_bild: '',
+      bild_datum: '',
+      bild_beschreibung: '',
+      bild_ist_standard: '',
+      bild_download_pfad: '',
+      bild_download_zeit: '',
+      bild_extern_id: '',
+      bild_referenz_id: '',
+      bild_typ_id: '',
+      filmchart_id: null,
+      filmchart_film: null,
+      filmchart_verkaufszahlen_aktuell: null,
+      filmchart_platzierung_vorwoche: null,
+      filmchart_verkaufszahlen_vorwoche: null,
+      film_system_id: film.film_system_id || film.system_id,
+      film_favored: film.film_favored || ''
+    };
+  }
+
+  private createMockFilm(id: string): NewFilm {
+    return {
+      system_id: id,
+      film_titel: `Film ${id}`,
+      film_cover_src: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
+      film_centerstart_zeit: new Date().toLocaleDateString('de-DE'),
+      film_beschreibung: `Beschreibung für Film ${id}`,
+      film_ist_ov: '0',
+      filminfo_href: '',
+      film_kurztext: `Kurzbeschreibung für Film ${id}`,
+      film_synopsis: `Synopsis für Film ${id}`,
+      film_id: id,
+      film_kurztitel: `Film ${id}`,
+      film_haupttitel: `Film ${id}`,
+      film_untertitel: '',
+      film_original_titel: `Film ${id}`,
+      film_schlagzeile: '',
+      film_teasertext: '',
+      film_moviedb_id: '',
+      film_edis: '',
+      film_poster: 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film',
+      film_bundesstart_datum: '',
+      film_vorverkauf_zeit: '',
+      film_bearbeitet: '',
+      film_dauer: '',
+      film_fsk: '',
+      film_jahr: '',
+      film_website: '',
+      film_produktionslaender: '',
+      film_original_sprache: '',
+      film_distributoren: '',
+      film_studios: '',
+      film_publisher: '',
+      film_chartplatzierung_min: '',
+      film_chartplatzierung_max: '',
+      film_daten_sprache: '',
+      film_hauptfilm: '',
+      film_ist_archiviert: '',
+      film_ist_geloescht: '',
+      system_system_id: id,
+      system_knoten_links: '',
+      system_knoten_rechts: '',
+      system_rechte_system_id: '',
+      system_modul_id: '',
+      system_klasse: '',
+      system_trennung: '',
+      system_fremd_id: '',
+      system_root_system_id: '',
+      system_name: '',
+      system_sortierung: '',
+      system_start_datum: '',
+      system_ende_datum: '',
+      system_status: '',
+      system_flags: '',
+      system_arbeitskopie_system_id: '',
+      system_kategorien_system_id: '',
+      system_erstell_login_id: '',
+      system_erstell_datum: '',
+      system_bearbeit_login_id: '',
+      system_bearbeit_datum: '',
+      system_wochentage: '',
+      bild_id: '',
+      bild_kategorie_id: '',
+      bild_name: '',
+      bild_format: '',
+      bild_pfad_bild: '',
+      bild_datum: '',
+      bild_beschreibung: '',
+      bild_ist_standard: '',
+      bild_download_pfad: '',
+      bild_download_zeit: '',
+      bild_extern_id: '',
+      bild_referenz_id: '',
+      bild_typ_id: '',
+      filmchart_id: null,
+      filmchart_film: null,
+      filmchart_platzierung_aktuell: null,
+      filmchart_verkaufszahlen_aktuell: null,
+      filmchart_platzierung_vorwoche: null,
+      filmchart_verkaufszahlen_vorwoche: null,
+      film_system_id: id,
+      film_favored: ''
+    };
+  }
+
+  getFilmDescription(film: Film | NewFilm): string {
+    // Try different description fields and extract text
+    let description = '';
+    
+    if ('film_beschreibung' in film && film.film_beschreibung) {
+      description = film.film_beschreibung;
+    } else if ('film_kurztext' in film && film.film_kurztext) {
+      description = film.film_kurztext;
+    } else if ('film_teasertext' in film && film.film_teasertext) {
+      description = film.film_teasertext;
+    } else if ('film_synopsis' in film && film.film_synopsis) {
+      description = film.film_synopsis;
+    }
+
+    if (!description) {
+      return 'Keine Beschreibung verfügbar';
+    }
+
+    // Extract text content (remove HTML tags)
+    const extractedText = description.replace(/<[^>]*>/g, '').trim();
+    
+    // Limit to 100 characters
+    if (extractedText.length > 100) {
+      return extractedText.slice(0, 100) + '...';
+    }
+    
+    return extractedText;
   }
 }
