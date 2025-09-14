@@ -169,6 +169,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     this.searchSubject.next(this.searchQuery);
   }
 
+  setSearchValue(value: string) {
+    this.searchQuery = value;
+    this.searchSubject.next(this.searchQuery);
+  }
+
   private filterFilms() {
     if (!this.searchQuery) {
       this.newFilmsChange.emit(this.allFilms);

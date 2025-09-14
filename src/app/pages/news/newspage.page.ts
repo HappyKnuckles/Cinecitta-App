@@ -1,9 +1,10 @@
 import { NgIf, NgFor } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { search, heart, heartOutline } from 'ionicons/icons';
+import { ActivatedRoute } from '@angular/router';
 import { NewFilm } from 'src/app/core/models/filmModel';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
@@ -38,7 +39,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     ExtractTextPipe,
   ],
 })
-export class NewsPage {
+export class NewsPage implements OnInit {
   @ViewChild(IonContent) content!: IonContent;
   newFilms: NewFilm[] = [];
   showFull: boolean[] = [];
@@ -48,7 +49,12 @@ export class NewsPage {
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
+  constructor(
+    private website: OpenWebsiteService, 
+    public loadingService: LoadingService, 
+    private hapticService: HapticService,
+    private route: ActivatedRoute
+  ) {
     addIcons({ search, heart, heartOutline });
     
     // Set loading to false so mock data is displayed
@@ -95,6 +101,21 @@ export class NewsPage {
         } as NewFilm
       ];
     }, 1000);
+  }
+
+  ngOnInit(): void {
+    // Subscribe to query parameters to handle search input from navigation
+    this.route.queryParams.subscribe((params) => {
+      if (params['search']) {
+        this.isSearchOpen = true;
+        // Wait for the search component to be ready, then set the search value
+        setTimeout(() => {
+          if (this.searchComponent) {
+            this.searchComponent.setSearchValue(params['search']);
+          }
+        }, 100);
+      }
+    });
   }
 
   handleRefresh(event: any): void {
