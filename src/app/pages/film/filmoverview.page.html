@@ -208,7 +208,7 @@
                 <app-favorite-button [filmId]="film.system_id" size="small"></app-favorite-button>
                 <ion-icon class="infoBtn" [id]="'popover' + film.system_id" name="information-circle-outline"></ion-icon>
               </ion-col>
-              <ion-popover [trigger]="'popover' + film.system_id" id="popover">
+              <ion-popover [trigger]="'popover' + film.system_id" [id]="'popover-' + film.system_id">
                 <ng-template>
                   <ion-content>
                     <ion-grid>
