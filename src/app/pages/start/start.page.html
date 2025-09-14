@@ -37,7 +37,7 @@
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
-                  [src]="film.film_cover_src || film.film_poster || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film'" 
+                  [src]="getFilmImage(film)" 
                   [alt]="'Cover von ' + film.film_titel" 
                   style="border-radius: 8px;">
                 </ion-img>
@@ -64,7 +64,7 @@
             <ion-row style="align-items: center;">
               <ion-col size="3">
                 <ion-img 
-                  [src]="film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film'" 
+                  [src]="(film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film')" 
                   [alt]="'Cover von ' + film.film_titel" 
                   style="border-radius: 8px;">
                 </ion-img>
