@@ -1,6 +1,6 @@
-import { Component, ViewChildren, QueryList } from "@angular/core";
+import { Component, ViewChildren, QueryList, ViewChild } from "@angular/core";
 import { ImpactStyle } from "@capacitor/haptics";
-import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg } from "@ionic/angular/standalone";
+import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, ModalController } from "@ionic/angular/standalone";
 import { NgFor, NgIf } from "@angular/common";
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
@@ -23,6 +23,8 @@ import * as Filtertags from "src/app/core/models/filtertags";
 export class StartPage {
   @ViewChildren(FilmSelectComponent)
   filmSelectComponents!: QueryList<FilmSelectComponent>;
+  @ViewChild('favoritesModal', { static: false }) modal!: IonModal;
+  
   genres = Filtertags.genresTag;
   flags = Filtertags.flags;
   leinwandHighlights = Filtertags.leinwandHighlights;
@@ -37,7 +39,8 @@ export class StartPage {
     private toastService: ToastService,
     private hapticService: HapticService,
     private favoritesService: FavoritesService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) { 
     addIcons({ heart, close });
   }
@@ -75,6 +78,7 @@ export class StartPage {
   }
 
   closeFavoritesModal(): void {
+    this.modal.dismiss();
     this.isFavoritesModalOpen = false;
   }
 
@@ -238,11 +242,7 @@ export class StartPage {
     const extractTextPipe = new ExtractTextPipe();
     const extractedText = extractTextPipe.transform(description).trim();
     
-    // Limit to 100 characters
-    if (extractedText.length > 100) {
-      return extractedText.slice(0, 100) + '...';
-    }
-    
+    // Return full description without character limit
     return extractedText;
   }
 
@@ -250,7 +250,8 @@ export class StartPage {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
     
     // Dismiss the modal first
-    this.closeFavoritesModal();
+    this.modal.dismiss();
+    this.isFavoritesModalOpen = false;
     
     // Route to the appropriate page based on film release date
     const isUpcoming = this.isFilmUpcoming(film);

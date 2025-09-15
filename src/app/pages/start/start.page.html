@@ -9,7 +9,7 @@
 </ion-header>
 
 <!-- Favorites Modal -->
-<ion-modal [isOpen]="isFavoritesModalOpen" (ionModalWillDismiss)="closeFavoritesModal()">
+<ion-modal #favoritesModal [isOpen]="isFavoritesModalOpen" (ionModalWillDismiss)="closeFavoritesModal()">
   <ng-template>
     <ion-header>
       <ion-toolbar>
