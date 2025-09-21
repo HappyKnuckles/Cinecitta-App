@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { NgIf, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { 
+import {
   IonModal,
   IonHeader,
   IonToolbar,
@@ -15,7 +15,7 @@ import {
   IonSelect,
   IonSelectOption,
   IonFooter,
-  IonDatetime
+  PickerController
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronBack, removeOutline, chevronUp, chevronDown } from 'ionicons/icons';
@@ -43,8 +43,7 @@ import { StorageService } from 'src/app/core/services/storage/storage.service';
     IonItem,
     IonSelect,
     IonSelectOption,
-    IonFooter,
-    IonDatetime
+    IonFooter
   ]
 })
 export class FilterComponent implements OnInit {
@@ -63,14 +62,12 @@ export class FilterComponent implements OnInit {
   flags = Filtertags.flags;
   behindertenTags = Filtertags.behindertenTags;
 
-  showStartTimePicker = false;
-  showEndTimePicker = false;
   startTime = '10:00';
   endTime = '03:00';
 
   private readonly FILTER_STORAGE_KEY = 'cinema-filters';
 
-  constructor(private storageService: StorageService) {
+  constructor(private storageService: StorageService, private pickerController: PickerController) {
     addIcons({
       chevronBack,
       removeOutline,
@@ -143,15 +140,15 @@ export class FilterComponent implements OnInit {
   async reset(): Promise<void> {
     this.selectedFilters = {
       genresTags: [],
-      tageAuswahl: [],
-      leinwandHighlights: [],
+      tageAuswahl: '',
+      leinwandHighlights: 171984,
       extras: [],
       flags: [],
       behindertenTags: []
     };
     this.startTime = '10:00';
     this.endTime = '03:00';
-    
+
     await this.saveFilters();
     this.resetFilters.emit();
   }
@@ -165,17 +162,72 @@ export class FilterComponent implements OnInit {
     this.setOpen(false);
   }
 
-  openStartTimePicker(): void {
-    this.showStartTimePicker = !this.showStartTimePicker;
+  async openStartTimePicker(): Promise<void> {
+    const timeOptions = this.generateTimeOptions();
+    const selectedIndex = timeOptions.findIndex(option => option.value === this.startTime);
+
+    const picker = await this.pickerController.create({
+      columns: [
+        {
+          name: 'time',
+          options: timeOptions,
+          selectedIndex: selectedIndex >= 0 ? selectedIndex : 0
+        }
+      ],
+      buttons: [
+        {
+          text: 'Abbrechen',
+          role: 'cancel'
+        },
+        {
+          text: 'Bestätigen',
+          handler: (value) => {
+            this.startTime = value.time.value;
+            this.onTimeChange();
+          }
+        }
+      ]
+    });
+
+    await picker.present();
   }
 
-  openEndTimePicker(): void {
-    this.showEndTimePicker = !this.showEndTimePicker;
+  async openEndTimePicker(): Promise<void> {
+    const timeOptions = this.generateTimeOptions();
+    const selectedIndex = timeOptions.findIndex(option => option.value === this.endTime);
+
+    const picker = await this.pickerController.create({
+      columns: [
+        {
+          name: 'time',
+          options: timeOptions,
+          selectedIndex: selectedIndex >= 0 ? selectedIndex : 0
+        }
+      ],
+      buttons: [
+        {
+          text: 'Abbrechen',
+          role: 'cancel'
+        },
+        {
+          text: 'Bestätigen',
+          handler: (value) => {
+            this.endTime = value.time.value;
+            this.onTimeChange();
+          }
+        }
+      ]
+    });
+
+    await picker.present();
   }
 
-  closeTimes(): void {
-    this.showStartTimePicker = false;
-    this.showEndTimePicker = false;
+  private generateTimeOptions() {
+    const hours = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 0, 1, 2, 3];
+    return hours.map(hour => ({
+      text: `${hour.toString().padStart(2, '0')}:00`,
+      value: `${hour.toString().padStart(2, '0')}:00`
+    }));
   }
 
   async onTimeChange(): Promise<void> {

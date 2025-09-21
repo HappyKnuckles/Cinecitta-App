@@ -291,7 +291,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           text: 'Filter löschen',
           role: 'confirm',
           handler: () => {
-            this.reset();
+            this.onResetFilters();
           },
         },
       ],
@@ -346,14 +346,14 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   }
 
   onResetFilters(): void {
-    this.selectedFilters = {
-      genresTags: [],
-      tageAuswahl: [],
-      leinwandHighlights: [],
-      extras: [],
-      flags: [],
-      behindertenTags: []
-    };
+      this.selectedFilters = {
+        genresTags: [],
+        tageAuswahl: '',
+        leinwandHighlights: 171984,
+        extras: [],
+        flags: [],
+        behindertenTags: []
+      };
     this.startTime = '10:00';
     this.endTime = '03:00';
     this.loadFilmData();
@@ -379,19 +379,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.setOpen(false);
   }
 
-  async reset(): Promise<void> {
-    // Reset selected filters
-    this.selectedFilters.genresTags = [];
-    this.selectedFilters.leinwandHighlights = 171984;
-    this.selectedFilters.tageAuswahl = '';
-    this.selectedFilters.extras = [];
-    this.selectedFilters.flags = [];
-    this.selectedFilters.behindertenTags = [];
-    this.startTime = '10:00';
-    this.endTime = '03:00';
 
-    await this.loadFilmData();
-  }
 
   hasScreenings(film: Film): boolean {
     return film.theater.some((theater) => this.hasScreeningsForTheater(theater));
