@@ -1,0 +1,105 @@
+<ion-modal [isOpen]="isModalOpen">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="setOpen(false)">
+            <ion-icon name="chevron-back"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>Filter</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="reset()" [strong]="true">Reset</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-list style="padding: 0; margin: 0;">
+        <ng-container *ngFor="let filter of filters; let i = index;">
+          <!-- Zeitraum Filter -->
+          <ion-item *ngIf="filter === 'Zeitraum'">
+            <ion-select label="{{filter}}" interface="action-sheet" [(ngModel)]="selectedFilters.tageAuswahl"
+              (ngModelChange)="onSingleSelectChange($event, 'tageAuswahl')" placeholder="{{tageAuswahl[0].name}}">
+              <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id">
+                {{ wahl.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Genre Filter -->
+          <ion-item *ngIf="filter === 'Genre'">
+            <ion-select label="{{filter}}" interface="alert" [(ngModel)]="selectedFilters.genresTags"
+              (ngModelChange)="onFilterChange()" multiple="true" placeholder="Genre auswählen">
+              <ion-select-option *ngFor="let genre of genresTag" [value]="genre.id">
+                {{ genre.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Kinosaal Filter -->
+          <ion-item *ngIf="filter === 'Kinosaal'">
+            <ion-select label="{{filter}}" interface="action-sheet" [(ngModel)]="selectedFilters.leinwandHighlights"
+              (ngModelChange)="onSingleSelectChange($event, 'leinwandHighlights')"
+              placeholder="{{leinwandHighlights[0].name}}">
+              <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id">
+                {{ highlight.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Sound Filter -->
+          <ion-item *ngIf="filter === 'Sound'">
+            <ion-select label="{{filter}}" interface="alert" [(ngModel)]="selectedFilters.flags"
+              (ngModelChange)="onFilterChange()" multiple="true" placeholder="Sound-Optionen auswählen">
+              <ion-select-option *ngFor="let flag of flags" [value]="flag.id">
+                {{ flag.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Barrierefreie Optionen Filter -->
+          <ion-item *ngIf="filter === 'Barrierefreie Optionen'">
+            <ion-select label="{{filter}}" interface="alert" [(ngModel)]="selectedFilters.behindertenTags"
+              (ngModelChange)="onFilterChange()" multiple="true" placeholder="Barrierefreie Optionen auswählen">
+              <ion-select-option *ngFor="let behindertenTag of behindertenTags" [value]="behindertenTag.id">
+                {{ behindertenTag.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Extras Filter -->
+          <ion-item *ngIf="filter === 'Extras'">
+            <ion-select label="{{filter}}" interface="alert" [(ngModel)]="selectedFilters.extras"
+              (ngModelChange)="onFilterChange()" multiple="true" placeholder="Extras auswählen">
+              <ion-select-option *ngFor="let extra of extras" [value]="extra.id">
+                {{ extra.name }}
+              </ion-select-option>
+            </ion-select>
+          </ion-item>
+
+          <!-- Zeiten Filter -->
+          <ion-item *ngIf="filter === 'Zeiten'">
+            <div
+              style="display: flex; justify-content: space-evenly; align-items: center; padding: 10px 0; width: 100%;">
+              <div style="text-align: center;">
+                <div style="font-size: 12px; color: var(--ion-color-medium); margin-bottom: 5px;">Von</div>
+                <ion-button (click)="openStartTimePicker()" class="timePickerBtn">{{ startTime }}</ion-button>
+              </div>
+              <ion-icon name="remove-outline" style="margin: 0 10px;"></ion-icon>
+              <div style="text-align: center;">
+                <div style="font-size: 12px; color: var(--ion-color-medium); margin-bottom: 5px;">Bis</div>
+                <ion-button (click)="openEndTimePicker()" class="timePickerBtn">{{ endTime }}</ion-button>
+              </div>
+            </div>
+            <!-- Time pickers will be created programmatically -->
+          </ion-item>
+        </ng-container>
+      </ion-list>
+    </ion-content>
+    <ion-footer>
+      <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px" (click)="confirm()">
+        Bestätigen ({{filmCount}})
+      </ion-button>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
