@@ -116,6 +116,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   // Properties for maintaining position and film on view switch
   private savedScrollPosition = 0;
   private savedFilmId: string | null = null;
+  private savedRelativePosition = 0; // Store relative position in case exact film isn't found
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
@@ -588,6 +589,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       // Save current scroll position
       const scrollElement = await this.content.getScrollElement();
       this.savedScrollPosition = scrollElement.scrollTop;
+      
+      // Calculate relative position (0-1) in the scroll area
+      const maxScroll = scrollElement.scrollHeight - scrollElement.clientHeight;
+      this.savedRelativePosition = maxScroll > 0 ? this.savedScrollPosition / maxScroll : 0;
 
       // Find the currently visible film
       const currentVisibleFilm = this.findCurrentVisibleFilm();
@@ -602,38 +607,67 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
    */
   private restoreCurrentState(): void {
     try {
-      // Use a timeout to ensure the DOM has been updated with the new view
+      // Use a longer timeout to ensure the DOM has been updated with the new view
+      // and Angular's change detection has completed
       setTimeout(() => {
         void (async () => {
           if (this.savedFilmId) {
-            // Try to find the film element and scroll to it
-            const filmElement = document.querySelector(`[data-film-id="${this.savedFilmId}"]`);
-            if (filmElement) {
-              const scrollElement = await this.content.getScrollElement();
-              const elementRect = filmElement.getBoundingClientRect();
-              const viewportHeight = window.innerHeight;
+            // Try multiple times with increasing delays to find the film element
+            for (let attempt = 0; attempt < 5; attempt++) {
+              const filmElement = document.querySelector(`[data-film-id="${this.savedFilmId}"]`);
+              if (filmElement) {
+                const scrollElement = await this.content.getScrollElement();
+                const elementRect = filmElement.getBoundingClientRect();
+                const viewportHeight = window.innerHeight;
+                
+                // Calculate position to center the film in the viewport
+                const elementCenter = elementRect.top + elementRect.height / 2;
+                const viewportCenter = viewportHeight / 2;
+                const currentScrollTop = scrollElement.scrollTop;
+                
+                // Calculate the scroll offset needed to center the film
+                const scrollOffset = currentScrollTop + (elementCenter - viewportCenter);
+                
+                await this.content.scrollToPoint(0, Math.max(0, scrollOffset), 500);
+                return;
+              }
               
-              // Calculate position to center the film in the viewport
-              const elementCenter = elementRect.top + elementRect.height / 2;
-              const viewportCenter = viewportHeight / 2;
-              const currentScrollTop = scrollElement.scrollTop;
-              
-              // Calculate the scroll offset needed to center the film
-              const scrollOffset = currentScrollTop + (elementCenter - viewportCenter);
-              
-              await this.content.scrollToPoint(0, Math.max(0, scrollOffset), 300);
-              return;
+              // Wait a bit more before the next attempt
+              await new Promise(resolve => setTimeout(resolve, 50 * (attempt + 1)));
             }
-          }
-          
-          // Fallback: restore original scroll position
-          if (this.savedScrollPosition > 0) {
-            await this.content.scrollToPoint(0, this.savedScrollPosition, 300);
+            
+            // If film not found after all attempts, it might not exist in this view
+            // Fall back to finding a similar position film
+            await this.fallbackToSimilarPosition();
+          } else {
+            // Fallback: restore original scroll position or use relative position
+            await this.fallbackToSimilarPosition();
           }
         })();
-      }, 100);
+      }, 200);
     } catch (error) {
       // Error handling for restoration
+    }
+  }
+
+  /**
+   * Fallback method when the exact film cannot be found in the new view
+   * Attempts to scroll to a similar relative position
+   */
+  private async fallbackToSimilarPosition(): Promise<void> {
+    try {
+      // Wait a bit more for the DOM to be fully rendered
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const scrollElement = await this.content.getScrollElement();
+      const maxScroll = scrollElement.scrollHeight - scrollElement.clientHeight;
+      
+      // Use the saved relative position to maintain approximate scroll location
+      const newScrollPosition = maxScroll * this.savedRelativePosition;
+      
+      await this.content.scrollToPoint(0, Math.max(0, newScrollPosition), 500);
+    } catch (error) {
+      // Fallback failed, do nothing
     }
   }
 
