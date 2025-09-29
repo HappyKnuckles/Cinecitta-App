@@ -1,12 +1,20 @@
-<div class="alphabet-scrollwheel" *ngIf="films.length > 0">
-  <div class="alphabet-container">
+<div class="alphabet-scrollwheel" *ngIf="shouldShow">
+  <div class="alphabet-container"
+       [class.dragging]="isDragging"
+       (touchmove)="onLetterTouchMove($event)"
+       (touchend)="onLetterTouchEnd($event)"
+       (mouseleave)="onLetterMouseUp($event)">
     <div 
       *ngFor="let letter of alphabet"
       class="alphabet-letter"
       [class.available]="isLetterAvailable(letter)"
       [class.unavailable]="!isLetterAvailable(letter)"
+      [class.highlighted]="currentHighlightedLetter === letter"
       (click)="onLetterClick(letter)"
-      (touchstart)="onLetterClick(letter)"
+      (touchstart)="onLetterTouchStart($event, letter)"
+      (mousedown)="onLetterMouseDown($event, letter)"
+      (mouseover)="onLetterMouseMove($event)"
+      (mouseup)="onLetterMouseUp($event)"
     >
       {{ letter }}
     </div>

@@ -3,10 +3,12 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 100;
+  z-index: 1000; // Increased z-index to ensure it stays on top
   height: auto;
   max-height: 70vh;
   overflow: hidden;
+  // Ensure the component doesn't interfere with other touch events
+  pointer-events: auto;
 }
 
 .alphabet-container {
@@ -14,10 +16,15 @@
   flex-direction: column;
   align-items: center;
   padding: 8px 4px;
-  background: rgba(163, 217, 213, 0.1);
+  background: rgba(163, 217, 213, 0.15); // Slightly more opaque for better visibility
   border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(163, 217, 213, 0.2);
+  backdrop-filter: blur(15px); // Increased blur for better visibility
+  border: 1px solid rgba(163, 217, 213, 0.3);
+  // Prevent text selection during drag
+  user-select: none;
+  -webkit-user-select: none;
+  // Disable context menu
+  -webkit-touch-callout: none;
 }
 
 .alphabet-letter {
@@ -31,9 +38,10 @@
   margin: 1px 0;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease; // Faster transition for better drag feedback
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 }
 
 .alphabet-letter.available {
@@ -42,16 +50,25 @@
 }
 
 .alphabet-letter.available:hover,
-.alphabet-letter.available:active {
-  background: rgba(163, 217, 213, 0.3);
+.alphabet-letter.available:active,
+.alphabet-letter.available.highlighted {
+  background: rgba(163, 217, 213, 0.4);
   color: #ffffff;
-  transform: scale(1.1);
+  transform: scale(1.2); // Slightly larger scale for better feedback
+  box-shadow: 0 2px 8px rgba(163, 217, 213, 0.3);
 }
 
 .alphabet-letter.unavailable {
   color: rgba(163, 217, 213, 0.3);
   cursor: default;
   pointer-events: none;
+}
+
+// Add dragging state styles
+.alphabet-container.dragging {
+  .alphabet-letter.available {
+    transition: all 0.1s ease; // Even faster transition while dragging
+  }
 }
 
 /* Responsive adjustments */

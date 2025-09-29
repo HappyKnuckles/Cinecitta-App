@@ -14,12 +14,22 @@ import { NewFilm } from 'src/app/core/models/filmModel';
 export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() films: Film[] | NewFilm[] = [];
   @Input() content?: IonContent;
+  @Input() alwaysVisible = false; // New option to keep visible even when no films
   @Output() letterSelected = new EventEmitter<string>();
 
   alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   availableLetters: Set<string> = new Set();
   
   private resizeListener?: () => void;
+  isDragging = false; // Made public for template access
+  private lastSelectedLetter = '';
+  
+  // Track currently highlighted letter for visual feedback
+  currentHighlightedLetter = '';
+
+  get shouldShow(): boolean {
+    return this.alwaysVisible || this.films.length > 0;
+  }
 
   ngOnInit() {
     this.updateAvailableLetters();
@@ -59,6 +69,76 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
       return;
     }
 
+    this.selectLetter(letter);
+  }
+
+  onLetterTouchStart(event: TouchEvent, letter: string) {
+    event.preventDefault();
+    this.isDragging = true;
+    this.currentHighlightedLetter = letter;
+    if (this.availableLetters.has(letter)) {
+      this.selectLetter(letter);
+    }
+  }
+
+  onLetterTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+    
+    event.preventDefault();
+    const touch = event.touches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    
+    if (element && element.classList.contains('alphabet-letter')) {
+      const letter = element.textContent?.trim();
+      if (letter) {
+        this.currentHighlightedLetter = letter;
+        if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+          this.selectLetter(letter);
+        }
+      }
+    }
+  }
+
+  onLetterTouchEnd(event: TouchEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+    this.lastSelectedLetter = '';
+    this.currentHighlightedLetter = '';
+  }
+
+  onLetterMouseDown(event: MouseEvent, letter: string) {
+    event.preventDefault();
+    this.isDragging = true;
+    this.currentHighlightedLetter = letter;
+    if (this.availableLetters.has(letter)) {
+      this.selectLetter(letter);
+    }
+  }
+
+  onLetterMouseMove(event: MouseEvent) {
+    if (!this.isDragging) return;
+    
+    const element = event.target as HTMLElement;
+    if (element && element.classList.contains('alphabet-letter')) {
+      const letter = element.textContent?.trim();
+      if (letter) {
+        this.currentHighlightedLetter = letter;
+        if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+          this.selectLetter(letter);
+        }
+      }
+    }
+  }
+
+  onLetterMouseUp(event: MouseEvent) {
+    event.preventDefault();
+    this.isDragging = false;
+    this.lastSelectedLetter = '';
+    this.currentHighlightedLetter = '';
+  }
+
+  private selectLetter(letter: string) {
+    this.lastSelectedLetter = letter;
     this.letterSelected.emit(letter);
     this.scrollToLetter(letter);
   }
