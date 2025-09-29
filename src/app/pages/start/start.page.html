@@ -1,29 +1,29 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Start </ion-title>
-    <ion-button slot="end" fill="clear" (click)="openFavoritesModal()">
-      <ion-icon name="heart" color="danger"></ion-icon>
+    <ion-button slot="end" fill="clear" id="favorites-modal">
       Favoriten
     </ion-button>
   </ion-toolbar>
 </ion-header>
 
 <!-- Favorites Modal -->
-<ion-modal #favoritesModal [isOpen]="isFavoritesModalOpen" (ionModalWillDismiss)="closeFavoritesModal()">
+<ion-modal #favoritesModal trigger="favorites-modal" [presentingElement]="presentingElement">
   <ng-template>
     <ion-header>
       <ion-toolbar>
         <ion-title>Meine Favoriten</ion-title>
         <ion-buttons slot="end">
-          <ion-button (click)="closeFavoritesModal()">
+          <ion-button (click)="favoritesModal.dismiss()">
             <ion-icon name="close"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
-      <div *ngIf="upcomingFavorites.length === 0 && currentFavorites.length === 0" 
-           style="text-align: center; margin-top: 50px; color: var(--ion-color-medium);">
+    <!-- Work in progress background wrong-->
+    <ion-content class="ion-padding" style="--background: var(--ion-background-color, #fff);">
+      <div *ngIf="upcomingFavorites.length === 0 && currentFavorites.length === 0"
+        style="text-align: center; margin-top: 50px; color: var(--ion-color-medium);">
         <ion-icon name="heart" size="large"></ion-icon>
         <p>Noch keine Favoriten hinzugefügt</p>
         <p>Füge Filme zu deinen Favoriten hinzu, indem du auf das Herz-Symbol klickst!</p>
@@ -32,26 +32,29 @@
       <!-- Current Films Section -->
       <div *ngIf="currentFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
-        <ion-grid *ngFor="let film of currentFavorites">
-          <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
-            <ion-row style="align-items: center;">
-              <ion-col size="3">
-                <ion-img 
-                  [src]="(film.film_cover_src || 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film')" 
-                  [alt]="'Cover von ' + film.film_titel" 
-                  style="border-radius: 8px;">
-                </ion-img>
-              </ion-col>
-              <ion-col size="9">
-                <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
-                <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
-                  {{ getFilmDate(film) }}
-                </p>
-                <p style="margin: 5px 0; font-size: 12px;">
+        <ion-grid *ngFor="let film of currentFavorites" style="padding-top: 0">
+          <div class="filmContainer small">
+            <div class="border">
+              <ion-row
+                style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
+                  <span style="line-height: 1.2;">{{film.film_titel}}</span>
+                  <span *ngIf="film.film_ist_ov === '1'" style="flex-shrink: 0;">
+                    <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
+                  </span>
+                </div>
+              </ion-row>
+              <ion-row style="padding: 0 10px">
+                <ion-col size="4">
+                  <img style="margin-bottom: 5px" [src]="film.film_cover_src" (click)="navigateToFilm(film)"
+                    loading="lazy" [alt]="'Film Cover von ' + film.film_titel" />
+                  <span style="display: flex; justify-content: center; color: #a3d9d5">{{ getFilmDate(film) }}</span>
+                </ion-col>
+                <ion-col class="description" size="8">
                   {{ getFilmDescription(film) }}
-                </p>
-              </ion-col>
-            </ion-row>
+                </ion-col>
+              </ion-row>
+            </div>
           </div>
         </ion-grid>
       </div>
@@ -59,26 +62,29 @@
       <!-- Upcoming Films Section -->
       <div *ngIf="upcomingFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
-        <ion-grid *ngFor="let film of upcomingFavorites">
-          <div class="favorite-film-container" (click)="navigateToFilm(film)" style="cursor: pointer;">
-            <ion-row style="align-items: center;">
-              <ion-col size="3">
-                <ion-img 
-                  [src]="getFilmImage(film)" 
-                  [alt]="'Cover von ' + film.film_titel" 
-                  style="border-radius: 8px;">
-                </ion-img>
-              </ion-col>
-              <ion-col size="9">
-                <h4 style="margin: 0; color: var(--ion-color-primary);">{{ film.film_titel }}</h4>
-                <p style="margin: 5px 0; font-size: 14px; color: var(--ion-color-medium);">
-                  {{ getFilmDate(film) }}
-                </p>
-                <p style="margin: 5px 0; font-size: 12px;">
+        <ion-grid *ngFor="let film of upcomingFavorites" style="padding-top: 0">
+          <div class="filmContainer small">
+            <div class="border">
+              <ion-row
+                style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
+                  <span style="line-height: 1.2;">{{film.film_titel}}</span>
+                  <span *ngIf="film.film_ist_ov === '1'" style="flex-shrink: 0;">
+                    <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
+                  </span>
+                </div>
+              </ion-row>
+              <ion-row style="padding: 0 10px">
+                <ion-col size="4">
+                  <img style="margin-bottom: 5px" [src]="getFilmImage(film)" (click)="navigateToFilm(film)"
+                    loading="lazy" [alt]="'Film Cover von ' + film.film_titel" />
+                  <span style="display: flex; justify-content: center; color: #a3d9d5">{{ getFilmDate(film) }}</span>
+                </ion-col>
+                <ion-col class="description" size="8">
                   {{ getFilmDescription(film) }}
-                </p>
-              </ion-col>
-            </ion-row>
+                </ion-col>
+              </ion-row>
+            </div>
           </div>
         </ion-grid>
       </div>
@@ -90,12 +96,11 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <app-film-select #filmSelect1 [showSelect]="false"></app-film-select>
-  <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect3 [items]="flags" filterType="filter[releasetypen_flags][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect4 [items]="leinwandHighlights" filterType="filter[leinwand_highlight]" [showSelect]="true"
-  ></app-film-select>
+  <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]"
+    [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect3 [items]="flags" filterType="filter[releasetypen_flags][]"
+    [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect4 [items]="leinwandHighlights" filterType="filter[leinwand_highlight]"
+    [showSelect]="true"></app-film-select>
 </ion-content>

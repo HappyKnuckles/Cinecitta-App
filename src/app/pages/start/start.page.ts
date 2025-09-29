@@ -1,4 +1,4 @@
-import { Component, ViewChildren, QueryList, ViewChild } from "@angular/core";
+import { Component, ViewChildren, QueryList, ViewChild, OnInit } from "@angular/core";
 import { ImpactStyle } from "@capacitor/haptics";
 import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, ModalController } from "@ionic/angular/standalone";
 import { NgFor, NgIf } from "@angular/common";
@@ -20,19 +20,19 @@ import * as Filtertags from "src/app/core/models/filtertags";
   standalone: true,
   imports: [IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe],
 })
-export class StartPage {
+export class StartPage implements OnInit {
   @ViewChildren(FilmSelectComponent)
   filmSelectComponents!: QueryList<FilmSelectComponent>;
   @ViewChild('favoritesModal', { static: false }) modal!: IonModal;
-  
+
   genres = Filtertags.genresTag;
   flags = Filtertags.flags;
   leinwandHighlights = Filtertags.leinwandHighlights;
   extras = Filtertags.extras;
 
-  isFavoritesModalOpen = false;
   upcomingFavorites: (Film | NewFilm)[] = [];
   currentFavorites: (Film | NewFilm)[] = [];
+  presentingElement!: HTMLElement | null;
 
   constructor(
     public loadingService: LoadingService,
@@ -40,9 +40,14 @@ export class StartPage {
     private hapticService: HapticService,
     private favoritesService: FavoritesService,
     private router: Router,
-    private modalController: ModalController
-  ) { 
+  ) {
     addIcons({ heart, close });
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.presentingElement = document.querySelector('ion-router-outlet');
+    await this.loadFavorites();
+
   }
 
   handleRefresh(event: any): void {
@@ -71,26 +76,15 @@ export class StartPage {
     }
   }
 
-  async openFavoritesModal(): Promise<void> {
-    this.hapticService.vibrate(ImpactStyle.Light, 100);
-    await this.loadFavorites();
-    this.isFavoritesModalOpen = true;
-  }
-
-  closeFavoritesModal(): void {
-    this.modal.dismiss();
-    this.isFavoritesModalOpen = false;
-  }
-
   private async loadFavorites(): Promise<void> {
     try {
       // Get favorite films directly from storage
       const favoriteFilms = await this.favoritesService.getFavoriteFilms();
-      
+
       // Clear previous favorites
       this.currentFavorites = [];
       this.upcomingFavorites = [];
-      
+
       if (favoriteFilms.length === 0) {
         return;
       }
@@ -104,7 +98,7 @@ export class StartPage {
           this.currentFavorites.push(film);
         }
       }
-      
+
     } catch (error) {
       console.error('Error loading favorites:', error);
       this.toastService.showToast('Error loading favorites', 'alert-outline', true);
@@ -117,10 +111,10 @@ export class StartPage {
     const currentDate = new Date();
     // Set time to start of tomorrow - films from today and earlier should be "current"  
     const tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
-    
+
     // Try different date fields in order of preference
     let releaseDateString = '';
-    
+
     if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
       releaseDateString = film.film_bundesstart_datum_iso;
     } else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
@@ -136,7 +130,7 @@ export class StartPage {
     try {
       // Try to parse the date string
       let releaseDate: Date;
-      
+
       // Handle different date formats
       if (releaseDateString.includes('T') || releaseDateString.includes('Z')) {
         // ISO format
@@ -164,15 +158,15 @@ export class StartPage {
   getFilmDate(film: Film | NewFilm): string {
     // Try different date fields in order of preference
     let dateString = '';
-    
+
     // For Film interface, prefer film_bundesstart_datum_iso first
     if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
       dateString = film.film_bundesstart_datum_iso;
-    } 
+    }
     // Common field in both interfaces
     else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
       dateString = film.film_bundesstart_datum;
-    } 
+    }
     // For NewFilm interface, try film_centerstart_zeit
     else if ('film_centerstart_zeit' in film && film.film_centerstart_zeit) {
       dateString = film.film_centerstart_zeit;
@@ -185,7 +179,7 @@ export class StartPage {
     try {
       // Try to format the date nicely
       let date: Date;
-      
+
       if (dateString.includes('T') || dateString.includes('Z')) {
         // ISO format
         date = new Date(dateString);
@@ -218,7 +212,7 @@ export class StartPage {
   getFilmDescription(film: Film | NewFilm): string {
     // Try different description fields and extract text
     let description = '';
-    
+
     // For Film interface, check film_beschreibung first
     if ('film_beschreibung' in film && film.film_beschreibung) {
       description = film.film_beschreibung;
@@ -241,18 +235,17 @@ export class StartPage {
     // Use ExtractTextPipe to extract clean text content (remove HTML tags)
     const extractTextPipe = new ExtractTextPipe();
     const extractedText = extractTextPipe.transform(description).trim();
-    
+
     // Return full description without character limit
     return extractedText;
   }
 
   navigateToFilm(film: Film | NewFilm): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-    
+
     // Dismiss the modal first
     this.modal.dismiss();
-    this.isFavoritesModalOpen = false;
-    
+
     // Route to the appropriate page based on film release date
     const isUpcoming = this.isFilmUpcoming(film);
     if (isUpcoming) {

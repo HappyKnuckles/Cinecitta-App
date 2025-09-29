@@ -27,15 +27,19 @@
       <div class="filmContainer small">
         <div class="border">
           <ion-row
-            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center;">
-            <span style="padding: 0 5px; flex: 1;">{{film.film_titel}}
-              <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null"> Rang
-                {{film.filmchart_platzierung_aktuell}} </ng-container>
-            </span>
-            <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
-              <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
-            </span>
-            <app-favorite-button [film]="film" size="small" style="margin-left: auto;"></app-favorite-button>
+            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center; position: relative; min-height: 24px;">
+            <div
+              style="display: flex; align-items: center; gap: 5px; justify-content: center; max-width: calc(100% - 60px); word-wrap: break-word; overflow-wrap: break-word;">
+              <span style="line-height: 1.2;">{{film.film_titel}}
+                <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null"> Rang
+                  {{film.filmchart_platzierung_aktuell}} </ng-container>
+              </span>
+              <span *ngIf="film.film_ist_ov === '1'" style="flex-shrink: 0;">
+                <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
+              </span>
+            </div>
+            <app-favorite-button [film]="film" size="small"
+              style="position: absolute; right: -5px; top: 50%; transform: translateY(-50%); z-index: 1;"></app-favorite-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">

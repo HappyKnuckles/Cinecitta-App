@@ -140,11 +140,9 @@
     width: calc(100% - 20px);
     height: 10%;
     background: linear-gradient(rgba(0, 0, 0, 0.681), #0000);
-    pointer-events: none; /* Allow clicks to pass through */
 
     .infoRow {
       width: 100%;
-      pointer-events: auto; /* Enable clicks on row elements */
     }
 
     .infoBtn {
@@ -153,7 +151,6 @@
       color: #2ce8f4;
       font-weight: 700;
       font-size: 30px;
-      pointer-events: auto; /* Ensure info button is clickable */
     }
 
     .new-viereck {

@@ -1,16 +1,59 @@
-.favorite-film-container {
-  border: 1px solid var(--ion-color-light);
-  border-radius: 12px;
-  padding: 10px;
-  margin-bottom: 15px;
-  background: var(--ion-color-light-tint);
+.content {
+  //background: linear-gradient(#121212, #a3d9d529, #121212);
+  margin-top: 10px;
 }
 
-.favorite-film-container h4 {
-  font-weight: 600;
+.actionSheet {
+  --background: none;
+  --background-activated: none;
+  float: right;
+
+  ion-icon {
+    color: #a3d9d5;
+  }
 }
 
-ion-modal {
-  --max-width: 90%;
-  --max-height: 80%;
+.filmContainer {
+  padding: 0 0 30px;
+
+  &.small {
+    padding: 0 0 10px;
+  }
+
+  .border {
+    padding: 10px 0;
+    box-shadow: 0 4px 16px #a3d9d558;
+    border: 1px solid #a3d9d5;
+    border-radius: 7px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .OV {
+    width: 20px;
+    vertical-align: bottom;
+    display: inline-block;
+  }
+
+  img {
+    width: 90vw;
+    border-radius: 10px;
+    margin-bottom: 5px;
+  }
+
+  .description {
+    display: block;
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 5px;
+  }
+
+  ion-grid {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  ion-icon {
+    font-size: 25px;
+  }
 }
