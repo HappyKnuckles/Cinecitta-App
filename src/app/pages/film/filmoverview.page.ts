@@ -112,6 +112,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   excluded = Filtertags.excludedFilmValues;
   private debounceTimeout: any;
   intervalId: any;
+  
+  // Properties for maintaining position and film on view switch
+  private savedScrollPosition = 0;
+  private savedFilmId: string | null = null;
 
   constructor(
     private actionSheetCtrl: ActionSheetController,
@@ -233,6 +237,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   async presentActionSheet(): Promise<void> {
     const buttons = [];
     this.hapticService.vibrate(ImpactStyle.Medium, 200);
+    
+    // Save current state before view switching
+    await this.saveCurrentState();
+    
     if (!this.detailView[0]) {
       buttons.push({
         text: ViewType.Detail,
@@ -241,6 +249,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[1] = false;
           this.detailView[2] = false;
           localStorage.setItem('viewType', ViewType.Detail);
+          this.restoreCurrentState();
         },
       });
     }
@@ -253,6 +262,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[1] = true;
           this.detailView[2] = false;
           localStorage.setItem('viewType', ViewType.Kurz);
+          this.restoreCurrentState();
         },
       });
     }
@@ -265,6 +275,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
           this.detailView[1] = false;
           this.detailView[2] = true;
           localStorage.setItem('viewType', ViewType.Mini);
+          this.restoreCurrentState();
         },
       });
     }
@@ -567,5 +578,83 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       numericTime += 24;
     }
     return numericTime;
+  }
+
+  /**
+   * Saves the current scroll position and visible film before view switch
+   */
+  private async saveCurrentState(): Promise<void> {
+    try {
+      // Save current scroll position
+      const scrollElement = await this.content.getScrollElement();
+      this.savedScrollPosition = scrollElement.scrollTop;
+
+      // Find the currently visible film
+      const currentVisibleFilm = this.findCurrentVisibleFilm();
+      this.savedFilmId = currentVisibleFilm;
+    } catch (error) {
+      // Error handling for saving state
+    }
+  }
+
+  /**
+   * Restores the scroll position and scrolls to the previously visible film after view switch
+   */
+  private restoreCurrentState(): void {
+    try {
+      // Use a timeout to ensure the DOM has been updated with the new view
+      setTimeout(() => {
+        void (async () => {
+          if (this.savedFilmId) {
+            // Try to find the film element and scroll to it
+            const filmElement = document.querySelector(`[data-film-id="${this.savedFilmId}"]`);
+            if (filmElement) {
+              const scrollElement = await this.content.getScrollElement();
+              const elementRect = filmElement.getBoundingClientRect();
+              const scrollOffset = elementRect.top + scrollElement.scrollTop - 100; // 100px offset from top
+              
+              await this.content.scrollToPoint(0, Math.max(0, scrollOffset), 300);
+              return;
+            }
+          }
+          
+          // Fallback: restore original scroll position
+          if (this.savedScrollPosition > 0) {
+            await this.content.scrollToPoint(0, this.savedScrollPosition, 300);
+          }
+        })();
+      }, 100);
+    } catch (error) {
+      // Error handling for restoration
+    }
+  }
+
+  /**
+   * Finds the currently visible film in the viewport
+   */
+  private findCurrentVisibleFilm(): string | null {
+    try {
+      const filmElements = document.querySelectorAll('[data-film-id]');
+      const viewportHeight = window.innerHeight;
+      const viewportCenter = viewportHeight / 2;
+
+      let closestFilm: string | null = null;
+      let closestDistance = Infinity;
+
+      filmElements.forEach((element) => {
+        const rect = element.getBoundingClientRect();
+        const elementCenter = rect.top + rect.height / 2;
+        const distance = Math.abs(elementCenter - viewportCenter);
+
+        if (rect.top < viewportHeight && rect.bottom > 0 && distance < closestDistance) {
+          closestDistance = distance;
+          closestFilm = element.getAttribute('data-film-id');
+        }
+      });
+
+      return closestFilm;
+    } catch (error) {
+      return null;
+    }
   }
 }
