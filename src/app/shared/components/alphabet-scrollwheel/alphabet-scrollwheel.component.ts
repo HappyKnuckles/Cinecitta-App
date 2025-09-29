@@ -79,8 +79,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
         const targetElement = document.querySelector(`[data-film-title="${this.films[targetFilmIndex].film_titel}"]`);
         
         if (targetElement) {
-          // Get the scroll element
-          const scrollElement = await this.content.getScrollElement();
+          // Get the scroll element and calculate position
           const targetTop = (targetElement as HTMLElement).offsetTop;
           
           // Scroll to the element with some padding
