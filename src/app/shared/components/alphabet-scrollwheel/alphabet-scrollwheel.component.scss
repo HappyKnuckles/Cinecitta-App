@@ -3,12 +3,15 @@
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 1000; // Increased z-index to ensure it stays on top
+  z-index: 9999; // Very high z-index to ensure it stays on top of everything
   height: auto;
   max-height: 70vh;
   overflow: hidden;
-  // Ensure the component doesn't interfere with other touch events
+  // Ensure the component doesn't interfere with other touch events but stays responsive
   pointer-events: auto;
+  // Prevent any layout shifts or interference from scrolling
+  will-change: transform; // Optimize for animations
+  backface-visibility: hidden; // Prevent rendering issues during scroll
 }
 
 .alphabet-container {
@@ -16,15 +19,19 @@
   flex-direction: column;
   align-items: center;
   padding: 8px 4px;
-  background: rgba(163, 217, 213, 0.15); // Slightly more opaque for better visibility
+  background: rgba(163, 217, 213, 0.2); // Slightly more opaque for better visibility during scroll
   border-radius: 12px;
   backdrop-filter: blur(15px); // Increased blur for better visibility
-  border: 1px solid rgba(163, 217, 213, 0.3);
+  border: 1px solid rgba(163, 217, 213, 0.4);
   // Prevent text selection during drag
   user-select: none;
   -webkit-user-select: none;
   // Disable context menu
   -webkit-touch-callout: none;
+  // Ensure the container maintains its position during scroll
+  position: relative;
+  // Add a subtle box shadow for better visibility
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .alphabet-letter {

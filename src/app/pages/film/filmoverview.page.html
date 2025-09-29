@@ -455,12 +455,12 @@
     </ion-grid>
     }
   </section>
-
-  <!-- Alphabet Scrollwheel -->
-  <app-alphabet-scrollwheel 
-    [films]="sortedFilms" 
-    [content]="content"
-    [alwaysVisible]="true"
-    (letterSelected)="onLetterSelected($event)">
-  </app-alphabet-scrollwheel>
 </ion-content>
+
+<!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
+<app-alphabet-scrollwheel 
+  [films]="sortedFilms" 
+  [content]="content"
+  [alwaysVisible]="true"
+  (letterSelected)="onLetterSelected($event)">
+</app-alphabet-scrollwheel>
