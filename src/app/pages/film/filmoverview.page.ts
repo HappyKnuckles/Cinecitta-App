@@ -611,7 +611,15 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
             if (filmElement) {
               const scrollElement = await this.content.getScrollElement();
               const elementRect = filmElement.getBoundingClientRect();
-              const scrollOffset = elementRect.top + scrollElement.scrollTop - 100; // 100px offset from top
+              const viewportHeight = window.innerHeight;
+              
+              // Calculate position to center the film in the viewport
+              const elementCenter = elementRect.top + elementRect.height / 2;
+              const viewportCenter = viewportHeight / 2;
+              const currentScrollTop = scrollElement.scrollTop;
+              
+              // Calculate the scroll offset needed to center the film
+              const scrollOffset = currentScrollTop + (elementCenter - viewportCenter);
               
               await this.content.scrollToPoint(0, Math.max(0, scrollOffset), 300);
               return;
@@ -646,7 +654,13 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
         const elementCenter = rect.top + rect.height / 2;
         const distance = Math.abs(elementCenter - viewportCenter);
 
-        if (rect.top < viewportHeight && rect.bottom > 0 && distance < closestDistance) {
+        // Only consider elements that are at least partially visible
+        const isVisible = rect.top < viewportHeight && rect.bottom > 0;
+        // Prefer elements that are more centered and have more visible area
+        const visibleArea = Math.min(rect.bottom, viewportHeight) - Math.max(rect.top, 0);
+        const isReasonablyVisible = visibleArea > rect.height * 0.3; // At least 30% visible
+
+        if (isVisible && isReasonablyVisible && distance < closestDistance) {
           closestDistance = distance;
           closestFilm = element.getAttribute('data-film-id');
         }
