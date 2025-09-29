@@ -161,7 +161,7 @@
   <!-- Detailview -->
   <main *ngIf="detailView[0]" class="content">
     @if (!loadingService.isLoading) {
-    <section class="filmContainer" *ngFor="let film of films; let i = index; let first = first">
+    <section class="filmContainer" *ngFor="let film of sortedFilms; let i = index; let first = first" [attr.data-film-title]="film.film_titel">
       <div class="border" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"
         *ngIf="hasScreenings(film)">
         <div class="filmSpecific">
@@ -332,7 +332,7 @@
   <!-- TODO Add info Button-->
   <div *ngIf="detailView[1]" class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of sortedFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
       <section class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row
@@ -399,7 +399,7 @@
   <!-- Miniview -->
   <section *ngIf="detailView[2]" class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of sortedFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
       <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'"
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
@@ -455,4 +455,11 @@
     </ion-grid>
     }
   </section>
+
+  <!-- Alphabet Scrollwheel -->
+  <app-alphabet-scrollwheel 
+    [films]="sortedFilms" 
+    [content]="content"
+    (letterSelected)="onLetterSelected($event)">
+  </app-alphabet-scrollwheel>
 </ion-content>

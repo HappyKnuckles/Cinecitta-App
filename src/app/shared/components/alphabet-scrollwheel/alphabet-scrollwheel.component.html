@@ -1,0 +1,14 @@
+<div class="alphabet-scrollwheel" *ngIf="films.length > 0">
+  <div class="alphabet-container">
+    <div 
+      *ngFor="let letter of alphabet"
+      class="alphabet-letter"
+      [class.available]="isLetterAvailable(letter)"
+      [class.unavailable]="!isLetterAvailable(letter)"
+      (click)="onLetterClick(letter)"
+      (touchstart)="onLetterClick(letter)"
+    >
+      {{ letter }}
+    </div>
+  </div>
+</div>

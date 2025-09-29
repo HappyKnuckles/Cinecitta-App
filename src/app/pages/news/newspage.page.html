@@ -28,7 +28,7 @@
   <!-- Filmcontainer -->
   <main class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of sortedNewFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
       <section class="filmContainer small">
         <div class="border">
           <ion-row
@@ -106,4 +106,11 @@
     </ion-grid>
     }
   </main>
+  
+  <!-- Alphabet Scrollwheel -->
+  <app-alphabet-scrollwheel 
+    [films]="sortedNewFilms" 
+    [content]="content"
+    (letterSelected)="onLetterSelected($event)">
+  </app-alphabet-scrollwheel>
 </ion-content>
