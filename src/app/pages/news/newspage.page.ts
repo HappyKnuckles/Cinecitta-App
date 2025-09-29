@@ -48,12 +48,6 @@ export class NewsPage {
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  get sortedNewFilms(): NewFilm[] {
-    return [...this.newFilms].sort((a, b) => 
-      a.film_titel.localeCompare(b.film_titel, 'de', { sensitivity: 'base' })
-    );
-  }
-
   constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
     addIcons({ search });
   }

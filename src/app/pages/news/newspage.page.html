@@ -28,7 +28,7 @@
   <!-- Filmcontainer -->
   <main class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of sortedNewFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
+    <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
       <section class="filmContainer small">
         <div class="border">
           <ion-row
@@ -110,7 +110,7 @@
 
 <!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
 <app-alphabet-scrollwheel 
-  [films]="sortedNewFilms" 
+  [films]="newFilms" 
   [content]="content"
   [alwaysVisible]="true"
   (letterSelected)="onLetterSelected($event)">

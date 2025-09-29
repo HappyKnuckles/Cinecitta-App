@@ -115,12 +115,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   private debounceTimeout: any;
   intervalId: any;
 
-  get sortedFilms(): Film[] {
-    return [...this.films].sort((a, b) => 
-      a.film_titel.localeCompare(b.film_titel, 'de', { sensitivity: 'base' })
-    );
-  }
-
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private alertController: AlertController,

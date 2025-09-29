@@ -91,15 +91,22 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     
     event.preventDefault();
     const touch = event.touches[0];
+    
+    // Try to find alphabet letter element first (direct touch)
     const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    let letter: string | undefined;
     
     if (element && element.classList.contains('alphabet-letter')) {
-      const letter = element.textContent?.trim();
-      if (letter) {
-        this.currentHighlightedLetter = letter;
-        if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
-          this.selectLetter(letter);
-        }
+      letter = element.textContent?.trim();
+    } else {
+      // If not directly over a letter, calculate based on Y position
+      letter = this.getLetterFromYPosition(touch.clientY);
+    }
+    
+    if (letter) {
+      this.currentHighlightedLetter = letter;
+      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+        this.selectLetter(letter);
       }
     }
   }
@@ -123,14 +130,21 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   onLetterMouseMove(event: MouseEvent) {
     if (!this.isDragging) return;
     
+    // Try to find alphabet letter element first (direct hover)
     const element = event.target as HTMLElement;
+    let letter: string | undefined;
+    
     if (element && element.classList.contains('alphabet-letter')) {
-      const letter = element.textContent?.trim();
-      if (letter) {
-        this.currentHighlightedLetter = letter;
-        if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
-          this.selectLetter(letter);
-        }
+      letter = element.textContent?.trim();
+    } else {
+      // If not directly over a letter, calculate based on Y position
+      letter = this.getLetterFromYPosition(event.clientY);
+    }
+    
+    if (letter) {
+      this.currentHighlightedLetter = letter;
+      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+        this.selectLetter(letter);
       }
     }
   }
@@ -199,5 +213,34 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   isLetterAvailable(letter: string): boolean {
     return this.availableLetters.has(letter);
+  }
+
+  private getLetterFromYPosition(clientY: number): string | undefined {
+    // Find the scrollwheel container element
+    const scrollwheelElement = document.querySelector('.alphabet-scrollwheel');
+    if (!scrollwheelElement) return undefined;
+
+    const containerElement = scrollwheelElement.querySelector('.alphabet-container');
+    if (!containerElement) return undefined;
+
+    const containerRect = containerElement.getBoundingClientRect();
+    
+    // Check if Y position is within the container bounds
+    if (clientY < containerRect.top || clientY > containerRect.bottom) {
+      return undefined;
+    }
+
+    // Calculate relative position within the container (0 to 1)
+    const relativeY = (clientY - containerRect.top) / containerRect.height;
+    
+    // Convert to letter index (0 to 25)
+    const letterIndex = Math.floor(relativeY * 26);
+    
+    // Ensure index is within bounds
+    if (letterIndex >= 0 && letterIndex < 26) {
+      return this.alphabet[letterIndex];
+    }
+    
+    return undefined;
   }
 }
