@@ -26,10 +26,10 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Filmcontainer -->
-  <div class="content">
+  <main class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
-      <div class="filmContainer small">
+      <section class="filmContainer small">
         <div class="border">
           <ion-row
             style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
@@ -71,11 +71,11 @@
             </ion-col> -->
           </ion-row>
         </div>
-      </div>
+      </section>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
-      <div class="filmContainer small">
+      <section class="filmContainer small">
         <div class="border">
           <ion-row
             style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
@@ -102,8 +102,8 @@
             </ion-col>
           </ion-row>
         </div>
-      </div>
+      </section>
     </ion-grid>
     }
-  </div>
+  </main>
 </ion-content>
