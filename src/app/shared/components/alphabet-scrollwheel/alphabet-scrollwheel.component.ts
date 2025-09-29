@@ -23,6 +23,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   private resizeListener?: () => void;
   isDragging = false; // Made public for template access
   private lastSelectedLetter = '';
+  private scrollThrottle: any;
   
   // Track currently highlighted letter for visual feedback
   currentHighlightedLetter = '';
@@ -39,6 +40,10 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   ngOnDestroy() {
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
+    }
+    // Clear any pending scroll throttle
+    if (this.scrollThrottle) {
+      clearTimeout(this.scrollThrottle);
     }
   }
 
@@ -140,7 +145,15 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   private selectLetter(letter: string) {
     this.lastSelectedLetter = letter;
     this.letterSelected.emit(letter);
-    this.scrollToLetter(letter);
+    
+    // Throttle scroll operations for smoother performance
+    if (this.scrollThrottle) {
+      clearTimeout(this.scrollThrottle);
+    }
+    
+    this.scrollThrottle = setTimeout(() => {
+      this.scrollToLetter(letter);
+    }, 50); // Small delay for smooth continuous scrolling
   }
 
   private async scrollToLetter(letter: string) {
@@ -162,21 +175,22 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
           // Get the scroll element and calculate position
           const targetTop = (targetElement as HTMLElement).offsetTop;
           
-          // Scroll to the element with some padding
-          await this.content.scrollToPoint(0, Math.max(0, targetTop - 20), 500);
+          // Smoother scroll with optimized duration and easing
+          await this.content.scrollToPoint(0, Math.max(0, targetTop - 20), 300);
         } else {
           // Fallback: estimate position based on index
           const estimatedHeight = 200; // Increased estimate for better accuracy
           const scrollPosition = targetFilmIndex * estimatedHeight;
-          await this.content.scrollToPoint(0, scrollPosition, 500);
+          await this.content.scrollToPoint(0, scrollPosition, 300);
         }
       } catch (error) {
-        // Final fallback: try direct element scrolling
+        // Final fallback: try direct element scrolling with smooth behavior
         const filmElements = document.querySelectorAll('[data-film-title]');
         if (filmElements[targetFilmIndex]) {
           filmElements[targetFilmIndex].scrollIntoView({ 
             behavior: 'smooth', 
-            block: 'start' 
+            block: 'start',
+            inline: 'nearest'
           });
         }
       }
