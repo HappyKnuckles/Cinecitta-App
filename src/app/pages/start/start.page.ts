@@ -1,6 +1,6 @@
 import { Component, ViewChildren, QueryList, ViewChild, OnInit } from "@angular/core";
 import { ImpactStyle } from "@capacitor/haptics";
-import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, ModalController } from "@ionic/angular/standalone";
+import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, IonListHeader, IonList } from "@ionic/angular/standalone";
 import { NgFor, NgIf } from "@angular/common";
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
@@ -18,7 +18,7 @@ import * as Filtertags from "src/app/core/models/filtertags";
   templateUrl: 'start.page.html',
   styleUrls: ['start.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe],
+  imports: [IonList, IonListHeader, IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe],
 })
 export class StartPage implements OnInit {
   @ViewChildren(FilmSelectComponent)
