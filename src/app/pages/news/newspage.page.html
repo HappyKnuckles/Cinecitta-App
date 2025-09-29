@@ -7,17 +7,22 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Demnächst </ion-title>
-    <div slot="end">
+    <ion-buttons slot="end">
       <ion-button class="actionSheet" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
-    </div>
+    </ion-buttons>
   </ion-toolbar>
   <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded"
     (newFilmsChange)="search($event)"></app-search>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Demnächst</ion-title>
+    </ion-toolbar>
+  </ion-header>
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <!-- Filmcontainer -->

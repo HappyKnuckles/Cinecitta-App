@@ -1,7 +1,7 @@
 import { NgIf, NgFor } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
-import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol } from '@ionic/angular/standalone';
+import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { search } from 'ionicons/icons';
 import { NewFilm } from 'src/app/core/models/filmModel';
@@ -16,7 +16,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
   templateUrl: 'newspage.page.html',
   styleUrls: ['newspage.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent,
+  imports: [IonButtons, IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonText,
