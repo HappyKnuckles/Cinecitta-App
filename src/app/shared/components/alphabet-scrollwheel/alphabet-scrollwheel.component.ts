@@ -16,19 +16,18 @@ import { ImpactStyle } from '@capacitor/haptics';
 export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() films: Film[] | NewFilm[] = [];
   @Input() content?: IonContent;
-  @Input() alwaysVisible = false; // New option to keep visible even when no films
+  @Input() alwaysVisible = false; 
   @Output() letterSelected = new EventEmitter<string>();
 
   alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   availableLetters: Set<string> = new Set();
   
   private resizeListener?: () => void;
-  isDragging = false; // Made public for template access
+  isDragging = false; 
   private lastSelectedLetter = '';
   private scrollThrottle: any;
-  private lastVibratedLetter = ''; // Track last letter that triggered vibration
+  private lastVibratedLetter = ''; 
   
-  // Track currently highlighted letter for visual feedback
   currentHighlightedLetter = '';
 
   constructor(private hapticService: HapticService) {}
@@ -146,7 +145,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     this.isDragging = false;
     this.lastSelectedLetter = '';
     this.currentHighlightedLetter = '';
-    this.lastVibratedLetter = ''; // Reset vibration tracker
+    this.lastVibratedLetter = '';
   }
 
   private updateAvailableLetters() {

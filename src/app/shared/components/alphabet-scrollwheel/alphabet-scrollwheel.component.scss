@@ -1,92 +1,72 @@
 .alphabet-scrollwheel {
   position: fixed;
-  right: 2px; // Moved closer to the right edge
+  right: 2px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 9999; // Very high z-index to ensure it stays on top of everything
-  // Calculate height as 80% of viewport minus typical header (60px) and tab bar (60px)
+  z-index: 9999;
   height: calc(80vh - 120px);
   max-height: calc(80vh - 120px);
   overflow: hidden;
-  // Ensure the component doesn't interfere with other touch events but stays responsive
   pointer-events: auto;
-  // Prevent any layout shifts or interference from scrolling
-  will-change: transform; // Optimize for animations
-  backface-visibility: hidden; // Prevent rendering issues during scroll
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .alphabet-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-evenly; // Changed to space-evenly for tighter spacing
-  padding: 2px 2px; // Reduced top/bottom padding for closer letters
-  // Prevent text selection during drag
-  user-select: none;
+  gap: 4px;
+  touch-action: none;
   -webkit-user-select: none;
-  // Disable context menu
+  user-select: none;
+  justify-content: center;
   -webkit-touch-callout: none;
-  // Ensure the container maintains its position during scroll
   position: relative;
-  // Take full height of parent
   height: 100%;
 }
 
 .alphabet-letter {
-  // Calculate height dynamically: (container height - padding) / 26 letters
-  height: calc((80vh - 120px - 4px) / 26); // 4px for total padding
-  width: 14px; // Smaller width
+  width: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(7px, 1.2vw, 10px); // Smaller responsive font size
+  font-size: 0.6rem;
   font-weight: 600;
-  margin: 0; // Remove margin for tighter spacing
-  padding: 0; // No padding for closer letters
+  margin: 0;
+  padding: 0;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.1s ease; // Smoother, faster transitions
+  transition: all 0.1s ease;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
-  // Ensure letters don't shrink too much
   flex-shrink: 0;
-}
-
-.alphabet-letter.available {
   color: #a3d9d5;
   background: transparent;
 }
 
-.alphabet-letter.available:hover,
-.alphabet-letter.available:active,
-.alphabet-letter.available.highlighted {
+.alphabet-letter:hover,
+.alphabet-letter:active,
+.alphabet-letter.highlighted {
   background: rgba(163, 217, 213, 0.4);
   color: #ffffff;
-  transform: scale(1.2); // Slightly larger scale for better feedback
+  transform: scale(1.2);
   box-shadow: 0 2px 8px rgba(163, 217, 213, 0.3);
 }
 
-.alphabet-letter.unavailable {
-  color: rgba(163, 217, 213, 0.3);
-  cursor: default;
-  pointer-events: none;
-}
-
-// Add dragging state styles
 .alphabet-container.dragging {
-  .alphabet-letter.available {
-    transition: all 0.05s ease; // Ultra-smooth transitions while dragging
+  .alphabet-letter {
+    transition: all 0.05s ease;
   }
 }
 
-/* Responsive adjustments */
 @media (max-height: 600px) {
   .alphabet-scrollwheel {
     height: calc(75vh - 100px);
     max-height: calc(75vh - 100px);
   }
-  
+
   .alphabet-letter {
     height: calc((75vh - 100px - 4px) / 26);
     width: 12px;
@@ -99,7 +79,7 @@
     height: calc(70vh - 80px);
     max-height: calc(70vh - 80px);
   }
-  
+
   .alphabet-letter {
     height: calc((70vh - 80px - 4px) / 26);
     width: 10px;
