@@ -77,9 +77,11 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!this.isNewFilms) {
       this.route.queryParams.pipe(distinctUntilChanged()).subscribe((params) => {
         if (params['search']) {
-          // Set search query and filter immediately (no debounce for URL params)
+          // Set search query and filter with small timeout to allow page to render
           this.searchQuery = params['search'].trim().toLowerCase();
-          this.filterFilms();
+          setTimeout(() => {
+            this.filterFilms();
+          }, 100);
 
           // Clear the search query parameter
           this.router.navigate([], {
