@@ -1,6 +1,6 @@
 .alphabet-scrollwheel {
   position: fixed;
-  right: 8px;
+  right: 2px; // Moved closer to the right edge
   top: 50%;
   transform: translateY(-50%);
   z-index: 9999; // Very high z-index to ensure it stays on top of everything
@@ -19,8 +19,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; // Distribute letters evenly
-  padding: 4px 2px; // Minimal padding
+  justify-content: space-evenly; // Changed to space-evenly for tighter spacing
+  padding: 2px 2px; // Reduced top/bottom padding for closer letters
   // Prevent text selection during drag
   user-select: none;
   -webkit-user-select: none;
@@ -34,7 +34,7 @@
 
 .alphabet-letter {
   // Calculate height dynamically: (container height - padding) / 26 letters
-  height: calc((80vh - 120px - 4px) / 26); // 4px for total padding (reduced)
+  height: calc((80vh - 120px - 4px) / 26); // 4px for total padding
   width: 14px; // Smaller width
   display: flex;
   align-items: center;
@@ -42,6 +42,7 @@
   font-size: clamp(7px, 1.2vw, 10px); // Smaller responsive font size
   font-weight: 600;
   margin: 0; // Remove margin for tighter spacing
+  padding: 0; // No padding for closer letters
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.1s ease; // Smoother, faster transitions

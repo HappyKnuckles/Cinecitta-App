@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { IonContent } from '@ionic/angular/standalone';
 import { Film } from 'src/app/core/models/filmModel';
 import { NewFilm } from 'src/app/core/models/filmModel';
+import { HapticService } from 'src/app/core/services/haptic/haptic.service';
+import { ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-alphabet-scrollwheel',
@@ -24,9 +26,12 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   isDragging = false; // Made public for template access
   private lastSelectedLetter = '';
   private scrollThrottle: any;
+  private lastVibratedLetter = ''; // Track last letter that triggered vibration
   
   // Track currently highlighted letter for visual feedback
   currentHighlightedLetter = '';
+
+  constructor(private hapticService: HapticService) {}
 
   get shouldShow(): boolean {
     return this.alwaysVisible || this.films.length > 0;
@@ -109,6 +114,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     this.isDragging = false;
     this.lastSelectedLetter = '';
     this.currentHighlightedLetter = '';
+    this.lastVibratedLetter = ''; // Reset vibration tracker
   }
 
   private onGlobalMouseMove(event: MouseEvent) {
@@ -140,6 +146,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     this.isDragging = false;
     this.lastSelectedLetter = '';
     this.currentHighlightedLetter = '';
+    this.lastVibratedLetter = ''; // Reset vibration tracker
   }
 
   private updateAvailableLetters() {
@@ -182,6 +189,12 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   private selectLetter(letter: string) {
     this.lastSelectedLetter = letter;
     this.letterSelected.emit(letter);
+    
+    // Add haptic feedback when selecting a new letter
+    if (letter !== this.lastVibratedLetter) {
+      this.hapticService.vibrate(ImpactStyle.Light, 10);
+      this.lastVibratedLetter = letter;
+    }
     
     // Throttle scroll operations for smoother performance
     if (this.scrollThrottle) {
