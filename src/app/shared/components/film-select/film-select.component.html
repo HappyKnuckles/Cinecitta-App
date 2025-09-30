@@ -45,7 +45,7 @@
     </ion-col>
     <ion-col *ngIf="!showSelect">Top {{ topFilms.length }}</ion-col>
   </ion-row>
-  <ion-row *ngFor="let film of topFilms; let i = index" class="contentRow ion-activatable">
+  <ion-row *ngFor="let n of [1, 2, 3, 4, 5, 6, 7]" class="contentRow ion-activatable">
     <ion-col size="1" style="display: flex; align-items: center; justify-content: center">
       <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
     </ion-col>
