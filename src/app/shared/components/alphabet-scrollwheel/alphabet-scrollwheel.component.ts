@@ -167,7 +167,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     
     this.scrollThrottle = setTimeout(() => {
       this.scrollToLetter(letter);
-    }, 50); // Small delay for smooth continuous scrolling
+    }, 30); // Reduced delay for more responsive scrolling
   }
 
   private async scrollToLetter(letter: string) {
@@ -189,23 +189,50 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
           // Get the scroll element and calculate position
           const targetTop = (targetElement as HTMLElement).offsetTop;
           
-          // Smoother scroll with optimized duration and easing
-          await this.content.scrollToPoint(0, Math.max(0, targetTop - 20), 300);
+          // Enhanced smooth scroll with longer duration for better visual feedback
+          await this.content.scrollToPoint(0, Math.max(0, targetTop - 50), 600);
         } else {
           // Fallback: estimate position based on index
-          const estimatedHeight = 200; // Increased estimate for better accuracy
+          const estimatedHeight = 200; // Estimate for better accuracy
           const scrollPosition = targetFilmIndex * estimatedHeight;
-          await this.content.scrollToPoint(0, scrollPosition, 300);
+          await this.content.scrollToPoint(0, scrollPosition, 600);
         }
       } catch (error) {
-        // Final fallback: try direct element scrolling with smooth behavior
+        // Final fallback: try direct element scrolling with enhanced smooth behavior
         const filmElements = document.querySelectorAll('[data-film-title]');
         if (filmElements[targetFilmIndex]) {
-          filmElements[targetFilmIndex].scrollIntoView({ 
+          // Use native smooth scroll with better options
+          (filmElements[targetFilmIndex] as HTMLElement).scrollIntoView({ 
             behavior: 'smooth', 
             block: 'start',
             inline: 'nearest'
           });
+          
+          // Additional smooth scroll using requestAnimationFrame for better control
+          const targetElement = filmElements[targetFilmIndex] as HTMLElement;
+          const targetPosition = targetElement.offsetTop - 50;
+          const scrollElement = await this.content.getScrollElement();
+          const startPosition = scrollElement.scrollTop;
+          const distance = targetPosition - startPosition;
+          const duration = 600;
+          let startTime: number | null = null;
+
+          const smoothScroll = (currentTime: number) => {
+            if (startTime === null) startTime = currentTime;
+            const timeElapsed = currentTime - startTime;
+            const progress = Math.min(timeElapsed / duration, 1);
+            
+            // Easing function for smoother animation (ease-out)
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            
+            scrollElement.scrollTop = startPosition + (distance * easeOut);
+            
+            if (timeElapsed < duration) {
+              requestAnimationFrame(smoothScroll);
+            }
+          };
+          
+          requestAnimationFrame(smoothScroll);
         }
       }
     }
