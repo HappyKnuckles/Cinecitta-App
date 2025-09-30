@@ -72,12 +72,14 @@ export class SearchComponent implements OnInit, OnDestroy {
       })
     );
 
-    await this.loadData(this.formData());
-
     if (!this.isNewFilms) {
       this.route.queryParams.pipe(distinctUntilChanged()).subscribe((params) => {
         if (params['search']) {
-          this.onSearchChange(params['search']);
+          this.searchQuery = params['search'].trim().toLowerCase();
+          // If films are already loaded, filter immediately
+          if (this.allFilms.length > 0) {
+            this.filterFilms();
+          }
 
           // Clear the search query parameter
           this.router.navigate([], {
@@ -89,6 +91,8 @@ export class SearchComponent implements OnInit, OnDestroy {
       }
       );
     }
+
+    await this.loadData(this.formData());
   }
 
   async loadData(formData?: FormData, isReload?: boolean) {
@@ -112,11 +116,16 @@ export class SearchComponent implements OnInit, OnDestroy {
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.allFilms = await cachedFilms;
-      this.newFilmsChange.emit(this.allFilms);
       if (!hasInternet) {
         this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
       }
       this.loadingService.setLoading(false);
+      // Apply search filter if search query exists
+      if (this.searchQuery) {
+        this.filterFilms();
+      } else {
+        this.newFilmsChange.emit(this.allFilms);
+      }
 
       return;
     }
@@ -124,8 +133,13 @@ export class SearchComponent implements OnInit, OnDestroy {
     try {
       if (!this.isNewFilms) {
         this.allFilms = await this.filmData.fetchFilmData(formData);
-        this.newFilmsChange.emit(this.allFilms);
         this.loadingService.setLoading(false);
+        // Apply search filter if search query exists
+        if (this.searchQuery) {
+          this.filterFilms();
+        } else {
+          this.newFilmsChange.emit(this.allFilms);
+        }
 
         await this.updateFilmData();
       } else {
