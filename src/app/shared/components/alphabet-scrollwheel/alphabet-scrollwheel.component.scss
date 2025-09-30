@@ -1,0 +1,88 @@
+.alphabet-scrollwheel {
+  position: fixed;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 9999;
+  height: calc(80vh - 120px);
+  max-height: calc(80vh - 120px);
+  overflow: hidden;
+  pointer-events: auto;
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.alphabet-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  justify-content: center;
+  -webkit-touch-callout: none;
+  position: relative;
+  height: 100%;
+}
+
+.alphabet-letter {
+  width: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  flex-shrink: 0;
+  color: #a3d9d5;
+  background: transparent;
+}
+
+.alphabet-letter:hover,
+.alphabet-letter:active,
+.alphabet-letter.highlighted {
+  background: rgba(163, 217, 213, 0.4);
+  color: #ffffff;
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(163, 217, 213, 0.3);
+}
+
+.alphabet-container.dragging {
+  .alphabet-letter {
+    transition: all 0.05s ease;
+  }
+}
+
+@media (max-height: 600px) {
+  .alphabet-scrollwheel {
+    height: calc(75vh - 100px);
+    max-height: calc(75vh - 100px);
+  }
+
+  .alphabet-letter {
+    height: calc((75vh - 100px - 4px) / 26);
+    width: 12px;
+    font-size: clamp(6px, 1vw, 9px);
+  }
+}
+
+@media (max-height: 500px) {
+  .alphabet-scrollwheel {
+    height: calc(70vh - 80px);
+    max-height: calc(70vh - 80px);
+  }
+
+  .alphabet-letter {
+    height: calc((70vh - 80px - 4px) / 26);
+    width: 10px;
+    font-size: clamp(5px, 0.8vw, 8px);
+  }
+}

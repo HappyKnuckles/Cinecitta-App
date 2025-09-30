@@ -39,6 +39,7 @@ import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
@@ -58,6 +59,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonIcon,
     IonTitle,
     SearchComponent,
+    AlphabetScrollwheelComponent,
     IonModal,
     IonButtons,
     IonContent,
@@ -567,5 +569,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       numericTime += 24;
     }
     return numericTime;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onLetterSelected(_letter: string): void {
+    // Letter selection handling is done by the component itself
+    // This method can be used for additional logic if needed
   }
 }
