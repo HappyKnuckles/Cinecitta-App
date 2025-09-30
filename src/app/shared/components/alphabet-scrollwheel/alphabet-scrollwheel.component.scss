@@ -20,11 +20,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between; // Distribute letters evenly
-  padding: 4px 4px; // Reduced padding to maximize letter space
-  background: rgba(163, 217, 213, 0.2); // Slightly more opaque for better visibility during scroll
-  border-radius: 12px;
-  backdrop-filter: blur(15px); // Increased blur for better visibility
-  border: 1px solid rgba(163, 217, 213, 0.4);
+  padding: 4px 2px; // Minimal padding
   // Prevent text selection during drag
   user-select: none;
   -webkit-user-select: none;
@@ -32,20 +28,18 @@
   -webkit-touch-callout: none;
   // Ensure the container maintains its position during scroll
   position: relative;
-  // Add a subtle box shadow for better visibility
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   // Take full height of parent
   height: 100%;
 }
 
 .alphabet-letter {
   // Calculate height dynamically: (container height - padding) / 26 letters
-  height: calc((80vh - 120px - 8px) / 26); // 8px for total padding
-  width: 20px;
+  height: calc((80vh - 120px - 4px) / 26); // 4px for total padding (reduced)
+  width: 14px; // Smaller width
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: clamp(8px, 1.5vw, 12px); // Responsive font size
+  font-size: clamp(7px, 1.2vw, 10px); // Smaller responsive font size
   font-weight: 600;
   margin: 0; // Remove margin for tighter spacing
   border-radius: 50%;
@@ -93,9 +87,9 @@
   }
   
   .alphabet-letter {
-    height: calc((75vh - 100px - 8px) / 26);
-    width: 18px;
-    font-size: clamp(7px, 1.2vw, 10px);
+    height: calc((75vh - 100px - 4px) / 26);
+    width: 12px;
+    font-size: clamp(6px, 1vw, 9px);
   }
 }
 
@@ -106,8 +100,8 @@
   }
   
   .alphabet-letter {
-    height: calc((70vh - 80px - 8px) / 26);
-    width: 16px;
-    font-size: clamp(6px, 1vw, 9px);
+    height: calc((70vh - 80px - 4px) / 26);
+    width: 10px;
+    font-size: clamp(5px, 0.8vw, 8px);
   }
 }
