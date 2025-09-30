@@ -35,6 +35,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   ngOnInit() {
     this.updateAvailableLetters();
     this.setupResizeListener();
+    this.setupGlobalEventListeners();
   }
 
   ngOnDestroy() {
@@ -45,6 +46,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     if (this.scrollThrottle) {
       clearTimeout(this.scrollThrottle);
     }
+    this.removeGlobalEventListeners();
   }
 
   ngOnChanges() {
@@ -56,6 +58,88 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
       // Handle orientation changes or window resizing
     };
     window.addEventListener('resize', this.resizeListener);
+  }
+
+  private setupGlobalEventListeners() {
+    // Global touch event listeners for consistent drag behavior
+    document.addEventListener('touchmove', this.onGlobalTouchMove.bind(this), { passive: false });
+    document.addEventListener('touchend', this.onGlobalTouchEnd.bind(this), { passive: false });
+    
+    // Global mouse event listeners for consistent drag behavior  
+    document.addEventListener('mousemove', this.onGlobalMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onGlobalMouseUp.bind(this));
+  }
+
+  private removeGlobalEventListeners() {
+    document.removeEventListener('touchmove', this.onGlobalTouchMove.bind(this));
+    document.removeEventListener('touchend', this.onGlobalTouchEnd.bind(this));
+    document.removeEventListener('mousemove', this.onGlobalMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onGlobalMouseUp.bind(this));
+  }
+
+  private onGlobalTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+    
+    event.preventDefault();
+    const touch = event.touches[0];
+    
+    // Try to find alphabet letter element first (direct touch)
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    let letter: string | undefined;
+    
+    if (element && element.classList.contains('alphabet-letter')) {
+      letter = element.textContent?.trim();
+    } else {
+      // If not directly over a letter, calculate based on Y position
+      letter = this.getLetterFromYPosition(touch.clientY);
+    }
+    
+    if (letter) {
+      this.currentHighlightedLetter = letter;
+      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+        this.selectLetter(letter);
+      }
+    }
+  }
+
+  private onGlobalTouchEnd(event: TouchEvent) {
+    if (!this.isDragging) return;
+    
+    event.preventDefault();
+    this.isDragging = false;
+    this.lastSelectedLetter = '';
+    this.currentHighlightedLetter = '';
+  }
+
+  private onGlobalMouseMove(event: MouseEvent) {
+    if (!this.isDragging) return;
+    
+    // Try to find alphabet letter element first (direct hover)
+    const element = event.target as HTMLElement;
+    let letter: string | undefined;
+    
+    if (element && element.classList.contains('alphabet-letter')) {
+      letter = element.textContent?.trim();
+    } else {
+      // If not directly over a letter, calculate based on Y position
+      letter = this.getLetterFromYPosition(event.clientY);
+    }
+    
+    if (letter) {
+      this.currentHighlightedLetter = letter;
+      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
+        this.selectLetter(letter);
+      }
+    }
+  }
+
+  private onGlobalMouseUp(event: MouseEvent) {
+    if (!this.isDragging) return;
+    
+    event.preventDefault();
+    this.isDragging = false;
+    this.lastSelectedLetter = '';
+    this.currentHighlightedLetter = '';
   }
 
   private updateAvailableLetters() {
@@ -86,38 +170,6 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     }
   }
 
-  onLetterTouchMove(event: TouchEvent) {
-    if (!this.isDragging) return;
-    
-    event.preventDefault();
-    const touch = event.touches[0];
-    
-    // Try to find alphabet letter element first (direct touch)
-    const element = document.elementFromPoint(touch.clientX, touch.clientY);
-    let letter: string | undefined;
-    
-    if (element && element.classList.contains('alphabet-letter')) {
-      letter = element.textContent?.trim();
-    } else {
-      // If not directly over a letter, calculate based on Y position
-      letter = this.getLetterFromYPosition(touch.clientY);
-    }
-    
-    if (letter) {
-      this.currentHighlightedLetter = letter;
-      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
-        this.selectLetter(letter);
-      }
-    }
-  }
-
-  onLetterTouchEnd(event: TouchEvent) {
-    event.preventDefault();
-    this.isDragging = false;
-    this.lastSelectedLetter = '';
-    this.currentHighlightedLetter = '';
-  }
-
   onLetterMouseDown(event: MouseEvent, letter: string) {
     event.preventDefault();
     this.isDragging = true;
@@ -125,35 +177,6 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     if (this.availableLetters.has(letter)) {
       this.selectLetter(letter);
     }
-  }
-
-  onLetterMouseMove(event: MouseEvent) {
-    if (!this.isDragging) return;
-    
-    // Try to find alphabet letter element first (direct hover)
-    const element = event.target as HTMLElement;
-    let letter: string | undefined;
-    
-    if (element && element.classList.contains('alphabet-letter')) {
-      letter = element.textContent?.trim();
-    } else {
-      // If not directly over a letter, calculate based on Y position
-      letter = this.getLetterFromYPosition(event.clientY);
-    }
-    
-    if (letter) {
-      this.currentHighlightedLetter = letter;
-      if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
-        this.selectLetter(letter);
-      }
-    }
-  }
-
-  onLetterMouseUp(event: MouseEvent) {
-    event.preventDefault();
-    this.isDragging = false;
-    this.lastSelectedLetter = '';
-    this.currentHighlightedLetter = '';
   }
 
   private selectLetter(letter: string) {
