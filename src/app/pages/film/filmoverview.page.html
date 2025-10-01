@@ -20,8 +20,10 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
-    [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search>
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
+  [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
+    [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search></ion-toolbar>
 </ion-header>
 
 <!-- Filter Modal -->

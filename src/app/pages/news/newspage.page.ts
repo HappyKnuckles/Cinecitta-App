@@ -1,4 +1,4 @@
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol, IonButtons } from '@ionic/angular/standalone';
@@ -36,6 +36,8 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonImg,
     IonCol,
     ExtractTextPipe,
+    NgStyle,
+    NgClass
   ],
 })
 export class NewsPage {

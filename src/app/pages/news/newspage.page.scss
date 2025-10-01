@@ -2,7 +2,9 @@
   //background: linear-gradient(#121212, #a3d9d529, #121212);
   margin-top: 10px;
 }
-
+ion-toolbar.toolbar-closed {
+  height: 0px !important;
+}
 .actionSheet {
   --background: none;
   --background-activated: none;
