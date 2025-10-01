@@ -10,7 +10,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button style="--color: #a3d9d5; margin-left: 8px" fill="none" (click)="presentActionSheet()" slot="icon-only">
+      <ion-button style="--color: #a3d9d5; margin-left: 8px" fill="clear" (click)="presentActionSheet()" slot="icon-only">
         View </ion-button>
     </ion-buttons>
     <ion-title> Aktuelle Filme </ion-title>
@@ -180,14 +180,22 @@
                 </div>
               </ion-col>
               <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
-                <ion-icon 
+                
+                <ion-button fill="clear" size="small">
+                  <ion-icon 
                   [name]="favoriteFilmIds.has(film.system_id) ? 'heart' : 'heart-outline'" 
                   (click)="toggleFavorite($event, film)"
+                  slot="icon-only"
                   [style.color]="favoriteFilmIds.has(film.system_id) ? '#2ce8f4' : '#2ce8f4'"
-                  style="font-size: 30px; font-weight: 700; cursor: pointer; z-index: 15;">
+                  class="infoBtn">
                 </ion-icon>
-                <ion-icon class="infoBtn" [id]="'popover' + film.system_id"
+                </ion-button>
+                <ion-button fill="clear" size="small">
+                  
+                <ion-icon slot="icon-only" class="infoBtn" [id]="'popover' + film.system_id"
                   name="information-circle-outline"></ion-icon>
+                </ion-button>
+
               </ion-col>
               <ion-popover [trigger]="'popover' + film.system_id" [id]="'popover-' + film.system_id">
                 <ng-template>
@@ -339,70 +347,12 @@
   <div *ngIf="detailView[1]" class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
-      <section class="filmContainer small" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
-        <div class="border">
-          <ion-row style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; position: relative;">
-            {{film.film_titel}}
-            <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
-              <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
-            </span>
-            <ion-icon 
-              [name]="favoriteFilmIds.has(film.system_id) ? 'heart' : 'heart-outline'" 
-              (click)="toggleFavorite($event, film)"
-              [style.color]="favoriteFilmIds.has(film.system_id) ? '#2ce8f4' : '#2ce8f4'"
-              style="position: absolute; right: 10px; top: 0; font-size: 24px; font-weight: 700; cursor: pointer; z-index: 15;">
-            </ion-icon>
-            <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
-              <div class="new">NEU</div>
-            </div>
-          </ion-row>
-          <ion-row style="padding: 0 10px">
-            <ion-col size="4">
-              <img loading="lazy" src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
-                alt="Film Cover von {{film.film_titel}}" />
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i]" (click)="showFull[i] = true">
-              {{ ((film.film_beschreibung | extractText).length > 125 ? ((film.film_beschreibung | extractText).slice(0,
-              125) + '...') :
-              (film.film_beschreibung | extractText)) }}
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i]" (click)="showFull[i] = false">{{
-              film.film_beschreibung | extractText}}
-            </ion-col>
-          </ion-row>
-        </div>
-      </section>
+      <app-film-view-medium [film]="film" [isNewFilm]="false"
+        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"></app-film-view-medium>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
-      <section class="filmContainer small">
-        <div class="border">
-          <ion-row
-            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
-            <span style="padding: 0 5px">
-              <ion-skeleton-text animated style="width: 100px; height: 20px"></ion-skeleton-text>
-            </span>
-            <span style="margin-left: 5px">
-              <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
-            </span>
-          </ion-row>
-          <ion-row style="padding: 0 10px">
-            <ion-col size="4">
-              <ion-skeleton-text animated style="width: 100%; height: 150px"></ion-skeleton-text>
-              <span style="display: flex; justify-content: center; color: #a3d9d5">
-                <ion-skeleton-text animated style="width: 70px; height: 20px"></ion-skeleton-text>
-              </span>
-            </ion-col>
-            <ion-col class="description" size="8">
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 80%; height: 20px"></ion-skeleton-text>
-            </ion-col>
-          </ion-row>
-        </div>
-      </section>
+      <app-film-view-medium [film]="null" [isNewFilm]="false"></app-film-view-medium>
     </ion-grid>
     }
   </div>

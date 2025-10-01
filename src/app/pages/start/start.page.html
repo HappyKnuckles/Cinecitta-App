@@ -33,29 +33,7 @@
       <div *ngIf="currentFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
         <ion-grid *ngFor="let film of currentFavorites" style="padding-top: 0">
-          <div class="filmContainer small">
-            <div class="border">
-              <ion-row
-                style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
-                  <span style="line-height: 1.2;">{{film.film_titel}}</span>
-                  <span *ngIf="film.film_ist_ov === '1'" style="flex-shrink: 0;">
-                    <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
-                  </span>
-                </div>
-              </ion-row>
-              <ion-row style="padding: 0 10px">
-                <ion-col size="4">
-                  <img style="margin-bottom: 5px" [src]="film.film_cover_src" (click)="navigateToFilm(film)"
-                    loading="lazy" [alt]="'Film Cover von ' + film.film_titel" />
-                  <span style="display: flex; justify-content: center; color: #a3d9d5">{{ getFilmDate(film) }}</span>
-                </ion-col>
-                <ion-col class="description" size="8">
-                  {{ getFilmDescription(film) }}
-                </ion-col>
-              </ion-row>
-            </div>
-          </div>
+          <app-film-view-medium [film]="film" [isNewFilm]="false"></app-film-view-medium>
         </ion-grid>
       </div>
 
@@ -63,29 +41,7 @@
       <div *ngIf="upcomingFavorites.length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
         <ion-grid *ngFor="let film of upcomingFavorites" style="padding-top: 0">
-          <div class="filmContainer small">
-            <div class="border">
-              <ion-row
-                style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5; align-items: center;">
-                <div style="display: flex; align-items: center; gap: 5px; justify-content: center;">
-                  <span style="line-height: 1.2;">{{film.film_titel}}</span>
-                  <span *ngIf="film.film_ist_ov === '1'" style="flex-shrink: 0;">
-                    <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
-                  </span>
-                </div>
-              </ion-row>
-              <ion-row style="padding: 0 10px">
-                <ion-col size="4">
-                  <img style="margin-bottom: 5px" [src]="getFilmImage(film)" (click)="navigateToFilm(film)"
-                    loading="lazy" [alt]="'Film Cover von ' + film.film_titel" />
-                  <span style="display: flex; justify-content: center; color: #a3d9d5">{{ getFilmDate(film) }}</span>
-                </ion-col>
-                <ion-col class="description" size="8">
-                  {{ getFilmDescription(film) }}
-                </ion-col>
-              </ion-row>
-            </div>
-          </div>
+          <app-film-view-medium [film]="film" [isNewFilm]="true"></app-film-view-medium>
         </ion-grid>
       </div>
     </ion-content>

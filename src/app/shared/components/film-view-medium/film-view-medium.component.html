@@ -1,0 +1,97 @@
+@if(!loadingService.isLoading && film()) {
+<section class="filmContainer small">
+  <div class="border">
+    <ion-row style="position: relative;">
+      <ion-col style="text-align: left; margin-left: 12px;">
+        <span style="line-height: 1.2; font-size: 17px; font-weight: 700; color: #a3d9d5;">{{film()!.film_titel}}
+        </span>
+        <span *ngIf="film()!.film_ist_ov === '1'">
+          <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
+        </span>
+      </ion-col>
+      <div *ngIf="isRecentFilm()" class="new-dreieck small">
+        <div class="new">NEU</div>
+      </div>
+      <ion-col size="1.5">
+        <ion-icon [name]="favoriteFilmIds.has(film()!.film_system_id || film()!.system_id) ? 'heart' : 'heart-outline'"
+          (click)="toggleFavorite($event)"
+          [style.color]="favoriteFilmIds.has(film()!.film_system_id || film()!.system_id) ? '#2ce8f4' : '#2ce8f4'">
+        </ion-icon>
+      </ion-col>
+
+    </ion-row>
+    <ion-row style="padding: 0 10px">
+      <ion-col size="4">
+        <img style="margin-bottom: 5px" src="{{film()!.film_cover_src}}"
+          (click)="openExternalWebsite(film()!.filminfo_href)" loading="lazy"
+          alt="Film Cover von {{film()!.film_titel}}" />
+        <span *ngIf="isNewFilm()"
+          style="display: flex; justify-content: center; color: #a3d9d5">{{film()!.film_centerstart_zeit}}</span>
+      </ion-col>
+
+
+      @if(isNewFilm()) {
+      <ion-col class="description" size="8" *ngIf="!showFull && film()!.film_beschreibung !== ''"
+        (click)="showFull = true">
+        {{ ((film()!.film_beschreibung | extractText).length > 125 ? ((film()!.film_beschreibung | extractText).slice(0,
+        125) + '...') :
+        (film()!.film_beschreibung | extractText)) }}
+      </ion-col>
+      <ion-col class="description" size="8" *ngIf="showFull && film()!.film_beschreibung !== ''"
+        (click)="showFull = false">{{ film()!.film_beschreibung | extractText}}
+      </ion-col>
+      <ion-col class="description" size="8" *ngIf="!showFull && film()!.film_beschreibung === ''"
+        (click)="showFull = true">
+        {{ ((($any(film())).film_kurztext | extractText).length > 125 ? ((($any(film())).film_kurztext |
+        extractText).slice(0, 125) +
+        '...') : (($any(film())).film_kurztext |
+        extractText)) }}
+      </ion-col>
+      <ion-col class="description" size="8" *ngIf="showFull && film()!.film_beschreibung === ''"
+        (click)="showFull = false">{{ ($any(film())).film_kurztext | extractText}}
+      </ion-col>
+      } @else {
+      <ion-col class="description" size="8" *ngIf="!showFull" (click)="showFull = true">
+        {{ ((film()!.film_beschreibung | extractText).length > 125 ? ((film()!.film_beschreibung | extractText).slice(0,
+        125) + '...') :
+        (film()!.film_beschreibung | extractText)) }}
+      </ion-col>
+      <ion-col class="description" size="8" *ngIf="showFull" (click)="showFull = false">{{
+        film()!.film_beschreibung | extractText}}
+      </ion-col>
+      }
+      <!-- <ion-col class="description" size="8" *ngIf="film()!.film_beschreibung === '' && film()!.film_kurztext === ''">
+    {{film()!.film_synopsis | extractText}}
+  </ion-col> -->
+    </ion-row>
+  </div>
+</section>
+} @else {
+<section class="filmContainer small">
+  <div class="border">
+    <ion-row>
+      <ion-col style="text-align: left; margin-left: 12px;">
+        <span style="display: flex;">
+          <ion-skeleton-text animated style="width: 100px; height: 20px"></ion-skeleton-text>
+          <ion-skeleton-text animated style="width: 20px; height: 20px; margin-left: 8px;"></ion-skeleton-text>
+        </span>
+      </ion-col>
+    </ion-row>
+    <ion-row style="padding: 0 10px">
+      <ion-col size="4">
+        <ion-skeleton-text animated style="width: 100%; height: 150px"></ion-skeleton-text>
+        <span *ngIf="isNewFilm()" style="display: flex; justify-content: center;">
+          <ion-skeleton-text animated style="width: 70px; height: 20px"></ion-skeleton-text>
+        </span>
+      </ion-col>
+      <ion-col class="description" size="8">
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 80%; height: 20px"></ion-skeleton-text>
+      </ion-col>
+    </ion-row>
+  </div>
+</section>
+}

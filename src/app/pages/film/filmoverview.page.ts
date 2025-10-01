@@ -43,6 +43,7 @@ import { SearchComponent } from 'src/app/shared/components/search/search.compone
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
+import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 @Component({
   selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
@@ -78,8 +79,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonImg,
     IonPopover,
     ExtractTextPipe,
-    TransformTimePipe,
-  ],
+    TransformTimePipe, FilmViewMediumComponent],
 })
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;

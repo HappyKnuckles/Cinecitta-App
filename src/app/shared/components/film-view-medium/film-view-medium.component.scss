@@ -1,0 +1,71 @@
+.filmContainer {
+  padding: 0 0 30px;
+
+  &.small {
+    padding: 0 0 10px;
+  }
+    .new-dreieck {
+      transform: translateY(-22px);
+      position: absolute;
+      right: -1px;
+      top: 10px;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-radius: 0 7px 0 0;
+      border-width: 0 40px 40px 0;
+      border-color: transparent #1d979f transparent transparent;
+      font-size: 10px;
+      opacity: 0.9;
+  
+      &.mini {
+        transform: translateY(-4px);
+        top: unset;
+      }
+  
+      .new {
+        transform: rotate(45deg);
+        color: #fff;
+        font-size: 12px;
+        top: 6px;
+        right: -39px;
+        position: absolute;
+      }
+    }
+  .border {
+    padding: 10px 0;
+    box-shadow: 0 4px 16px #a3d9d558;
+    border: 1px solid #a3d9d5;
+    border-radius: 7px;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .OV {
+    width: 20px;
+    vertical-align: bottom;
+    display: inline-block;
+  }
+
+  img {
+    width: 90vw;
+    border-radius: 10px;
+    margin-bottom: 5px;
+  }
+
+  .description {
+    display: block;
+    font-size: 16px;
+    line-height: 24px;
+    margin-bottom: 5px;
+  }
+
+  ion-grid {
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  ion-icon {
+    font-size: 25px;
+  }
+}

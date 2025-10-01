@@ -9,7 +9,7 @@ export class FavoritesService {
   private readonly FAVORITES_KEY = 'favoriteFilms';
 
   constructor(private storageService: StorageService) {}
-
+  // TODO make a single point of true for favorited films that reloads when changes happen
   async getFavoriteFilms(): Promise<(Film | NewFilm)[]> {
     const favorites = await this.storageService.get(this.FAVORITES_KEY);
     return favorites || [];

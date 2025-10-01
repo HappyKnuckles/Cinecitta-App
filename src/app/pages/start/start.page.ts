@@ -13,12 +13,13 @@ import { FilmSelectComponent } from "src/app/shared/components/film-select/film-
 import { Film, NewFilm } from "src/app/core/models/filmModel";
 import { ExtractTextPipe } from "src/app/shared/pipes/extract-text/extract-text.pipe";
 import * as Filtertags from "src/app/core/models/filtertags";
+import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 @Component({
   selector: 'app-tab1',
   templateUrl: 'start.page.html',
   styleUrls: ['start.page.scss'],
   standalone: true,
-  imports: [IonList, IonListHeader, IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe],
+  imports: [IonList, IonListHeader, IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe, FilmViewMediumComponent],
 })
 export class StartPage implements OnInit {
   @ViewChildren(FilmSelectComponent)
