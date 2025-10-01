@@ -13,8 +13,11 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" [isNewFilms]="true" [excludedProperties]="excluded"
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
+    [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isNewFilms]="true" [excludedProperties]="excluded"
     (newFilmsChange)="search($event)"></app-search>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">

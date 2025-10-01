@@ -133,7 +133,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       removeOutline,
       informationCircleOutline,
     });
-   
+
   }
 
   async ngOnInit(): Promise<void> {
@@ -146,7 +146,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.onTimeChange(true);
     this.checkTimes();
     this.startPeriodicCheck();
- 
+
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
         this.isSearchOpen = true;
@@ -218,7 +218,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   search(event: any) {
     this.films = event;
-    this.content.scrollToTop(300);
+    if (this.films.length !== 0) {
+      this.content.scrollToTop(300);
+    }
   }
 
   handleRefresh(event: any): void {

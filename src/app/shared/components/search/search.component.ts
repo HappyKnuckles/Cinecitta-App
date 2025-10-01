@@ -1,14 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild, OnDestroy, input, effect } from '@angular/core';
 import { IonInput, IonIcon, IonButton, IonSearchbar } from '@ionic/angular/standalone';
-import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
-import { trigger, state, style, transition, animate } from '@angular/animations';
-
+import { debounceTime, distinctUntilChanged, map, filter, Subject, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgIf, NgStyle } from '@angular/common';
+import { Location, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import Fuse from 'fuse.js';
 import { addIcons } from 'ionicons';
-import { filterOutline, filter, search } from 'ionicons/icons';
+import { filterOutline, search } from 'ionicons/icons';
 import { FilmDataService } from 'src/app/core/services/film-data/film-data.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
@@ -21,13 +19,6 @@ import { SearchBlurDirective } from 'src/app/core/directives/search-blur/search-
   selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss'],
-  animations: [
-    trigger('openClose', [
-      state('true', style({ opacity: 0, 'font-size': '0', height: '0' })),
-      state('false', style({ opacity: 1, 'font-size': '*', height: '*' })),
-      transition('false <=> true', [animate('400ms ease-in-out')]),
-    ]),
-  ],
   standalone: true,
   imports: [FormsModule, IonIcon, NgIf, IonButton, IonSearchbar, NgStyle, SearchBlurDirective],
 })
@@ -36,7 +27,6 @@ export class SearchComponent implements OnInit, OnDestroy {
   @Input() isNewFilms = false;
   @Input() excludedProperties: any[] = [];
   @Input() showFilterButton = false;
-  @Input({ required: true }) isOpen = false;
   @Input() isReload = false;
   @Output() newFilmsChange = new EventEmitter<any[]>();
   @Output() setOpenEvent = new EventEmitter<boolean>();
@@ -55,42 +45,49 @@ export class SearchComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private toastService: ToastService,
     private route: ActivatedRoute,
-    private router: Router
-
+    private router: Router,
+    private location: Location
   ) {
-    addIcons({ filterOutline, filter, search });
+    addIcons({ filterOutline, search });
 
     effect(() => {
-      this.loadData(this.formData(), this.isReload);
-    }, { allowSignalWrites: true })
+      const currentFormData = this.formData();
+      // Guard clause: Do not proceed if formData is not yet available.
+      if (!currentFormData && !this.isNewFilms) {
+        return;
+      }
+
+      (async () => {
+        await this.loadData(currentFormData, this.isReload);
+        // After data is loaded based on formData, apply the current text search.
+        this.filterFilms();
+      })();
+    }, { allowSignalWrites: true });
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.sub.add(
-      this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe(() => {
+      this.searchSubject.pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      ).subscribe(() => {
         this.filterFilms();
       })
     );
 
-    await this.loadData(this.formData());
-
     if (!this.isNewFilms) {
-      this.route.queryParams.pipe(distinctUntilChanged()).subscribe((params) => {
-        if (params['search']) {
-          // Set search query and filter with small timeout to allow page to render
-          this.searchQuery = params['search'].trim().toLowerCase();
-          setTimeout(() => {
-            this.filterFilms();
-          }, 100);
+      this.sub.add(
+        this.route.queryParams.pipe(
+          map(params => params['search']?.trim().toLowerCase() ?? ''),
+          filter(search => search.length > 0),
+          distinctUntilChanged()
+        ).subscribe((search) => {
+          this.searchQuery = search;
+          this.filterFilms();
 
-          // Clear the search query parameter
-          this.router.navigate([], {
-            relativeTo: this.route,
-            queryParams: { search: null },
-            queryParamsHandling: 'merge'
-          });
-        }
-      }
+          const url = this.location.path().split('?')[0];
+          this.location.replaceState(url);
+        })
       );
     }
   }
@@ -101,40 +98,33 @@ export class SearchComponent implements OnInit, OnDestroy {
     if (!hasInternet && isReload) {
       this.toastService.showToast('Unable to load data. No internet connection.', 'alert-outline', true);
       this.loadingService.setLoading(false);
-
       return;
     }
 
     let hashedFormData: string | undefined;
     if (formData) {
-      const serializedFormData = this.serializeFormData(this.formData()!);
+      const serializedFormData = this.serializeFormData(formData);
       hashedFormData = await this.hashString(serializedFormData);
     }
     const cacheKey = this.isNewFilms ? 'newFilms' : `allFilms_${hashedFormData ?? ''}`;
-    const maxAge = 12 * 60 * 60 * 1000; // 24 hours
+    const maxAge = 12 * 60 * 60 * 1000; // 12 hours
 
     const cachedFilms = await this.storageService.getLocalStorage(cacheKey, maxAge, hasInternet);
     if ((cachedFilms && !isReload) || !hasInternet) {
       this.allFilms = await cachedFilms;
-      this.newFilmsChange.emit(this.allFilms);
       if (!hasInternet) {
         this.toastService.showToast('No internet connection. Showing cached data. Data could be outdated!', 'alert-outline');
       }
       this.loadingService.setLoading(false);
-
       return;
     }
 
     try {
       if (!this.isNewFilms) {
         this.allFilms = await this.filmData.fetchFilmData(formData);
-        this.newFilmsChange.emit(this.allFilms);
-        this.loadingService.setLoading(false);
-
         await this.updateFilmData();
       } else {
         this.allFilms = await this.filmData.fetchNewFilms();
-        this.newFilmsChange.emit(this.allFilms);
       }
     } catch (error) {
       console.error(error);
@@ -178,11 +168,18 @@ export class SearchComponent implements OnInit, OnDestroy {
       this.newFilmsChange.emit(this.allFilms);
       return;
     }
-    // Check cache first
+
     if (this.searchCache.has(this.searchQuery)) {
       this.newFilmsChange.emit(this.searchCache.get(this.searchQuery)!);
       return;
     }
+
+    // Ensure allFilms has data before trying to access properties of its first element
+    if (!this.allFilms || this.allFilms.length === 0) {
+      this.newFilmsChange.emit([]);
+      return;
+    }
+
     const options = {
       keys: [
         { name: 'film_titel', weight: 0.7 },
@@ -203,10 +200,7 @@ export class SearchComponent implements OnInit, OnDestroy {
     const result = fuse.search(this.searchQuery);
 
     const filteredFilms = result.map(({ item }: { item: any }) => item);
-
-    // Cache the result
     this.searchCache.set(this.searchQuery, filteredFilms);
-
     this.newFilmsChange.emit(filteredFilms);
   }
 
@@ -232,7 +226,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       if (film.filminfo_href !== undefined) {
         const filmContent = await this.webScrapingService.scrapeData(film.filminfo_href, this.storageService);
         this.allFilms[index] = { ...film, ...filmContent };
-        this.newFilmsChange.emit(this.allFilms);
       }
     });
 
