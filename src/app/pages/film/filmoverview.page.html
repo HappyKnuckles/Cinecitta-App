@@ -179,8 +179,13 @@
                   <div class="new">NEU</div>
                 </div>
               </ion-col>
-              <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 5px;">
-                <app-favorite-button [film]="film" size="small"></app-favorite-button>
+              <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <ion-icon 
+                  [name]="favoriteFilmIds.has(film.system_id) ? 'heart' : 'heart-outline'" 
+                  (click)="toggleFavorite($event, film)"
+                  [style.color]="favoriteFilmIds.has(film.system_id) ? '#2ce8f4' : '#2ce8f4'"
+                  style="font-size: 30px; font-weight: 700; cursor: pointer; z-index: 15;">
+                </ion-icon>
                 <ion-icon class="infoBtn" [id]="'popover' + film.system_id"
                   name="information-circle-outline"></ion-icon>
               </ion-col>
@@ -341,10 +346,15 @@
             <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
               <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
             </span>
+            <ion-icon 
+              [name]="favoriteFilmIds.has(film.system_id) ? 'heart' : 'heart-outline'" 
+              (click)="toggleFavorite($event, film)"
+              [style.color]="favoriteFilmIds.has(film.system_id) ? '#2ce8f4' : '#2ce8f4'"
+              style="position: absolute; right: 10px; top: 0; font-size: 24px; font-weight: 700; cursor: pointer; z-index: 15;">
+            </ion-icon>
             <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck small">
               <div class="new">NEU</div>
             </div>
-            <app-favorite-button [film]="film" size="small" style="position: absolute; right: 10px; top: -5px;"></app-favorite-button>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">

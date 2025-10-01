@@ -31,15 +31,15 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
-import { Film, Theater, Leinwand } from 'src/app/core/models/filmModel';
+import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline, heart, heartOutline } from 'ionicons/icons';
+import { Film, Theater, Leinwand, NewFilm } from 'src/app/core/models/filmModel';
 import { ViewType } from 'src/app/core/models/viewEnum';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
-import { FavoriteButtonComponent } from 'src/app/shared/components/favorite-button/favorite-button.component';
 import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
 import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
 import * as Filtertags from 'src/app/core/models/filtertags';
@@ -59,7 +59,6 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonIcon,
     IonTitle,
     SearchComponent,
-    FavoriteButtonComponent,
     IonModal,
     IonButtons,
     IonContent,
@@ -112,6 +111,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   behindertenTags = Filtertags.behindertenTags;
   errorMessage = '';
   excluded = Filtertags.excludedFilmValues;
+  favoriteFilmIds: Set<string> = new Set();
   private debounceTimeout: any;
   intervalId: any;
 
@@ -122,7 +122,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private favoritesService: FavoritesService
   ) {
     addIcons({
       ellipsisVertical,
@@ -132,6 +133,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       chevronDown,
       removeOutline,
       informationCircleOutline,
+      heart,
+      heartOutline,
     });
   }
 
@@ -143,6 +146,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
     this.setDefaultSelectedFilterValues();
     await this.onTimeChange(true);
+    await this.loadFavorites();
     this.checkTimes();
     this.startPeriodicCheck();
  
@@ -217,6 +221,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   search(event: any) {
     this.films = event;
+    this.loadFavorites();
     this.content.scrollToTop(300);
   }
 
@@ -568,5 +573,26 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       numericTime += 24;
     }
     return numericTime;
+  }
+
+  async isFavorite(film: Film): Promise<boolean> {
+    const filmId = film.system_id;
+    return this.favoriteFilmIds.has(filmId);
+  }
+
+  async toggleFavorite(event: Event, film: Film): Promise<void> {
+    event.stopPropagation();
+    this.hapticService.vibrate(ImpactStyle.Light, 100);
+    const isFav = await this.favoritesService.toggleFavorite(film);
+    if (isFav) {
+      this.favoriteFilmIds.add(film.system_id);
+    } else {
+      this.favoriteFilmIds.delete(film.system_id);
+    }
+  }
+
+  async loadFavorites(): Promise<void> {
+    const favorites = await this.favoritesService.getFavoriteFilms();
+    this.favoriteFilmIds = new Set(favorites.map((f: Film | NewFilm) => f.system_id || f.film_system_id));
   }
 }

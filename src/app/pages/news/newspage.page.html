@@ -43,8 +43,12 @@
                 <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
               </span>
             </div>
-            <app-favorite-button [film]="film" size="small"
-              style="position: absolute; right: -5px; top: 50%; transform: translateY(-50%); z-index: 1;"></app-favorite-button>
+            <ion-icon 
+              [name]="favoriteFilmIds.has(film.film_system_id || film.system_id) ? 'heart' : 'heart-outline'" 
+              (click)="toggleFavorite($event, film)"
+              [style.color]="favoriteFilmIds.has(film.film_system_id || film.system_id) ? '#2ce8f4' : '#2ce8f4'"
+              style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 24px; font-weight: 700; cursor: pointer; z-index: 15;">
+            </ion-icon>
           </ion-row>
           <ion-row style="padding: 0 10px">
             <ion-col size="4">
