@@ -110,7 +110,7 @@ export class NewsPage implements OnInit {
     }
   }
 
-  async isFavorite(film: NewFilm): Promise<boolean> {
+  isFavorite(film: NewFilm): boolean {
     const filmId = film.film_system_id || film.system_id;
     return this.favoriteFilmIds.has(filmId);
   }

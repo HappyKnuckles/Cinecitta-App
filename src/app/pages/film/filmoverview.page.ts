@@ -575,7 +575,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     return numericTime;
   }
 
-  async isFavorite(film: Film): Promise<boolean> {
+  isFavorite(film: Film): boolean {
     const filmId = film.system_id;
     return this.favoriteFilmIds.has(filmId);
   }
