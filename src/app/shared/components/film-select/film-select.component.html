@@ -12,13 +12,13 @@
     </ion-col>
     <ion-col *ngIf="!showSelect">Top {{ topFilms.length }}</ion-col>
   </ion-row>
-  <ion-row *ngFor="let film of topFilms; let i = index" (click)="onFilmClick(film)" class="contentRow ion-activatable">
+  <ion-row *ngFor="let film of topFilms; let i = index" (click)="onFilmClick(film)" class="content-row ion-activatable">
     <ion-col size="1" style="display: flex; align-items: center; justify-content: center">{{ i + 1 }}.</ion-col>
     <ion-col size="2" style="display: flex; align-items: center; justify-content: center"
       ><img src="{{ film.film_cover_src }}" style="height: 70px"
     /></ion-col>
-    <ion-col style="display: flex; flex-direction: column; justify-content: space-between">
-      <ion-ripple-effect></ion-ripple-effect>
+    <ion-col style="display: flex; flex-direction: column;">
+      <ion-ripple-effect style="border-radius: 7px;"></ion-ripple-effect>
       <div>
         <a>{{ film.film_titel }}</a>
       </div>
@@ -45,7 +45,7 @@
     </ion-col>
     <ion-col *ngIf="!showSelect">Top {{ topFilms.length }}</ion-col>
   </ion-row>
-  <ion-row *ngFor="let n of [1, 2, 3, 4, 5, 6, 7]" class="contentRow ion-activatable">
+  <ion-row *ngFor="let n of [1, 2, 3, 4, 5, 6, 7]" class="content-row ion-activatable">
     <ion-col size="1" style="display: flex; align-items: center; justify-content: center">
       <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
     </ion-col>

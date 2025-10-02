@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonContent } from '@ionic/angular/standalone';
-import { Film } from 'src/app/core/models/filmModel';
-import { NewFilm } from 'src/app/core/models/filmModel';
+import { Film } from 'src/app/core/models/film.model';
+import { NewFilm } from 'src/app/core/models/film.model';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { ImpactStyle } from '@capacitor/haptics';
 

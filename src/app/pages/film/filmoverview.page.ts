@@ -20,9 +20,7 @@ import {
   IonDatetime,
   IonFooter,
   IonRefresher,
-  IonImg,
-  IonPopover,
-  IonSkeletonText, IonRefresherContent
+  IonSkeletonText, IonRefresherContent, IonImg
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import { ImpactStyle } from '@capacitor/haptics';
@@ -31,24 +29,25 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline } from 'ionicons/icons';
-import { Film, Theater, Leinwand } from 'src/app/core/models/filmModel';
-import { ViewType } from 'src/app/core/models/viewEnum';
+import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline, heart, heartOutline } from 'ionicons/icons';
+import { Film } from 'src/app/core/models/film.model';
+import { ViewType } from 'src/app/core/models/views.enum';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
+import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
-import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
-import { TransformTimePipe } from 'src/app/shared/pipes/time-transformer/transform-time.pipe';
-import * as Filtertags from 'src/app/core/models/filtertags';
+import * as Filtertags from 'src/app/core/constants/filtertags.constants';
+import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
+import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/film-view-big.component';
 @Component({
   selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent,
+  imports: [IonImg, IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonBackdrop,
@@ -76,11 +75,7 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonDatetime,
     IonFooter,
     IonRefresher,
-    IonImg,
-    IonPopover,
-    ExtractTextPipe,
-    TransformTimePipe,
-  ],
+    FilmViewMediumComponent, FilmViewBigComponent],
 })
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
@@ -95,13 +90,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   films: Film[] = [];
   message = '';
   isReload = false;
-  isTimesOpen: { [key: string]: boolean } = {};
   isSearchOpen = false;
   isModalOpen = false;
   detailView: boolean[] = [true, false, false];
   showFull: boolean[] = [];
   showAllTags: boolean[] = [];
-  showTrailer: { [key: string]: boolean } = {};
   selectedFilters = Filtertags.selectedFilters;
   filters = Filtertags.filters;
   tageAuswahl = Filtertags.tageAuswahl;
@@ -122,7 +115,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     public loadingService: LoadingService,
     private toastService: ToastService,
     private hapticService: HapticService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private favoritesService: FavoritesService
   ) {
     addIcons({
       ellipsisVertical,
@@ -132,8 +126,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       chevronDown,
       removeOutline,
       informationCircleOutline,
+      heart,
+      heartOutline,
     });
-
   }
 
   async ngOnInit(): Promise<void> {
@@ -146,6 +141,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.onTimeChange(true);
     this.checkTimes();
     this.startPeriodicCheck();
+
 
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
@@ -311,30 +307,12 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await alert.present();
   }
 
-  openTimes(film_id: string, index: number): void {
-    this.hapticService.vibrate(ImpactStyle.Light, 100);
-    this.isTimesOpen[film_id] = !this.isTimesOpen[film_id];
-    if (this.isTimesOpen[film_id]) {
-      setTimeout(() => {
-        this.scrollToGrid(index);
-      }, 300);
-    }
-  }
-
   openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
       this.searchInput.focusInput();
     } else {
       this.searchInput.blurInput();
-    }
-  }
-
-  showTrailers(film: Film): void {
-    if (film.trailerUrl) {
-      this.showTrailer[film.system_id] = !this.showTrailer[film.system_id];
-    } else {
-      this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
     }
   }
 
@@ -404,61 +382,6 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.closeTimes();
 
     await this.loadFilmData();
-  }
-
-  hasScreenings(film: Film): boolean {
-    return film.theater.some((theater) => this.hasScreeningsForTheater(theater));
-  }
-
-  hasScreeningsForTheater(theater: Theater): boolean {
-    return theater.leinwaende.some((leinwand) => this.hasScreeningsForLeinwand(leinwand));
-  }
-
-  hasScreeningsForLeinwand(leinwand: Leinwand): boolean {
-    return leinwand.vorstellungen?.some((vorstellung) => this.isWithinTimeRange(vorstellung.uhrzeit)) ?? false;
-  }
-
-  isWithinTimeRange(uhrzeit: string): boolean {
-    return this.startTime <= uhrzeit && this.formattedEndTime >= uhrzeit;
-  }
-
-  hasFlagName(leinwand: Leinwand, name: string): boolean {
-    return leinwand.release_flags.some((flag: { flag_name: string }) => flag.flag_name === name);
-  }
-
-  getColor(belegung_ampel: string): string {
-    switch (belegung_ampel) {
-      case 'gelb':
-        return '#fc0';
-      case 'orange':
-        return '#f60';
-      case 'rot':
-        return '#c00';
-      default:
-        return '';
-    }
-  }
-
-  async scrollToGrid(index: number): Promise<void> {
-    const gridElement: HTMLElement | null = document.querySelector(`#gridRef-${index}`);
-    if (gridElement) {
-      const scrollElement: HTMLElement = await this.content.getScrollElement();
-      const contentHeight = scrollElement.scrollHeight;
-      const windowHeight = window.innerHeight;
-      const gridOffsetTop = gridElement.offsetTop;
-      const gridHeight = gridElement.offsetHeight;
-
-      let scrollPosition;
-      if (gridHeight > windowHeight) {
-        scrollPosition = gridOffsetTop;
-      } else {
-        scrollPosition = gridOffsetTop - (windowHeight - gridHeight) / 2;
-        const maxScrollPosition = contentHeight - windowHeight;
-        scrollPosition = Math.max(0, Math.min(scrollPosition, maxScrollPosition));
-      }
-
-      this.content.scrollToPoint(0, scrollPosition, 500);
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await

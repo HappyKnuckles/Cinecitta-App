@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { OpenWebsiteService } from 'src/app/services/website/open-website.service';
+import { OpenWebsiteService } from './open-website.service';
 
 describe('OpenWebsiteService', () => {
   let service: OpenWebsiteService;

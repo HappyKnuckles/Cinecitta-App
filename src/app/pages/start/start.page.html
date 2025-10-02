@@ -1,8 +1,57 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title> Start </ion-title>
+    <ion-button slot="end" fill="clear" id="favorites-modal">
+      Favoriten
+    </ion-button>
   </ion-toolbar>
 </ion-header>
+
+<!-- Favorites Modal -->
+<ion-modal #favoritesModal trigger="favorites-modal" [presentingElement]="presentingElement">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Meine Favoriten</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="favoritesModal.dismiss()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <!-- Work in progress background wrong-->
+    <ion-content class="ion-padding" style="--background: var(--ion-background-color, #fff);">
+      <div *ngIf="upcomingFavorites().length === 0 && currentFavorites().length === 0"
+        style="text-align: center; margin-top: 50px; color: var(--ion-color-medium);">
+        <ion-icon name="heart" size="large"></ion-icon>
+        <p>Noch keine Favoriten hinzugefügt</p>
+        <p>Füge Filme zu deinen Favoriten hinzu, indem du auf das Herz-Symbol klickst!</p>
+      </div>
+
+      <!-- Current Films Section -->
+      <div *ngIf="currentFavorites().length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
+        <ion-grid *ngFor="let film of currentFavorites()" style="padding-top: 0">
+          <!-- TODO find a way to include the route mechanic-->
+          <!-- <app-film-view-medium [film]="film" [isNewFilm]="false" (click)="navigateToFilm(film)"></app-film-view-medium> -->
+          <div style="position: relative;">
+            <app-film-view-medium [film]="film" [isNewFilm]="false"></app-film-view-medium>
+            <div style="position: absolute; top: 0; left: 0; width: 40%; height: 100%; cursor: pointer; z-index: 10;"
+              (click)="navigateToFilm(film)"></div>    </div>
+        </ion-grid>
+      </div>
+
+      <!-- Upcoming Films Section -->
+      <div *ngIf="upcomingFavorites().length > 0">
+        <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
+        <ion-grid *ngFor="let film of upcomingFavorites()" style="padding-top: 0">
+          <app-film-view-medium [film]="film" [isNewFilm]="true"></app-film-view-medium>
+        </ion-grid>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
@@ -13,12 +62,11 @@
   <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
   </ion-refresher>
   <app-film-select #filmSelect1 [showSelect]="false"></app-film-select>
-  <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect3 [items]="flags" filterType="filter[releasetypen_flags][]" [showSelect]="true"
-  ></app-film-select>
-  <app-film-select #filmSelect4 [items]="leinwandHighlights" filterType="filter[leinwand_highlight]" [showSelect]="true"
-  ></app-film-select>
+  <app-film-select #filmSelect2 [items]="genres" filterType="filter[genres_tags][]"
+    [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect0 [items]="extras" filterType="filter[extra][]" [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect3 [items]="flags" filterType="filter[releasetypen_flags][]"
+    [showSelect]="true"></app-film-select>
+  <app-film-select #filmSelect4 [items]="leinwandHighlights" filterType="filter[leinwand_highlight]"
+    [showSelect]="true"></app-film-select>
 </ion-content>

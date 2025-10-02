@@ -1,0 +1,173 @@
+@if (!loadingService.isLoading && film()) {
+<section class="film-container">
+  <div class="border" *ngIf="hasScreenings(film()!)">
+    <div class="film-specific">
+      <ion-grid class="info-grid">
+        <ion-row class="info-row" *ngIf="!showTrailer">
+          <ion-col *ngIf="film()!.film_ist_ov === '1'" class="titel info-col ion-text-left">
+            OV
+            <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"></ion-img>
+          </ion-col>
+          <ion-col *ngIf="film()!.film_ist_ov !== '1'" class="titel info-col ion-text-left">
+            <div class="OV"></div>
+          </ion-col>
+          <ion-col style="display: flex; justify-content: center" class="info-col">
+            <div *ngIf="film()!.film_neu === 'NEU'" class="new-viereck">
+              <div class="new">NEU</div>
+            </div>
+          </ion-col>
+          <ion-col class="ion-text-right"
+            style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+            <ion-button fill="clear" size="small">
+              <ion-icon [name]="favoriteFilmIds().has(film()!.system_id) ? 'heart' : 'heart-outline'"
+                (click)="toggleFavorite($event, film()!)" style="font-size: 29px; margin-bottom: 1px;" slot="icon-only" class="info-btn">
+              </ion-icon>
+            </ion-button>
+            <ion-button fill="clear" size="small">
+              <ion-icon slot="icon-only" class="info-btn" [id]="'popover' + film()!.system_id"
+                name="information-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
+
+          <ion-popover [trigger]="'popover' + film()!.system_id" [id]="'popover-' + film()!.system_id">
+            <ng-template>
+              <ion-content>
+                <ion-grid>
+                  <ion-row *ngIf="film()!.film_titel">
+                    <b>Titel:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_titel">
+                    <ion-col>{{ film()!.film_titel }}</ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_dauer">
+                    <b>Dauer:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_dauer">
+                    <ion-col>{{ film()!.film_dauer! | transformTime }}</ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_fsk">
+                    <b>FSK:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_fsk">
+                    <ion-col>{{ film()!.film_fsk }}</ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_tags">
+                    <b>Tags:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_tags">
+                    <ion-col>
+                      <span *ngFor="let tag of film()!.film_tags; let isLast = last"> {{ tag.text }}<span *ngIf="!isLast">,
+                        </span> </span>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_centerstart_zeit">
+                    <b>Im Kino seit:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_centerstart_zeit">
+                    <ion-col>{{ film()!.film_centerstart_zeit }}</ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_darsteller">
+                    <b>Darsteller:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_darsteller">
+                    <ion-col> {{ film()!.film_darsteller | extractText }} </ion-col>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_regisseure">
+                    <b>Regisseure:</b>
+                  </ion-row>
+                  <ion-row *ngIf="film()!.film_regisseure">
+                    <ion-col> {{ film()!.film_regisseure! | extractText }} </ion-col>
+                  </ion-row>
+                </ion-grid>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
+        </ion-row>
+      </ion-grid>
+      <ion-button *ngIf="showTrailer" (click)="showTrailers(film()!)" fill="clear"
+        style="position: absolute; z-index: 10; margin-top: -5px">
+        <ion-icon name="chevron-back"></ion-icon>
+      </ion-button>
+      <!-- TODO find good unit for height-->
+      <video *ngIf="showTrailer" controls style="height: 120.3vmin; width: 85vw"
+        poster="{{film()!.trailerPreviewUrl}}">
+        <source src="{{film()!.trailerUrl}}" />
+      </video>
+      <img style="height: 119vmin" *ngIf="!showTrailer" src="{{film()!.film_cover_src}}"
+        (click)="showTrailers(film()!)" alt="Film Cover von {{film()!.film_titel}}" loading="lazy" />
+      <span class="description">{{film()!.film_beschreibung | extractText}}</span>
+    </div>
+    <!-- TODO ab hier nur accordion anstatt opentimes -->
+    <div (click)="openTimes(i())" style="display: flex; margin-top: 10px; justify-content: center">
+      <ion-icon *ngIf="!isTimesOpen" name="chevron-down"></ion-icon>
+      <ion-icon *ngIf="isTimesOpen" name="chevron-up"></ion-icon>
+    </div>
+
+    <ion-grid *ngIf="isTimesOpen" [id]="'gridRef-' + i()">
+      <ion-row class="weekdays">
+        <ion-col *ngFor="let weekday of film()!.film_wochentage"> {{ weekday?.tag_text }} </ion-col>
+      </ion-row>
+
+      <ng-container *ngFor="let theater of film()!.theater">
+        <ng-container *ngIf="hasScreeningsForTheater(theater)">
+          <ion-row class="theater-row">
+            <ion-col><span class="theater-name">{{ theater.theater_name }}</span></ion-col>
+          </ion-row>
+          <ng-container *ngFor="let leinwand of theater.leinwaende">
+            <ng-container *ngIf="hasScreeningsForLeinwand(leinwand)">
+              <ion-row>
+                <ion-col>
+                  <ion-row class="saal-name">
+                    <ion-col>{{ leinwand.leinwand_name }} <span *ngIf="hasFlagName(leinwand, 'mU')">mU</span></ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col *ngFor="let weekday of film()!.film_wochentage">
+                      <ng-container *ngIf="leinwand.vorstellungen">
+                        <div *ngFor="let vorstellung of leinwand.vorstellungen">
+                          <ng-container
+                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime() <= vorstellung.uhrzeit && formattedEndTime() >= vorstellung.uhrzeit">
+                            <div *ngIf="!vorstellung.deaktiviert && !vorstellung.ausgegraut; else greyVorstellung"
+                              (click)="openExternalWebsite(vorstellung.href!)"
+                              [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
+                              {{ vorstellung.uhrzeit }}
+                            </div>
+                            <ng-template #greyVorstellung>
+                              <div [ngStyle]="{'color': 'grey'}" class="times">{{ vorstellung.uhrzeit }}</div>
+                            </ng-template>
+                          </ng-container>
+                          <!-- TODO Überlegen ob Zeiten ausgrauen oder entfernen-->
+                          <!-- <ng-container
+                                *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime <= vorstellung.uhrzeit && formattedEndTime >= vorstellung.uhrzeit && !vorstellung.ausgegraut && !vorstellung.deaktiviert">
+                                <div (click)="openExternalWebsite(vorstellung.href!)"
+                                  [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
+                                  {{ vorstellung.uhrzeit }}
+                                </div>
+                              </ng-container> -->
+                        </div>
+                      </ng-container>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </ion-grid>
+  </div>
+</section>
+} @else {
+    <section class="film-container">
+      <div class="border">
+        <div class="film-specific">
+          <ion-skeleton-text animated style="height: 120.3vmin; width: 85vw"></ion-skeleton-text>
+          <span class="description">
+            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+            <ion-skeleton-text animated style="width: 40%; height: 20px"></ion-skeleton-text>
+          </span>
+        </div>
+      </div>
+    </section>
+}

@@ -8,15 +8,13 @@
   <ion-toolbar>
     <ion-title> Demnächst </ion-title>
     <ion-buttons slot="end">
-      <ion-button class="actionSheet" (click)="openSearch()">
+      <ion-button class="search-btn" fill="clear" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
-    [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
-  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isNewFilms]="true" [excludedProperties]="excluded"
-    (newFilmsChange)="search($event)"></app-search>
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }" [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+    <app-search [isNewFilms]="true" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search>
   </ion-toolbar>
 </ion-header>
 
@@ -31,90 +29,18 @@
   <!-- Filmcontainer -->
   <main class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
-      <section class="filmContainer small">
-        <div class="border">
-          <ion-row
-            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
-            <span style="padding: 0 5px">{{film.film_titel}}
-              <ng-container *ngIf="film.filmchart_platzierung_aktuell !== null"> Rang
-                {{film.filmchart_platzierung_aktuell}} </ng-container>
-            </span>
-            <span *ngIf="film.film_ist_ov === '1'" style="margin-left: 5px">
-              <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
-            </span>
-          </ion-row>
-          <ion-row style="padding: 0 10px">
-            <ion-col size="4">
-              <img style="margin-bottom: 5px" src="{{film.film_cover_src}}"
-                (click)="openExternalWebsite(film.filminfo_href)" loading="lazy"
-                alt="Film Cover von {{film.film_titel}}" />
-              <span style="display: flex; justify-content: center; color: #a3d9d5">{{film.film_centerstart_zeit}}</span>
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung !== ''"
-              (click)="showFull[i] = true">
-              {{ ((film.film_beschreibung | extractText).length > 125 ? ((film.film_beschreibung | extractText).slice(0,
-              125) + '...') :
-              (film.film_beschreibung | extractText)) }}
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung !== ''"
-              (click)="showFull[i] = false">{{ film.film_beschreibung | extractText}}
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="!showFull[i] && film.film_beschreibung === ''"
-              (click)="showFull[i] = true">
-              {{ ((film.film_kurztext | extractText).length > 125 ? ((film.film_kurztext | extractText).slice(0, 125) +
-              '...') : (film.film_kurztext |
-              extractText)) }}
-            </ion-col>
-            <ion-col class="description" size="8" *ngIf="showFull[i] && film.film_beschreibung === ''"
-              (click)="showFull[i] = false">{{ film.film_kurztext | extractText}}
-            </ion-col>
-            <!-- <ion-col class="description" size="8" *ngIf="film.film_beschreibung === '' && film.film_kurztext === ''">
-              {{film.film_synopsis | extractText}}
-            </ion-col> -->
-          </ion-row>
-        </div>
-      </section>
+    <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
+      <app-film-view-medium [film]="film" [isNewFilm]="true"
+        [attr.data-film-title]="film.film_titel"></app-film-view-medium>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
-      <section class="filmContainer small">
-        <div class="border">
-          <ion-row
-            style="justify-content: center; text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 10px; color: #a3d9d5">
-            <span style="padding: 0 5px">
-              <ion-skeleton-text animated style="width: 100px; height: 20px"></ion-skeleton-text>
-            </span>
-            <span style="margin-left: 5px">
-              <ion-skeleton-text animated style="width: 20px; height: 20px"></ion-skeleton-text>
-            </span>
-          </ion-row>
-          <ion-row style="padding: 0 10px">
-            <ion-col size="4">
-              <ion-skeleton-text animated style="width: 100%; height: 150px"></ion-skeleton-text>
-              <span style="display: flex; justify-content: center; color: #a3d9d5">
-                <ion-skeleton-text animated style="width: 70px; height: 20px"></ion-skeleton-text>
-              </span>
-            </ion-col>
-            <ion-col class="description" size="8">
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-              <ion-skeleton-text animated style="width: 80%; height: 20px"></ion-skeleton-text>
-            </ion-col>
-          </ion-row>
-        </div>
-      </section>
+      <app-film-view-medium [film]="null" [isNewFilm]="true"></app-film-view-medium>
     </ion-grid>
     }
   </main>
 </ion-content>
 
 <!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
-<app-alphabet-scrollwheel 
-  [films]="newFilms" 
-  [content]="content"
-  [alwaysVisible]="true"
-  (letterSelected)="onLetterSelected($event)">
+<app-alphabet-scrollwheel [films]="newFilms" [content]="content" [alwaysVisible]="true">
 </app-alphabet-scrollwheel>

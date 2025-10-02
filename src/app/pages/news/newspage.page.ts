@@ -1,24 +1,23 @@
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
-import { IonRefresherContent, IonSkeletonText, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonRow, IonImg, IonCol, IonButtons } from '@ionic/angular/standalone';
+import { IonRefresherContent, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { search } from 'ionicons/icons';
-import { NewFilm } from 'src/app/core/models/filmModel';
+import { search, heart, heartOutline } from 'ionicons/icons';
+import { ActivatedRoute } from '@angular/router';
+import { NewFilm } from 'src/app/core/models/film.model';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
-import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
-import { ExtractTextPipe } from 'src/app/shared/pipes/extract-text/extract-text.pipe';
-import * as Filtertags from 'src/app/core/models/filtertags';
+import * as Filtertags from 'src/app/core/constants/filtertags.constants';
+import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 @Component({
   selector: 'app-newspage',
   templateUrl: 'newspage.page.html',
   styleUrls: ['newspage.page.scss'],
   standalone: true,
   imports: [IonButtons, IonRefresherContent,
-    IonSkeletonText,
     NgIf,
     IonText,
     IonHeader,
@@ -32,26 +31,41 @@ import * as Filtertags from 'src/app/core/models/filtertags';
     IonRefresher,
     NgFor,
     IonGrid,
-    IonRow,
-    IonImg,
-    IonCol,
-    ExtractTextPipe,
+    FilmViewMediumComponent,
     NgStyle,
     NgClass
   ],
 })
-export class NewsPage {
+export class NewsPage implements OnInit {
   @ViewChild(IonContent) content!: IonContent;
   newFilms: NewFilm[] = [];
-  showFull: boolean[] = [];
   isSearchOpen = false;
   excluded = Filtertags.excludedFilmValues;
 
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  constructor(private website: OpenWebsiteService, public loadingService: LoadingService, private hapticService: HapticService) {
-    addIcons({ search });
+  constructor(
+    public loadingService: LoadingService,
+    private hapticService: HapticService,
+    private route: ActivatedRoute,
+  ) {
+    addIcons({ search, heart, heartOutline });
+  }
+
+  ngOnInit(): void {
+    // Subscribe to query parameters to handle search input from navigation
+    this.route.queryParams.subscribe((params) => {
+      if (params['search']) {
+        this.isSearchOpen = true;
+        // Wait for the search component to be ready, then set the search value
+        setTimeout(() => {
+          if (this.searchComponent) {
+            this.searchComponent.setSearchValue(params['search']);
+          }
+        }, 100);
+      }
+    });
   }
 
   handleRefresh(event: any): void {
@@ -78,19 +92,5 @@ export class NewsPage {
   search(event: any): void {
     this.newFilms = event;
     this.content.scrollToTop(300);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onLetterSelected(_letter: string): void {
-    // Letter selection handling is done by the component itself
-    // This method can be used for additional logic if needed
-  }
-
-  async openExternalWebsite(url: string): Promise<void> {
-    try {
-      await this.website.openExternalWebsite(url);
-    } catch (error) {
-      console.error('Error opening external website: ' + error);
-    }
   }
 }
