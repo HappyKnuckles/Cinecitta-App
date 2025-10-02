@@ -2,16 +2,15 @@
   //background: linear-gradient(#121212, #a3d9d529, #121212);
   margin-top: 10px;
 }
+
 ion-toolbar.toolbar-closed {
   height: 0px !important;
 }
-.action-sheet {
-  --background: none;
-  --background-activated: none;
-  float: right;
+
+.search-btn {
+  margin-right: 6px;
 
   ion-icon {
     color: #a3d9d5;
   }
 }
-

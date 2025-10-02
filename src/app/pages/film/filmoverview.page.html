@@ -15,14 +15,14 @@
     </ion-buttons>
     <ion-title> Aktuelle Filme </ion-title>
     <ion-buttons slot="end">
-      <ion-button class="action-sheet" (click)="openSearch()">
+      <ion-button class="search-btn" fill="clear" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
   <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
   [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
-  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
+  <app-search  [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
     [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search></ion-toolbar>
 </ion-header>
 

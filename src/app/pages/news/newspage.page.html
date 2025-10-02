@@ -8,15 +8,13 @@
   <ion-toolbar>
     <ion-title> Demnächst </ion-title>
     <ion-buttons slot="end">
-      <ion-button class="action-sheet" (click)="openSearch()">
+      <ion-button class="search-btn" fill="clear" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
-    [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
-  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isNewFilms]="true" [excludedProperties]="excluded"
-    (newFilmsChange)="search($event)"></app-search>
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }" [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+    <app-search [isNewFilms]="true" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search>
   </ion-toolbar>
 </ion-header>
 
@@ -32,7 +30,8 @@
   <main class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of newFilms; let i = index; let first = first" style="padding-top: 0">
-      <app-film-view-medium [film]="film" [isNewFilm]="true" [attr.data-film-title]="film.film_titel"></app-film-view-medium>
+      <app-film-view-medium [film]="film" [isNewFilm]="true"
+        [attr.data-film-title]="film.film_titel"></app-film-view-medium>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
@@ -43,8 +42,5 @@
 </ion-content>
 
 <!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
-<app-alphabet-scrollwheel 
-  [films]="newFilms" 
-  [content]="content"
-  [alwaysVisible]="true">
+<app-alphabet-scrollwheel [films]="newFilms" [content]="content" [alwaysVisible]="true">
 </app-alphabet-scrollwheel>

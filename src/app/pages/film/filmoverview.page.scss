@@ -2,9 +2,11 @@
   //background: linear-gradient(#121212, #a3d9d529, #121212);
   margin-top: 10px;
 }
+
 ion-toolbar.toolbar-closed {
   height: 0px !important;
 }
+
 .timePickerModal {
   --height: auto;
   align-items: flex-end;
@@ -66,33 +68,11 @@ ion-toolbar.toolbar-closed {
   }
 }
 
-.action-sheet {
-  --background: none;
-  --background-activated: none;
-  float: right;
+.search-btn {
+  margin-right: 6px;
 
   ion-icon {
     color: #a3d9d5;
-  }
-}
-
-.search {
-  --padding-start: 15px;
-  position: relative;
-  pointer-events: auto;
-  height: 50px;
-
-  ion-icon {
-    font-size: 20px;
-    color: #a3d9d5;
-  }
-
-  .filterBtn {
-    position: absolute;
-    right: 5%;
-    --border-radius: 7px;
-    height: 65%;
-    opacity: 0.8;
   }
 }
 
@@ -116,7 +96,8 @@ ion-toolbar.toolbar-closed {
   }
 
   .new-dreieck {
-    transform: translateY(-4px);    position: absolute;
+    transform: translateY(-4px);
+    position: absolute;
     right: -1px;
     width: 0;
     height: 0;
