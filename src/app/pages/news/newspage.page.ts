@@ -1,4 +1,4 @@
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonButtons } from '@ionic/angular/standalone';
@@ -9,6 +9,7 @@ import { NewFilm } from 'src/app/core/models/film.model';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
 import * as Filtertags from 'src/app/core/constants/filtertags.constants';
 import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 @Component({
@@ -25,11 +26,15 @@ import { FilmViewMediumComponent } from "src/app/shared/components/film-view-med
     IonButton,
     IonIcon,
     SearchComponent,
+    AlphabetScrollwheelComponent,
     IonContent,
     IonRefresher,
     NgFor,
     IonGrid,
-    FilmViewMediumComponent],
+    FilmViewMediumComponent,
+    NgStyle,
+    NgClass
+  ],
 })
 export class NewsPage implements OnInit {
   @ViewChild(IonContent) content!: IonContent;

@@ -20,8 +20,10 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <app-search [isOpen]="isSearchOpen" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
-    [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search>
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
+  [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+  <app-search [ngClass]="{ 'ion-hide':!isSearchOpen }" [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
+    [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search></ion-toolbar>
 </ion-header>
 
 <!-- Filter Modal -->
@@ -162,7 +164,7 @@
   <main *ngIf="detailView[0]" class="content">
     @if (!loadingService.isLoading) {
       @for (film of films; track $index) {
-        <app-film-view-big [i]="$index" [film]="film" [startTime]="startTime" [formattedEndTime]="formattedEndTime" [content]="content"></app-film-view-big>
+        <app-film-view-big [i]="$index" [film]="film" [startTime]="startTime" [formattedEndTime]="formattedEndTime" [content]="content" [attr.data-film-title]="film.film_titel"></app-film-view-big>
       }
  
     } @else {
@@ -178,7 +180,7 @@
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
       <app-film-view-medium [film]="film" [isNewFilm]="false"
-        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"></app-film-view-medium>
+        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}" [attr.data-film-title]="film.film_titel"></app-film-view-medium>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
@@ -190,7 +192,7 @@
   <!-- Miniview -->
   <main *ngIf="detailView[2]" class="content">
     @if (!loadingService.isLoading) {
-    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
+    <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
       <div class="film-container" *ngIf="film.film_ist_ov === '0'"
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
@@ -248,3 +250,11 @@
     }
   </main>
 </ion-content>
+
+<!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
+<app-alphabet-scrollwheel 
+  [films]="films" 
+  [content]="content"
+  [alwaysVisible]="true"
+  (letterSelected)="onLetterSelected($event)">
+</app-alphabet-scrollwheel>

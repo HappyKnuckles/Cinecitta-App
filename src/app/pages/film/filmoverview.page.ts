@@ -38,6 +38,7 @@ import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
+import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
 import * as Filtertags from 'src/app/core/constants/filtertags.constants';
 import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/film-view-big.component';
@@ -57,6 +58,7 @@ import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/fi
     IonIcon,
     IonTitle,
     SearchComponent,
+    AlphabetScrollwheelComponent,
     IonModal,
     IonButtons,
     IonContent,
@@ -140,6 +142,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.checkTimes();
     this.startPeriodicCheck();
 
+
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
         this.isSearchOpen = true;
@@ -211,7 +214,9 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
 
   search(event: any) {
     this.films = event;
-    this.content.scrollToTop(300);
+    if (this.films.length !== 0) {
+      this.content.scrollToTop(300);
+    }
   }
 
   handleRefresh(event: any): void {
@@ -489,5 +494,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
       numericTime += 24;
     }
     return numericTime;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onLetterSelected(_letter: string): void {
+    // Letter selection handling is done by the component itself
+    // This method can be used for additional logic if needed
   }
 }
