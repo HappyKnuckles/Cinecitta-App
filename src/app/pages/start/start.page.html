@@ -35,7 +35,10 @@
         <ion-grid *ngFor="let film of currentFavorites()" style="padding-top: 0">
           <!-- TODO find a way to include the route mechanic-->
           <!-- <app-film-view-medium [film]="film" [isNewFilm]="false" (click)="navigateToFilm(film)"></app-film-view-medium> -->
-          <app-film-view-medium [film]="film" [isNewFilm]="false"></app-film-view-medium>
+          <div style="position: relative;">
+            <app-film-view-medium [film]="film" [isNewFilm]="false"></app-film-view-medium>
+            <div style="position: absolute; top: 0; left: 0; width: 40%; height: 100%; cursor: pointer; z-index: 10;"
+              (click)="navigateToFilm(film)"></div>    </div>
         </ion-grid>
       </div>
 
