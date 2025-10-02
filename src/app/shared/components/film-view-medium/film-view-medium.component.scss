@@ -1,37 +1,29 @@
-.filmContainer {
-  padding: 0 0 30px;
+.film-container {
+  padding: 0 0 10px;
 
-  &.small {
-    padding: 0 0 10px;
-  }
-    .new-dreieck {
-      transform: translateY(-22px);
-      position: absolute;
-      right: -1px;
-      top: 10px;
-      width: 0;
-      height: 0;
-      border-style: solid;
-      border-radius: 0 7px 0 0;
-      border-width: 0 40px 40px 0;
-      border-color: transparent #1d979f transparent transparent;
+  .new-dreieck {
+    transform: translateY(-22px);
+    position: absolute;
+    right: -1px;
+    top: 11px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-radius: 0 7px 0 0;
+    border-width: 0 33px 33px 0;
+    border-color: transparent #1d979f transparent transparent;
+    opacity: 0.9;
+
+    .new {
+      transform: rotate(45deg);
+      color: #fff;
       font-size: 10px;
-      opacity: 0.9;
-  
-      &.mini {
-        transform: translateY(-4px);
-        top: unset;
-      }
-  
-      .new {
-        transform: rotate(45deg);
-        color: #fff;
-        font-size: 12px;
-        top: 6px;
-        right: -39px;
-        position: absolute;
-      }
+      top: 4px;
+      right: -32px;
+      position: absolute;
     }
+  }
+
   .border {
     padding: 10px 0;
     box-shadow: 0 4px 16px #a3d9d558;

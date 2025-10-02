@@ -1,4 +1,4 @@
-export * from './filtertags';
+export * from './filtertags.constants';
 export const selectedFilters: any = {
   genresTags: [],
   tageAuswahl: [],

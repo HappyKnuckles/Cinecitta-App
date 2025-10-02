@@ -15,7 +15,7 @@
     </ion-buttons>
     <ion-title> Aktuelle Filme </ion-title>
     <ion-buttons slot="end">
-      <ion-button class="actionSheet" (click)="openSearch()">
+      <ion-button class="action-sheet" (click)="openSearch()">
         <ion-icon name="search"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -191,7 +191,7 @@
   <main *ngIf="detailView[2]" class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
-      <div class="filmContainer mini" *ngIf="film.film_ist_ov === '0'"
+      <div class="film-container" *ngIf="film.film_ist_ov === '0'"
         [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
@@ -200,8 +200,8 @@
             </div>
           </ion-row>
           <ion-row>
-            <ion-col size="1">
-              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)" style="width: 10vw"
+            <ion-col size="1.5">
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
                 alt="Film Cover von {{film.film_titel}}" loading="lazy" />
             </ion-col>
             <ion-col style="
@@ -214,6 +214,7 @@
                 margin-bottom: 10px;
                 padding: 0 30px;
                 color: #a3d9d5;
+                margin-right: 16px;
               ">{{film.film_titel}}</ion-col>
           </ion-row>
         </div>
@@ -221,7 +222,7 @@
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
-      <section class="filmContainer mini">
+      <section class="film-container">
         <div class="border">
           <ion-row>
             <ion-col size="1">

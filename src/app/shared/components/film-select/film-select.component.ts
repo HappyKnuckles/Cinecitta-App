@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, Output, OnInit, signal } from '@angular
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonSkeletonText, IonItem, IonGrid, IonRow, IonCol, IonSelect, IonSelectOption, IonRippleEffect } from '@ionic/angular/standalone';
-import { Film } from 'src/app/core/models/filmModel';
+import { Film } from 'src/app/core/models/film.model';
 import { FilmDataService } from 'src/app/core/services/film-data/film-data.service';
 import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';

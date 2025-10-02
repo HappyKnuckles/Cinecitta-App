@@ -1,6 +1,6 @@
-import { Component, ViewChildren, QueryList, ViewChild, OnInit } from "@angular/core";
+import { Component, ViewChildren, QueryList, ViewChild, OnInit, computed } from "@angular/core";
 import { ImpactStyle } from "@capacitor/haptics";
-import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, IonListHeader, IonList } from "@ionic/angular/standalone";
+import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid } from "@ionic/angular/standalone";
 import { NgFor, NgIf } from "@angular/common";
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
@@ -10,16 +10,16 @@ import { LoadingService } from "src/app/core/services/loader/loading.service";
 import { ToastService } from "src/app/core/services/toast/toast.service";
 import { FavoritesService } from "src/app/core/services/favorites/favorites.service";
 import { FilmSelectComponent } from "src/app/shared/components/film-select/film-select.component";
-import { Film, NewFilm } from "src/app/core/models/filmModel";
-import { ExtractTextPipe } from "src/app/shared/pipes/extract-text/extract-text.pipe";
-import * as Filtertags from "src/app/core/models/filtertags";
+import { Film, NewFilm } from "src/app/core/models/film.model";
+import * as Filtertags from "src/app/core/constants/filtertags.constants";
 import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
+
 @Component({
   selector: 'app-tab1',
   templateUrl: 'start.page.html',
   styleUrls: ['start.page.scss'],
   standalone: true,
-  imports: [IonList, IonListHeader, IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, IonRow, IonCol, IonImg, NgFor, NgIf, FilmSelectComponent, ExtractTextPipe, FilmViewMediumComponent],
+  imports: [IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, NgFor, NgIf, FilmSelectComponent, FilmViewMediumComponent],
 })
 export class StartPage implements OnInit {
   @ViewChildren(FilmSelectComponent)
@@ -31,8 +31,12 @@ export class StartPage implements OnInit {
   leinwandHighlights = Filtertags.leinwandHighlights;
   extras = Filtertags.extras;
 
-  upcomingFavorites: (Film | NewFilm)[] = [];
-  currentFavorites: (Film | NewFilm)[] = [];
+  upcomingFavorites = computed(() =>
+    this.favoritesService.favoriteFilms().filter(film => this.isFilmUpcoming(film))
+  );
+  currentFavorites = computed(() =>
+    this.favoritesService.favoriteFilms().filter(film => !this.isFilmUpcoming(film))
+  );
   presentingElement!: HTMLElement | null;
 
   constructor(
@@ -45,10 +49,8 @@ export class StartPage implements OnInit {
     addIcons({ heart, close });
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.presentingElement = document.querySelector('ion-router-outlet');
-    await this.loadFavorites();
-
   }
 
   handleRefresh(event: any): void {
@@ -77,185 +79,31 @@ export class StartPage implements OnInit {
     }
   }
 
-  private async loadFavorites(): Promise<void> {
-    try {
-      // Get favorite films directly from storage
-      const favoriteFilms = await this.favoritesService.getFavoriteFilms();
-
-      // Clear previous favorites
-      this.currentFavorites = [];
-      this.upcomingFavorites = [];
-
-      if (favoriteFilms.length === 0) {
-        return;
-      }
-
-      // Categorize each favorite film based on its release date
-      for (const film of favoriteFilms) {
-        const isUpcoming = this.isFilmUpcoming(film);
-        if (isUpcoming) {
-          this.upcomingFavorites.push(film);
-        } else {
-          this.currentFavorites.push(film);
-        }
-      }
-
-    } catch (error) {
-      console.error('Error loading favorites:', error);
-      this.toastService.showToast('Error loading favorites', 'alert-outline', true);
-    }
-  }
-
-
-
   private isFilmUpcoming(film: Film | NewFilm): boolean {
+    // TODO add seperation for films that are not in cinema anymore
     const currentDate = new Date();
-    // Set time to start of tomorrow - films from today and earlier should be "current"  
-    const tomorrow = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() + 1);
+    const filmDate = this.parseGermanDate(film.film_centerstart_zeit);
 
-    // Try different date fields in order of preference
-    let releaseDateString = '';
-
-    if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
-      releaseDateString = film.film_bundesstart_datum_iso;
-    } else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
-      releaseDateString = film.film_bundesstart_datum;
-    } else if ('film_centerstart_zeit' in film && film.film_centerstart_zeit) {
-      releaseDateString = film.film_centerstart_zeit;
-    }
-
-    if (!releaseDateString) {
-      return false; // No date available, assume current
-    }
-
-    try {
-      // Try to parse the date string
-      let releaseDate: Date;
-
-      // Handle different date formats
-      if (releaseDateString.includes('T') || releaseDateString.includes('Z')) {
-        // ISO format
-        releaseDate = new Date(releaseDateString);
-      } else if (releaseDateString.includes('.')) {
-        // German format DD.MM.YYYY
-        const parts = releaseDateString.split('.');
-        if (parts.length === 3) {
-          releaseDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-        } else {
-          releaseDate = new Date(releaseDateString);
-        }
-      } else {
-        // Try default parsing
-        releaseDate = new Date(releaseDateString);
-      }
-
-      // Film is upcoming only if it releases tomorrow or later (NOT today)
-      return releaseDate >= tomorrow;
-    } catch (error) {
-      return false; // If parsing fails, assume current
-    }
+    return filmDate > currentDate;
   }
 
-  getFilmDate(film: Film | NewFilm): string {
-    // Try different date fields in order of preference
-    let dateString = '';
-
-    // For Film interface, prefer film_bundesstart_datum_iso first
-    if ('film_bundesstart_datum_iso' in film && film.film_bundesstart_datum_iso) {
-      dateString = film.film_bundesstart_datum_iso;
+  private parseGermanDate(dateStr: string): Date {
+    if (typeof dateStr === 'string' && dateStr.includes('.')) {
+      const [day, month, year] = dateStr.split('.');
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
     }
-    // Common field in both interfaces
-    else if ('film_bundesstart_datum' in film && film.film_bundesstart_datum) {
-      dateString = film.film_bundesstart_datum;
-    }
-    // For NewFilm interface, try film_centerstart_zeit
-    else if ('film_centerstart_zeit' in film && film.film_centerstart_zeit) {
-      dateString = film.film_centerstart_zeit;
-    }
-
-    if (!dateString) {
-      return 'Datum nicht verfügbar';
-    }
-
-    try {
-      // Try to format the date nicely
-      let date: Date;
-
-      if (dateString.includes('T') || dateString.includes('Z')) {
-        // ISO format
-        date = new Date(dateString);
-      } else if (dateString.includes('.')) {
-        // German format DD.MM.YYYY - already formatted
-        return dateString;
-      } else {
-        // Try default parsing
-        date = new Date(dateString);
-      }
-
-      // Format to German date format
-      return date.toLocaleDateString('de-DE');
-    } catch (error) {
-      return dateString; // Return original string if parsing fails
-    }
-  }
-
-  getFilmImage(film: Film | NewFilm): string {
-    // Try different image fields in order of preference
-    if ('film_cover_src' in film && film.film_cover_src) {
-      return film.film_cover_src;
-    }
-    if ('film_poster' in film && film.film_poster) {
-      return film.film_poster;
-    }
-    return 'https://via.placeholder.com/300x400/6c757d/ffffff?text=Film';
-  }
-
-  getFilmDescription(film: Film | NewFilm): string {
-    // Try different description fields and extract text
-    let description = '';
-
-    // For Film interface, check film_beschreibung first
-    if ('film_beschreibung' in film && film.film_beschreibung) {
-      description = film.film_beschreibung;
-    }
-    // For NewFilm interface, check film_kurztext first  
-    else if ('film_kurztext' in film && film.film_kurztext) {
-      description = film.film_kurztext;
-    }
-    // Common fields in both interfaces
-    else if ('film_teasertext' in film && film.film_teasertext) {
-      description = film.film_teasertext;
-    } else if ('film_synopsis' in film && film.film_synopsis) {
-      description = film.film_synopsis;
-    }
-
-    if (!description) {
-      return 'Keine Beschreibung verfügbar';
-    }
-
-    // Use ExtractTextPipe to extract clean text content (remove HTML tags)
-    const extractTextPipe = new ExtractTextPipe();
-    const extractedText = extractTextPipe.transform(description).trim();
-
-    // Return full description without character limit
-    return extractedText;
+    return new Date(dateStr);
   }
 
   navigateToFilm(film: Film | NewFilm): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-
-    // Dismiss the modal first
     this.modal.dismiss();
 
-    // Route to the appropriate page based on film release date
     const isUpcoming = this.isFilmUpcoming(film);
     if (isUpcoming) {
-      // Route to news/demnächst page for upcoming films
       this.router.navigate(['/tabs/news'], { queryParams: { search: film.film_titel } });
     } else {
-      // Route to film page for current films
       this.router.navigate(['/tabs/film'], { queryParams: { search: film.film_titel } });
     }
   }
-
 }

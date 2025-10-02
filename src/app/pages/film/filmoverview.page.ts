@@ -20,7 +20,7 @@ import {
   IonDatetime,
   IonFooter,
   IonRefresher,
-  IonSkeletonText, IonRefresherContent
+  IonSkeletonText, IonRefresherContent, IonImg
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import { ImpactStyle } from '@capacitor/haptics';
@@ -30,15 +30,15 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline, heart, heartOutline } from 'ionicons/icons';
-import { Film } from 'src/app/core/models/filmModel';
-import { ViewType } from 'src/app/core/models/viewEnum';
+import { Film } from 'src/app/core/models/film.model';
+import { ViewType } from 'src/app/core/models/views.enum';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
-import * as Filtertags from 'src/app/core/models/filtertags';
+import * as Filtertags from 'src/app/core/constants/filtertags.constants';
 import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/film-view-big.component';
 @Component({
@@ -46,7 +46,7 @@ import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/fi
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent,
+  imports: [IonImg, IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonBackdrop,
@@ -139,7 +139,7 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     await this.onTimeChange(true);
     this.checkTimes();
     this.startPeriodicCheck();
- 
+
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
         this.isSearchOpen = true;

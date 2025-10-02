@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { WebscraperService } from '../scraper/webscraper.service';
-import { Film, Leinwand, NewFilm, Theater } from '../../models/filmModel';
+import { Film, Leinwand, NewFilm, Theater } from '../../models/film.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
-  constructor(private http: HttpClient, private webScrapingService: WebscraperService) {}
+  constructor(private http: HttpClient, private webScrapingService: WebscraperService) { }
 
   async fetchNewFilms(): Promise<NewFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen';

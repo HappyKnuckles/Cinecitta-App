@@ -1,7 +1,7 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { Component, inject, input, OnInit } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { IonGrid, IonRow, IonCol, IonButton, IonIcon, IonPopover, IonImg, IonSkeletonText, IonContent } from "@ionic/angular/standalone";
-import { Film, Leinwand, NewFilm, Theater } from 'src/app/core/models/filmModel';
+import { Film, Leinwand, Theater } from 'src/app/core/models/film.model';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
 import { ExtractTextPipe } from '../../pipes/extract-text/extract-text.pipe';
@@ -9,6 +9,7 @@ import { ToastService } from 'src/app/core/services/toast/toast.service';
 import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
+import { ImpactStyle } from '@capacitor/haptics';
 
 @Component({
   selector: 'app-film-view-big',
@@ -17,7 +18,7 @@ import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.p
   standalone: true,
   imports: [IonContent, IonSkeletonText, TransformTimePipe, ExtractTextPipe, IonImg, NgFor, NgStyle, NgIf, IonPopover, IonIcon, IonButton, IonCol, IonRow, IonGrid,]
 })
-export class FilmViewBigComponent implements OnInit {
+export class FilmViewBigComponent {
   loadingService = inject(LoadingService);
   content = input.required<IonContent>();
   startTime = input.required<string>();
@@ -25,14 +26,11 @@ export class FilmViewBigComponent implements OnInit {
   i = input.required<number>();
   isTimesOpen = false;
   showTrailer = false;
-  favoriteFilmIds: Set<string> = new Set();
+  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map(film => film.system_id || film.film_system_id)));
 
   film = input.required<Film | null>();
   constructor(private website: OpenWebsiteService, private toastService: ToastService, private favoritesService: FavoritesService, private hapticService: HapticService) { }
 
-  ngOnInit() { 
-    this.loadFavorites();
-  }
   async openExternalWebsite(url: string): Promise<void> {
     try {
       await this.website.openExternalWebsite(url);
@@ -63,7 +61,7 @@ export class FilmViewBigComponent implements OnInit {
     if (film.trailerUrl) {
       this.showTrailer = !this.showTrailer;
     } else {
-      // this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
+      this.toastService.showToast(`Kein Trailer für ${film.film_titel} verfügbar`, 'bug', true);
     }
   }
   getColor(belegung_ampel: string): string {
@@ -100,8 +98,8 @@ export class FilmViewBigComponent implements OnInit {
       this.content().scrollToPoint(0, scrollPosition, 500);
     }
   }
-  openTimes(film_id: string, i: number): void {
-    // this.hapticService.vibrate(ImpactStyle.Light, 100);
+  openTimes(i: number): void {
+    this.hapticService.vibrate(ImpactStyle.Light, 100);
     this.isTimesOpen = !this.isTimesOpen;
     if (this.isTimesOpen) {
       setTimeout(() => {
@@ -110,24 +108,9 @@ export class FilmViewBigComponent implements OnInit {
     }
   }
 
-  isFavorite(film: Film): boolean {
-    const filmId = film.system_id;
-    return this.favoriteFilmIds.has(filmId);
-  }
-
   async toggleFavorite(event: Event, film: Film): Promise<void> {
     event.stopPropagation();
-    // this.hapticService.vibrate(ImpactStyle.Light, 100);
-    const isFav = await this.favoritesService.toggleFavorite(film);
-    if (isFav) {
-      this.favoriteFilmIds.add(film.system_id);
-    } else {
-      this.favoriteFilmIds.delete(film.system_id);
-    }
-  }
-
-  async loadFavorites(): Promise<void> {
-    const favorites = await this.favoritesService.getFavoriteFilms();
-    this.favoriteFilmIds = new Set(favorites.map((f: Film | NewFilm) => f.system_id || f.film_system_id));
+    this.hapticService.vibrate(ImpactStyle.Light, 100);
+    await this.favoritesService.toggleFavorite(film);
   }
 }

@@ -4,7 +4,7 @@
   }
 }
 
-.filmContainer {
+.film-container {
   padding: 0 0 30px;
 
   .border {
@@ -16,33 +16,37 @@
     margin: 0 auto;
   }
 
-  .filmSpecific {
+  .film-specific {
     padding: 0 10px;
     position: relative;
   }
 
-  .infoGrid {
+  .info-grid {
     position: absolute;
     z-index: 5;
+    top: -4px;
     width: calc(100% - 20px);
     height: 10%;
     background: linear-gradient(rgba(0, 0, 0, 0.681), #0000);
     pointer-events: none;
-    /* Prevent blocking clicks on child elements */
 
-    .infoRow {
+    .info-row {
       width: 100%;
+      display: flex;
       pointer-events: auto;
-      /* Re-enable clicks on row content */
+      align-items: center;
     }
 
-    .infoBtn {
+    .info-col {
+      margin-bottom: 9px;
+    }
+
+    .info-btn {
       transform: translateY(-3px);
       color: #2ce8f4;
       font-weight: 700;
       font-size: 30px;
       pointer-events: auto;
-      /* Ensure info button can receive clicks */
     }
 
     .new-viereck {
@@ -106,10 +110,6 @@
     width: 90vw;
   }
 
-  .tagcontainer {
-    margin-top: 15px;
-  }
-
   .description {
     display: block;
     font-size: 16px;
@@ -117,11 +117,11 @@
     margin-bottom: 5px;
   }
 
-  ion-grid:not(.infoGrid) {
+  ion-grid:not(.info-grid) {
     margin-top: 10px;
     text-align: center;
 
-    .saalName {
+    .saal-name {
       color: #a3d9d5;
       margin: 10px 0;
     }
@@ -145,7 +145,7 @@
     font-size: 25px;
   }
 
-  .theaterName {
+  .theater-name {
     padding: 3px 5px;
     background: #ccc;
     border-radius: 5px;

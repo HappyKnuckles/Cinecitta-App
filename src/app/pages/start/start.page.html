@@ -22,7 +22,7 @@
     </ion-header>
     <!-- Work in progress background wrong-->
     <ion-content class="ion-padding" style="--background: var(--ion-background-color, #fff);">
-      <div *ngIf="upcomingFavorites.length === 0 && currentFavorites.length === 0"
+      <div *ngIf="upcomingFavorites().length === 0 && currentFavorites().length === 0"
         style="text-align: center; margin-top: 50px; color: var(--ion-color-medium);">
         <ion-icon name="heart" size="large"></ion-icon>
         <p>Noch keine Favoriten hinzugefügt</p>
@@ -30,17 +30,19 @@
       </div>
 
       <!-- Current Films Section -->
-      <div *ngIf="currentFavorites.length > 0">
+      <div *ngIf="currentFavorites().length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Aktuell im Kino</h3>
-        <ion-grid *ngFor="let film of currentFavorites" style="padding-top: 0">
+        <ion-grid *ngFor="let film of currentFavorites()" style="padding-top: 0">
+          <!-- TODO find a way to include the route mechanic-->
+          <!-- <app-film-view-medium [film]="film" [isNewFilm]="false" (click)="navigateToFilm(film)"></app-film-view-medium> -->
           <app-film-view-medium [film]="film" [isNewFilm]="false"></app-film-view-medium>
         </ion-grid>
       </div>
 
       <!-- Upcoming Films Section -->
-      <div *ngIf="upcomingFavorites.length > 0">
+      <div *ngIf="upcomingFavorites().length > 0">
         <h3 style="color: var(--ion-color-primary); margin-top: 20px;">Demnächst</h3>
-        <ion-grid *ngFor="let film of upcomingFavorites" style="padding-top: 0">
+        <ion-grid *ngFor="let film of upcomingFavorites()" style="padding-top: 0">
           <app-film-view-medium [film]="film" [isNewFilm]="true"></app-film-view-medium>
         </ion-grid>
       </div>

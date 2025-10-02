@@ -1,8 +1,8 @@
-<div class="searchContainer" [@openClose]="!isOpen ? true : false">
+<div class="search-container" [@openClose]="!isOpen ? true : false">
   <ion-searchbar appSearchBlur disabled="{{ !isOpen }}" class="search" maxlength="40" #searchInput placeholder="Search" [(ngModel)]="searchQuery"
     (ngModelChange)="onSearchChange($event)" showCancelButton="focus">
   </ion-searchbar>
-  <ion-button disabled="{{ !isOpen }}" size="small" *ngIf="showFilterButton" class="filterBtn" id="filter-modal"
+  <ion-button disabled="{{ !isOpen }}" size="small" *ngIf="showFilterButton" class="filter-btn" id="filter-modal"
     (click)="emitSetOpen(true)" fill="clear">
     <ion-icon name="filter-outline" slot="icon-only"></ion-icon>
   </ion-button>

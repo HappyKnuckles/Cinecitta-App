@@ -5,11 +5,11 @@ import { IonRefresherContent, IonText, IonHeader, IonToolbar, IonTitle, IonButto
 import { addIcons } from 'ionicons';
 import { search, heart, heartOutline } from 'ionicons/icons';
 import { ActivatedRoute } from '@angular/router';
-import { NewFilm } from 'src/app/core/models/filmModel';
+import { NewFilm } from 'src/app/core/models/film.model';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
-import * as Filtertags from 'src/app/core/models/filtertags';
+import * as Filtertags from 'src/app/core/constants/filtertags.constants';
 import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
 @Component({
   selector: 'app-newspage',
@@ -41,7 +41,7 @@ export class NewsPage implements OnInit {
   searchComponent!: SearchComponent;
 
   constructor(
-    public loadingService: LoadingService, 
+    public loadingService: LoadingService,
     private hapticService: HapticService,
     private route: ActivatedRoute,
   ) {

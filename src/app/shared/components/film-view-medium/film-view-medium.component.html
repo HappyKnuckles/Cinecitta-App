@@ -1,5 +1,5 @@
 @if(!loadingService.isLoading && film()) {
-<section class="filmContainer small">
+<section class="film-container">
   <div class="border">
     <ion-row style="position: relative;">
       <ion-col style="text-align: left; margin-left: 12px;">
@@ -9,13 +9,13 @@
           <ion-img class="OV" src="assets/images/united-kingdom.png" alt="England Flagge"> </ion-img>
         </span>
       </ion-col>
-      <div *ngIf="isRecentFilm()" class="new-dreieck small">
+      <div *ngIf="isRecentFilm()" class="new-dreieck">
         <div class="new">NEU</div>
       </div>
       <ion-col size="1.5">
-        <ion-icon [name]="favoriteFilmIds.has(film()!.film_system_id || film()!.system_id) ? 'heart' : 'heart-outline'"
+        <ion-icon [name]="favoriteFilmIds().has(film()!.film_system_id || film()!.system_id) ? 'heart' : 'heart-outline'"
           (click)="toggleFavorite($event)"
-          [style.color]="favoriteFilmIds.has(film()!.film_system_id || film()!.system_id) ? '#2ce8f4' : '#2ce8f4'">
+          [style.color]="favoriteFilmIds().has(film()!.film_system_id || film()!.system_id) ? '#2ce8f4' : '#2ce8f4'">
         </ion-icon>
       </ion-col>
 
@@ -67,7 +67,7 @@
   </div>
 </section>
 } @else {
-<section class="filmContainer small">
+<section class="film-container">
   <div class="border">
     <ion-row>
       <ion-col style="text-align: left; margin-left: 12px;">
