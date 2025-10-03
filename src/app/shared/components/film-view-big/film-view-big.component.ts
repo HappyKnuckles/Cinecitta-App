@@ -10,13 +10,14 @@ import { FavoritesService } from 'src/app/core/services/favorites/favorites.serv
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
 import { ImpactStyle } from '@capacitor/haptics';
+import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-like/double-click-like.directive';
 
 @Component({
   selector: 'app-film-view-big',
   templateUrl: './film-view-big.component.html',
   styleUrls: ['./film-view-big.component.scss'],
   standalone: true,
-  imports: [IonContent, IonSkeletonText, TransformTimePipe, ExtractTextPipe, IonImg, NgFor, NgStyle, NgIf, IonPopover, IonIcon, IonButton, IonCol, IonRow, IonGrid,]
+  imports: [IonContent, IonSkeletonText, TransformTimePipe, ExtractTextPipe, IonImg, NgFor, NgStyle, NgIf, IonPopover, IonIcon, IonButton, IonCol, IonRow, IonGrid, DoubleClickLikeDirective]
 })
 export class FilmViewBigComponent {
   loadingService = inject(LoadingService);

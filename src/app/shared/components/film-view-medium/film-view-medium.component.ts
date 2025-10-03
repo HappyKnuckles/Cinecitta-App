@@ -10,13 +10,14 @@ import { FavoritesService } from 'src/app/core/services/favorites/favorites.serv
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { heartOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
+import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-like/double-click-like.directive';
 
 @Component({
   selector: 'app-film-view-medium',
   templateUrl: './film-view-medium.component.html',
   styleUrls: ['./film-view-medium.component.scss'],
   standalone: true,
-  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe]
+  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe, DoubleClickLikeDirective]
 })
 export class FilmViewMediumComponent{
   loadingService = inject(LoadingService);
