@@ -1,5 +1,5 @@
 @if (!loadingService.isLoading && film()) {
-<section class="film-container">
+<section class="film-container" appDoubleClickLike (doubleClickLike)="toggleFavorite($event, film()!)">
   <div class="border" *ngIf="hasScreenings(film()!)">
     <div class="film-specific">
       <ion-grid class="info-grid">
