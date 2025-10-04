@@ -109,7 +109,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/kino10.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 1",
+    name: 'Deluxe 1',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 75 m²',
     projektion: 'Sony Dual 4k',
@@ -118,7 +118,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe1.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 2",
+    name: 'Deluxe 2',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 64 m²',
     projektion: 'Digital 4k',
@@ -127,7 +127,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe2.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 3",
+    name: 'Deluxe 3',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 34 m²',
     projektion: 'Digital 4k',
@@ -136,7 +136,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe3.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 4",
+    name: 'Deluxe 4',
     ton: '7.1 & Dolby Atmos',
     leinwand: '55 m²',
     projektion: 'Samsung Onyx LED',
@@ -145,7 +145,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe4.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 5",
+    name: 'Deluxe 5',
     ton: '7.1 & Dolby Atmos',
     leinwand: '17 m²',
     projektion: 'DLP 4K Laser',
@@ -154,7 +154,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe5.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 6",
+    name: 'Deluxe 6',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 50 m²',
     projektion: 'Digital 4k',
@@ -163,7 +163,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe6.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 7",
+    name: 'Deluxe 7',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 38 m²',
     projektion: 'Digital 4k',
@@ -172,7 +172,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe7.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 8",
+    name: 'Deluxe 8',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 34 m²',
     projektion: 'Digital 4k',
@@ -181,7 +181,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe8.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 9",
+    name: 'Deluxe 9',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 34 m²',
     projektion: 'Digital 4k',
@@ -190,7 +190,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe9.jpg',
   },
   {
-    name: "CINECITTA' Deluxe 10",
+    name: 'Deluxe 10',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 96 m²',
     projektion: 'Digital Laser 4k',
@@ -199,7 +199,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/deluxe10.jpg',
   },
   {
-    name: 'Studio-Kino 1',
+    name: 'Studio 1',
     ton: '5.1 - Dirac Live',
     leinwand: 'ca. 18 m²',
     projektion: 'Digital 2k',
@@ -208,7 +208,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/studio1.jpg',
   },
   {
-    name: 'Studio-Kino 2',
+    name: 'Studio 2',
     ton: '7.1 - Dirac Live',
     leinwand: 'ca. 18 m²',
     projektion: 'Digital 4k',
@@ -217,7 +217,7 @@ export const KINOS: Kino[] = [
     image: '/assets/images/studio2.jpg',
   },
   {
-    name: 'Studio-Kino 3',
+    name: 'Studio 3',
     ton: '7.1 - Dirac Live',
     leinwand: 'ca. 12 m²',
     projektion: 'Digital 4k',
