@@ -1,6 +1,21 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { IonGrid, IonRow, IonCol, IonButton, IonIcon, IonPopover, IonImg, IonSkeletonText, IonContent } from "@ionic/angular/standalone";
+import {
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonButton,
+  IonIcon,
+  IonPopover,
+  IonImg,
+  IonSkeletonText,
+  IonContent,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Film, Leinwand, Theater } from 'src/app/core/models/film.model';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
@@ -11,13 +26,35 @@ import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
 import { ImpactStyle } from '@capacitor/haptics';
 import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-like/double-click-like.directive';
+import { Kino, KINOS } from 'src/app/core/models/kino';
 
 @Component({
   selector: 'app-film-view-big',
   templateUrl: './film-view-big.component.html',
   styleUrls: ['./film-view-big.component.scss'],
   standalone: true,
-  imports: [IonContent, IonSkeletonText, TransformTimePipe, ExtractTextPipe, IonImg, NgFor, NgStyle, NgIf, IonPopover, IonIcon, IonButton, IonCol, IonRow, IonGrid, DoubleClickLikeDirective]
+  imports: [
+    IonContent,
+    IonSkeletonText,
+    TransformTimePipe,
+    ExtractTextPipe,
+    IonImg,
+    NgFor,
+    NgStyle,
+    NgIf,
+    IonPopover,
+    IonIcon,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
+    DoubleClickLikeDirective,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+  ],
 })
 export class FilmViewBigComponent {
   loadingService = inject(LoadingService);
@@ -27,10 +64,18 @@ export class FilmViewBigComponent {
   i = input.required<number>();
   isTimesOpen = false;
   showTrailer = false;
-  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map(film => film.system_id || film.film_system_id)));
+  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map((film) => film.system_id || film.film_system_id)));
+  selectedKino: Kino | null = null;
+  isKinoModalOpen = false;
+  kinos = KINOS;
 
   film = input.required<Film | null>();
-  constructor(private website: OpenWebsiteService, private toastService: ToastService, private favoritesService: FavoritesService, private hapticService: HapticService) { }
+  constructor(
+    private website: OpenWebsiteService,
+    private toastService: ToastService,
+    private favoritesService: FavoritesService,
+    private hapticService: HapticService
+  ) {}
 
   async openExternalWebsite(url: string): Promise<void> {
     try {
@@ -113,5 +158,22 @@ export class FilmViewBigComponent {
     event.stopPropagation();
     this.hapticService.vibrate(ImpactStyle.Light, 100);
     await this.favoritesService.toggleFavorite(film);
+  }
+
+  openKinoModal(kinoName: string): void {
+    this.hapticService.vibrate(ImpactStyle.Light, 100);
+    // Find a cinema where the stored name is fully contained in the incoming name
+    const kino = this.kinos.find((k) => kinoName.includes(k.name));
+    if (kino) {
+      this.selectedKino = kino;
+      this.isKinoModalOpen = true;
+    } else {
+      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-circle', true);
+    }
+  }
+
+  closeKinoModal(): void {
+    this.isKinoModalOpen = false;
+    this.selectedKino = null;
   }
 }
