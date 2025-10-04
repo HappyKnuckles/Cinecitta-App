@@ -2,11 +2,11 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[appDoubleClickLike]',
-  standalone: true,
+  standalone: true
 })
 export class DoubleClickLikeDirective {
   @Output() doubleClickLike = new EventEmitter<Event>();
-
+  
   private lastTapTime = 0;
   private readonly DOUBLE_TAP_DELAY = 300; // milliseconds
 

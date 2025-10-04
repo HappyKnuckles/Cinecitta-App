@@ -10,7 +10,9 @@ describe('FavoritesService', () => {
     const spy = jasmine.createSpyObj('StorageService', ['get', 'save']);
 
     TestBed.configureTestingModule({
-      providers: [{ provide: StorageService, useValue: spy }],
+      providers: [
+        { provide: StorageService, useValue: spy }
+      ]
     });
     service = TestBed.inject(FavoritesService);
     storageServiceSpy = TestBed.inject(StorageService) as jasmine.SpyObj<StorageService>;

@@ -19,14 +19,8 @@ import { ToastComponent } from './shared/components/toast/toast.component';
 export class AppComponent implements OnInit {
   commitMessage: string = '';
 
-  constructor(
-    public loadingService: LoadingService,
-    private sanitizer: DomSanitizer,
-    private alertController: AlertController,
-    private swUpdate: SwUpdate,
-    private http: HttpClient,
-    private storageService: StorageService
-  ) {
+  constructor(public loadingService: LoadingService, private sanitizer: DomSanitizer, private alertController: AlertController,
+private swUpdate: SwUpdate, private http: HttpClient, private storageService: StorageService) {
     this.initializeApp();
   }
 
@@ -58,7 +52,7 @@ export class AppComponent implements OnInit {
               const commitMessages = newCommits.map((msg) => `<li>${msg}</li>`).join('');
               const sanitizedMessage = this.sanitizer.sanitize(
                 1,
-                `<div class="commit-message"><ul>${commitMessages}</ul><br><span class="load-text">Load it?</span></div>`
+                `<div class="commit-message"><ul>${commitMessages}</ul><br><span class="load-text">Load it?</span></div>`,
               );
 
               const alert = await this.alertController.create({
@@ -116,4 +110,5 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
 }

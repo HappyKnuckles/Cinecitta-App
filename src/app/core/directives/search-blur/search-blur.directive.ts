@@ -4,10 +4,11 @@ import { IonSearchbar } from '@ionic/angular';
 
 @Directive({
   selector: '[appSearchBlur]',
-  standalone: true,
+  standalone: true
 })
 export class SearchBlurDirective {
-  constructor(private el: ElementRef<any>) {}
+
+  constructor(private el: ElementRef<any>) { }
 
   @HostListener('keydown.enter', ['$event'])
   onEnterKeyDown(event: KeyboardEvent): void {
@@ -20,13 +21,10 @@ export class SearchBlurDirective {
       // If it's an IonSearchbar component, get its input element
       const searchbarComponent = this.el.nativeElement as IonSearchbar;
       // IonSearchbar's getInputElement returns a Promise
-      searchbarComponent
-        .getInputElement()
-        .then((input) => {
-          input.blur();
-          Keyboard.hide();
-        })
-        .catch((err) => console.error('Could not get input element from IonSearchbar', err));
+      searchbarComponent.getInputElement().then(input => {
+        input.blur();
+        Keyboard.hide();
+      }).catch(err => console.error("Could not get input element from IonSearchbar", err));
       return; // Return early as getInputElement is async
     } else {
       // Try to find an input element within the host

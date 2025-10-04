@@ -1,6 +1,6 @@
-<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%" (ionBackdropTap)="cancel()"></ion-backdrop>
-<ion-text
-  *ngIf="films.length === 0 && loadingService.isLoading === false"
+<ion-backdrop *ngIf="isModalOpen" style="opacity: 0.3; z-index: 11; height: 200%"
+  (ionBackdropTap)="cancel()"></ion-backdrop>
+<ion-text *ngIf="films.length === 0 && loadingService.isLoading === false"
   style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 999">
   Keine Filme verfügbar
 </ion-text>
@@ -10,7 +10,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-button style="--color: #a3d9d5; margin-left: 8px" fill="clear" (click)="presentActionSheet()" slot="icon-only"> View </ion-button>
+      <ion-button style="--color: #a3d9d5; margin-left: 8px" fill="clear" (click)="presentActionSheet()" slot="icon-only">
+        View </ion-button>
     </ion-buttons>
     <ion-title> Aktuelle Filme </ion-title>
     <ion-buttons slot="end">
@@ -19,15 +20,10 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }" [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
-    <app-search
-      [isReload]="isReload"
-      (setOpenEvent)="setOpen($event)"
-      [showFilterButton]="true"
-      [formData]="formData"
-      [excludedProperties]="excluded"
-      (newFilmsChange)="search($event)"></app-search
-  ></ion-toolbar>
+  <ion-toolbar [ngStyle]="{ 'transition': 'height 0.4s' }"
+  [ngClass]="{ 'toolbar-closed': !isSearchOpen }">
+  <app-search  [isReload]="isReload" (setOpenEvent)="setOpen($event)" [showFilterButton]="true"
+    [formData]="formData" [excludedProperties]="excluded" (newFilmsChange)="search($event)"></app-search></ion-toolbar>
 </ion-header>
 
 <!-- Filter Modal -->
@@ -49,41 +45,33 @@
       <ion-grid>
         <ng-container *ngFor="let filter of filters; let i = index;">
           <ion-row style="margin: 0 5px" (click)="showTags(i)">
-            <ion-col style="font-weight: 600" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter }}</ion-col>
+            <ion-col style="font-weight: 600" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">{{ filter
+              }}</ion-col>
             <ion-col style="justify-content: end; display: flex" *ngIf="filter !== 'Zeitraum' && filter !== 'Kinosaal'">
               <ion-icon class="open" [name]="showAllTags[i] ? 'chevron-up' : 'chevron-down'"></ion-icon>
             </ion-col>
-            <ion-select
-              class="open"
-              *ngIf="filter === 'Zeitraum'"
-              label="{{filter}}"
-              interface="action-sheet"
+            <ion-select class="open" *ngIf="filter === 'Zeitraum'" label="{{filter}}" interface="action-sheet"
               [(ngModel)]="selectedFilters.tageAuswahl"
               (ngModelChange)="toggleSelection(selectedFilters.tageAuswahl, 'tageAuswahl')"
               placeholder="{{tageAuswahl[0].name}}">
-              <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id"> {{ wahl.name }} </ion-select-option>
+              <ion-select-option *ngFor="let wahl of tageAuswahl" [value]="wahl.id"> {{ wahl.name }}
+              </ion-select-option>
             </ion-select>
-            <ion-select
-              class="open"
-              *ngIf="filter === 'Kinosaal'"
-              label="{{filter}}"
-              interface="action-sheet"
+            <ion-select class="open" *ngIf="filter === 'Kinosaal'" label="{{filter}}" interface="action-sheet"
               [(ngModel)]="selectedFilters.leinwandHighlights"
               (ngModelChange)="toggleSelection(selectedFilters.leinwandHighlights, 'leinwandHighlights')"
               placeholder="{{leinwandHighlights[0].name}}">
-              <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id"> {{ highlight.name }} </ion-select-option>
+              <ion-select-option *ngFor="let highlight of leinwandHighlights" [value]="highlight.id"> {{ highlight.name
+                }} </ion-select-option>
             </ion-select>
           </ion-row>
 
           <ng-container *ngIf="!showAllTags[i]">
             <ion-row *ngIf="filter === 'Genre' && selectedFilters.genresTags.length > 0" class="filterRow">
               <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px">
-                <ion-label
-                  class="tags selected"
-                  *ngIf="isSelected(genre.id, 'genresTags')"
+                <ion-label class="tags selected" *ngIf="isSelected(genre.id, 'genresTags')"
                   [ngStyle]="{ backgroundColor: isSelected(genre.id, 'genresTags') ? '#a3d9d5' : '' }">
-                  {{ genre.name }}</ion-label
-                >
+                  {{ genre.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Sound' && selectedFilters.flags.length > 0" class="filterRow">
@@ -91,9 +79,11 @@
                 <ion-label class="tags selected" *ngIf="isSelected(flag.id, 'flags')">{{ flag.name }}</ion-label>
               </ion-col>
             </ion-row>
-            <ion-row *ngIf="filter === 'Barrierefreie Optionen' && selectedFilters.behindertenTags.length > 0" class="filterRow">
+            <ion-row *ngIf="filter === 'Barrierefreie Optionen' && selectedFilters.behindertenTags.length > 0"
+              class="filterRow">
               <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px">
-                <ion-label class="tags selected" *ngIf="isSelected(behindertenTag.id, 'behindertenTags')"> {{ behindertenTag.name }}</ion-label>
+                <ion-label class="tags selected" *ngIf="isSelected(behindertenTag.id, 'behindertenTags')"> {{
+                  behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Extras' && selectedFilters.extras.length > 0" class="filterRow">
@@ -106,33 +96,27 @@
           <ng-container *ngIf="showAllTags[i]">
             <ion-row *ngIf="filter === 'Genre'" class="filterRow">
               <ion-col size="auto" *ngFor="let genre of genresTag" style="margin-top: 5px">
-                <ion-label class="tags" [ngClass]="{ selected: isSelected(genre.id, 'genresTags') }" (click)="toggleSelection(genre.id, 'genresTags')"
-                  >{{ genre.name }}</ion-label
-                >
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(genre.id, 'genresTags') }"
+                  (click)="toggleSelection(genre.id, 'genresTags')">{{ genre.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Sound'" class="filterRow">
               <ion-col size="auto" *ngFor="let flag of flags" style="margin-top: 5px">
-                <ion-label class="tags" [ngClass]="{ selected: isSelected(flag.id, 'flags') }" (click)="toggleSelection(flag.id, 'flags')"
-                  >{{ flag.name }}</ion-label
-                >
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(flag.id, 'flags') }"
+                  (click)="toggleSelection(flag.id, 'flags')">{{ flag.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Barrierefreie Optionen'" class="filterRow">
               <ion-col size="auto" *ngFor="let behindertenTag of behindertenTags" style="margin-top: 5px">
-                <ion-label
-                  class="tags"
-                  [ngClass]="{ selected: isSelected(behindertenTag.id, 'behindertenTags') }"
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(behindertenTag.id, 'behindertenTags') }"
                   (click)="toggleSelection(behindertenTag.id, 'behindertenTags')">
-                  {{ behindertenTag.name }}</ion-label
-                >
+                  {{ behindertenTag.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Extras'" class="filterRow">
               <ion-col size="auto" *ngFor="let extra of extras" style="margin-top: 5px">
-                <ion-label class="tags" [ngClass]="{ selected: isSelected(extra.id, 'extras') }" (click)="toggleSelection(extra.id, 'extras')"
-                  >{{ extra.name }}</ion-label
-                >
+                <ion-label class="tags" [ngClass]="{ selected: isSelected(extra.id, 'extras') }"
+                  (click)="toggleSelection(extra.id, 'extras')">{{ extra.name }}</ion-label>
               </ion-col>
             </ion-row>
             <ion-row *ngIf="filter === 'Zeiten'" class="filterRow">
@@ -144,27 +128,15 @@
                 </div>
               </div>
               <ion-modal [isOpen]="showStartTimePicker" (ionModalWillDismiss)="closeTimes()" class="timePickerModal">
-                <ion-datetime
-                  *ngIf="showStartTimePicker"
-                  size="cover"
-                  presentation="time"
-                  locale="de-DE"
-                  [(ngModel)]="startTime"
-                  (ngModelChange)="onTimeChange()"
-                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]"
-                  minuteValues="0">
+                <ion-datetime *ngIf="showStartTimePicker" size="cover" presentation="time" locale="de-DE"
+                  [(ngModel)]="startTime" (ngModelChange)="onTimeChange()"
+                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]" minuteValues="0">
                 </ion-datetime>
               </ion-modal>
               <ion-modal [isOpen]="showEndTimePicker" (ionModalWillDismiss)="closeTimes()" class="timePickerModal">
-                <ion-datetime
-                  *ngIf="showEndTimePicker"
-                  size="cover"
-                  presentation="time"
-                  locale="de-DE"
-                  [(ngModel)]="endTime"
-                  (ngModelChange)="onTimeChange()"
-                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]"
-                  minuteValues="0">
+                <ion-datetime *ngIf="showEndTimePicker" size="cover" presentation="time" locale="de-DE"
+                  [(ngModel)]="endTime" (ngModelChange)="onTimeChange()"
+                  hourValues="[10,11,12,13,14,15,16,17,18,19,20,21,22,23,0,1,2,3]" minuteValues="0">
                 </ion-datetime>
               </ion-modal>
             </ion-row>
@@ -173,8 +145,8 @@
       </ion-grid>
     </ion-content>
     <ion-footer>
-      <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px" (click)="confirm()"
-        >Bestätigen ({{films.length}})
+      <ion-button style="width: 90%; font-weight: 600; margin-bottom: 17px; margin-left: 17px"
+        (click)="confirm()">Bestätigen ({{films.length}})
       </ion-button>
     </ion-footer>
   </ng-template>
@@ -186,20 +158,20 @@
       <ion-title size="large">Aktuelle Filme</ion-title>
     </ion-toolbar>
   </ion-header>
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content> </ion-refresher>
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)"><ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
   <!-- Detailview -->
   <main *ngIf="detailView[0]" class="content">
-    @if (!loadingService.isLoading) { @for (film of films; track $index) {
-    <app-film-view-big
-      [i]="$index"
-      [film]="film"
-      [startTime]="startTime"
-      [formattedEndTime]="formattedEndTime"
-      [content]="content"
-      [attr.data-film-title]="film.film_titel"></app-film-view-big>
-    } } @else { @for(n of [1, 2, 3, 4, 5]; track $index) {
-    <app-film-view-big [i]="n" [film]="null" [startTime]="startTime" [formattedEndTime]="formattedEndTime" [content]="content"></app-film-view-big>
-    } }
+    @if (!loadingService.isLoading) {
+      @for (film of films; track $index) {
+        <app-film-view-big [i]="$index" [film]="film" [startTime]="startTime" [formattedEndTime]="formattedEndTime" [content]="content" [attr.data-film-title]="film.film_titel"></app-film-view-big>
+      }
+ 
+    } @else {
+      @for(n of [1, 2, 3, 4, 5]; track $index) {
+        <app-film-view-big [i]="n" [film]="null" [startTime]="startTime" [formattedEndTime]="formattedEndTime" [content]="content"></app-film-view-big>
+      }
+    }
   </main>
 
   <!-- Kurzview -->
@@ -207,11 +179,8 @@
   <main *ngIf="detailView[1]" class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0">
-      <app-film-view-medium
-        [film]="film"
-        [isNewFilm]="false"
-        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}"
-        [attr.data-film-title]="film.film_titel"></app-film-view-medium>
+      <app-film-view-medium [film]="film" [isNewFilm]="false"
+        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}" [attr.data-film-title]="film.film_titel"></app-film-view-medium>
     </ion-grid>
     } @else {
     <ion-grid *ngFor="let n of [1, 2, 3, 4, 5]" style="padding-top: 0">
@@ -224,7 +193,8 @@
   <main *ngIf="detailView[2]" class="content">
     @if (!loadingService.isLoading) {
     <ion-grid *ngFor="let film of films; let i = index; let first = first" style="padding-top: 0" [attr.data-film-title]="film.film_titel">
-      <div class="film-container" *ngIf="film.film_ist_ov === '0'" [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
+      <div class="film-container" *ngIf="film.film_ist_ov === '0'"
+        [ngStyle]="{'margin-top.px': (!isSearchOpen && first) ? 10 : null}">
         <div class="border">
           <ion-row>
             <div *ngIf="film.film_neu === 'NEU'" class="new-dreieck mini">
@@ -233,14 +203,10 @@
           </ion-row>
           <ion-row>
             <ion-col size="1.5">
-              <img
-                src="{{film.film_cover_src}}"
-                (click)="openExternalWebsite(film.filminfo_href)"
-                alt="Film Cover von {{film.film_titel}}"
-                loading="lazy" />
+              <img src="{{film.film_cover_src}}" (click)="openExternalWebsite(film.filminfo_href)"
+                alt="Film Cover von {{film.film_titel}}" loading="lazy" />
             </ion-col>
-            <ion-col
-              style="
+            <ion-col style="
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -251,9 +217,7 @@
                 padding: 0 30px;
                 color: #a3d9d5;
                 margin-right: 16px;
-              "
-              >{{film.film_titel}}</ion-col
-            >
+              ">{{film.film_titel}}</ion-col>
           </ion-row>
         </div>
       </div>
@@ -266,8 +230,7 @@
             <ion-col size="1">
               <ion-skeleton-text animated style="width: 30px; height: 40px"></ion-skeleton-text>
             </ion-col>
-            <ion-col
-              style="
+            <ion-col style="
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -289,5 +252,9 @@
 </ion-content>
 
 <!-- Alphabet Scrollwheel - Moved outside ion-content to prevent scroll interference -->
-<app-alphabet-scrollwheel [films]="films" [content]="content" [alwaysVisible]="true" (letterSelected)="onLetterSelected($event)">
+<app-alphabet-scrollwheel 
+  [films]="films" 
+  [content]="content"
+  [alwaysVisible]="true"
+  (letterSelected)="onLetterSelected($event)">
 </app-alphabet-scrollwheel>

@@ -16,18 +16,18 @@ import { ImpactStyle } from '@capacitor/haptics';
 export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChanges {
   @Input() films: Film[] | NewFilm[] = [];
   @Input() content?: IonContent;
-  @Input() alwaysVisible = false;
+  @Input() alwaysVisible = false; 
   @Output() letterSelected = new EventEmitter<string>();
 
   alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
   availableLetters: Set<string> = new Set();
-
+  
   private resizeListener?: () => void;
-  isDragging = false;
+  isDragging = false; 
   private lastSelectedLetter = '';
   private scrollThrottle: any;
-  private lastVibratedLetter = '';
-
+  private lastVibratedLetter = ''; 
+  
   currentHighlightedLetter = '';
 
   constructor(private hapticService: HapticService) {}
@@ -68,8 +68,8 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     // Global touch event listeners for consistent drag behavior
     document.addEventListener('touchmove', this.onGlobalTouchMove.bind(this), { passive: false });
     document.addEventListener('touchend', this.onGlobalTouchEnd.bind(this), { passive: false });
-
-    // Global mouse event listeners for consistent drag behavior
+    
+    // Global mouse event listeners for consistent drag behavior  
     document.addEventListener('mousemove', this.onGlobalMouseMove.bind(this));
     document.addEventListener('mouseup', this.onGlobalMouseUp.bind(this));
   }
@@ -83,21 +83,21 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   private onGlobalTouchMove(event: TouchEvent) {
     if (!this.isDragging) return;
-
+    
     event.preventDefault();
     const touch = event.touches[0];
-
+    
     // Try to find alphabet letter element first (direct touch)
     const element = document.elementFromPoint(touch.clientX, touch.clientY);
     let letter: string | undefined;
-
+    
     if (element && element.classList.contains('alphabet-letter')) {
       letter = element.textContent?.trim();
     } else {
       // If not directly over a letter, calculate based on Y position
       letter = this.getLetterFromYPosition(touch.clientY);
     }
-
+    
     if (letter) {
       this.currentHighlightedLetter = letter;
       if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
@@ -108,7 +108,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   private onGlobalTouchEnd(event: TouchEvent) {
     if (!this.isDragging) return;
-
+    
     event.preventDefault();
     this.isDragging = false;
     this.lastSelectedLetter = '';
@@ -118,18 +118,18 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   private onGlobalMouseMove(event: MouseEvent) {
     if (!this.isDragging) return;
-
+    
     // Try to find alphabet letter element first (direct hover)
     const element = event.target as HTMLElement;
     let letter: string | undefined;
-
+    
     if (element && element.classList.contains('alphabet-letter')) {
       letter = element.textContent?.trim();
     } else {
       // If not directly over a letter, calculate based on Y position
       letter = this.getLetterFromYPosition(event.clientY);
     }
-
+    
     if (letter) {
       this.currentHighlightedLetter = letter;
       if (this.availableLetters.has(letter) && letter !== this.lastSelectedLetter) {
@@ -140,7 +140,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   private onGlobalMouseUp(event: MouseEvent) {
     if (!this.isDragging) return;
-
+    
     event.preventDefault();
     this.isDragging = false;
     this.lastSelectedLetter = '';
@@ -150,8 +150,8 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
   private updateAvailableLetters() {
     this.availableLetters.clear();
-
-    this.films.forEach((film) => {
+    
+    this.films.forEach(film => {
       const firstLetter = film.film_titel.charAt(0).toUpperCase();
       if (firstLetter.match(/[A-Z]/)) {
         this.availableLetters.add(firstLetter);
@@ -188,18 +188,18 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
   private selectLetter(letter: string) {
     this.lastSelectedLetter = letter;
     this.letterSelected.emit(letter);
-
+    
     // Add haptic feedback when selecting a new letter
     if (letter !== this.lastVibratedLetter) {
       this.hapticService.vibrate(ImpactStyle.Light, 10);
       this.lastVibratedLetter = letter;
     }
-
+    
     // Throttle scroll operations for smoother performance
     if (this.scrollThrottle) {
       clearTimeout(this.scrollThrottle);
     }
-
+    
     this.scrollThrottle = setTimeout(() => {
       this.scrollToLetter(letter);
     }, 30); // Reduced delay for more responsive scrolling
@@ -211,17 +211,19 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     }
 
     // Find the first film that starts with this letter
-    const targetFilmIndex = this.films.findIndex((film) => film.film_titel.charAt(0).toUpperCase() === letter);
+    const targetFilmIndex = this.films.findIndex(film => 
+      film.film_titel.charAt(0).toUpperCase() === letter
+    );
 
     if (targetFilmIndex !== -1) {
       try {
         // Try to find the actual element by data attribute
         const targetElement = document.querySelector(`[data-film-title="${this.films[targetFilmIndex].film_titel}"]`);
-
+        
         if (targetElement) {
           // Get the scroll element and calculate position
           const targetTop = (targetElement as HTMLElement).offsetTop;
-
+          
           // Enhanced smooth scroll with longer duration for better visual feedback
           await this.content.scrollToPoint(0, Math.max(0, targetTop - 50), 600);
         } else {
@@ -235,12 +237,12 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
         const filmElements = document.querySelectorAll('[data-film-title]');
         if (filmElements[targetFilmIndex]) {
           // Use native smooth scroll with better options
-          (filmElements[targetFilmIndex] as HTMLElement).scrollIntoView({
-            behavior: 'smooth',
+          (filmElements[targetFilmIndex] as HTMLElement).scrollIntoView({ 
+            behavior: 'smooth', 
             block: 'start',
-            inline: 'nearest',
+            inline: 'nearest'
           });
-
+          
           // Additional smooth scroll using requestAnimationFrame for better control
           const targetElement = filmElements[targetFilmIndex] as HTMLElement;
           const targetPosition = targetElement.offsetTop - 50;
@@ -254,17 +256,17 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
             if (startTime === null) startTime = currentTime;
             const timeElapsed = currentTime - startTime;
             const progress = Math.min(timeElapsed / duration, 1);
-
+            
             // Easing function for smoother animation (ease-out)
             const easeOut = 1 - Math.pow(1 - progress, 3);
-
-            scrollElement.scrollTop = startPosition + distance * easeOut;
-
+            
+            scrollElement.scrollTop = startPosition + (distance * easeOut);
+            
             if (timeElapsed < duration) {
               requestAnimationFrame(smoothScroll);
             }
           };
-
+          
           requestAnimationFrame(smoothScroll);
         }
       }
@@ -284,7 +286,7 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
     if (!containerElement) return undefined;
 
     const containerRect = containerElement.getBoundingClientRect();
-
+    
     // Check if Y position is within the container bounds
     if (clientY < containerRect.top || clientY > containerRect.bottom) {
       return undefined;
@@ -292,15 +294,15 @@ export class AlphabetScrollwheelComponent implements OnInit, OnDestroy, OnChange
 
     // Calculate relative position within the container (0 to 1)
     const relativeY = (clientY - containerRect.top) / containerRect.height;
-
+    
     // Convert to letter index (0 to 25)
     const letterIndex = Math.floor(relativeY * 26);
-
+    
     // Ensure index is within bounds
     if (letterIndex >= 0 && letterIndex < 26) {
       return this.alphabet[letterIndex];
     }
-
+    
     return undefined;
   }
 }
