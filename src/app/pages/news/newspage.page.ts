@@ -1,7 +1,19 @@
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
-import { IonRefresherContent, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonButtons } from '@ionic/angular/standalone';
+import {
+  IonRefresherContent,
+  IonText,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButton,
+  IonIcon,
+  IonContent,
+  IonRefresher,
+  IonGrid,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { search, heart, heartOutline } from 'ionicons/icons';
 import { ActivatedRoute } from '@angular/router';
@@ -11,13 +23,15 @@ import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
 import * as Filtertags from 'src/app/core/constants/filtertags.constants';
-import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
+import { FilmViewMediumComponent } from 'src/app/shared/components/film-view-medium/film-view-medium.component';
 @Component({
   selector: 'app-newspage',
   templateUrl: 'newspage.page.html',
   styleUrls: ['newspage.page.scss'],
   standalone: true,
-  imports: [IonButtons, IonRefresherContent,
+  imports: [
+    IonButtons,
+    IonRefresherContent,
     NgIf,
     IonText,
     IonHeader,
@@ -33,7 +47,7 @@ import { FilmViewMediumComponent } from "src/app/shared/components/film-view-med
     IonGrid,
     FilmViewMediumComponent,
     NgStyle,
-    NgClass
+    NgClass,
   ],
 })
 export class NewsPage implements OnInit {
@@ -45,11 +59,7 @@ export class NewsPage implements OnInit {
   @ViewChild(SearchComponent, { static: false })
   searchComponent!: SearchComponent;
 
-  constructor(
-    public loadingService: LoadingService,
-    private hapticService: HapticService,
-    private route: ActivatedRoute,
-  ) {
+  constructor(public loadingService: LoadingService, private hapticService: HapticService, private route: ActivatedRoute) {
     addIcons({ search, heart, heartOutline });
   }
 

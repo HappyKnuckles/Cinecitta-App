@@ -20,7 +20,9 @@ import {
   IonDatetime,
   IonFooter,
   IonRefresher,
-  IonSkeletonText, IonRefresherContent, IonImg
+  IonSkeletonText,
+  IonRefresherContent,
+  IonImg,
 } from '@ionic/angular/standalone';
 import { AlertController } from '@ionic/angular/standalone';
 import { ImpactStyle } from '@capacitor/haptics';
@@ -29,7 +31,17 @@ import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { ellipsisVertical, search, chevronBack, chevronUp, chevronDown, removeOutline, informationCircleOutline, heart, heartOutline } from 'ionicons/icons';
+import {
+  ellipsisVertical,
+  search,
+  chevronBack,
+  chevronUp,
+  chevronDown,
+  removeOutline,
+  informationCircleOutline,
+  heart,
+  heartOutline,
+} from 'ionicons/icons';
 import { Film } from 'src/app/core/models/film.model';
 import { ViewType } from 'src/app/core/models/views.enum';
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
@@ -40,14 +52,16 @@ import { FavoritesService } from 'src/app/core/services/favorites/favorites.serv
 import { SearchComponent } from 'src/app/shared/components/search/search.component';
 import { AlphabetScrollwheelComponent } from 'src/app/shared/components/alphabet-scrollwheel/alphabet-scrollwheel.component';
 import * as Filtertags from 'src/app/core/constants/filtertags.constants';
-import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
+import { FilmViewMediumComponent } from 'src/app/shared/components/film-view-medium/film-view-medium.component';
 import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/film-view-big.component';
 @Component({
   selector: 'app-filmoverview',
   templateUrl: 'filmoverview.page.html',
   styleUrls: ['filmoverview.page.scss'],
   standalone: true,
-  imports: [IonImg, IonRefresherContent,
+  imports: [
+    IonImg,
+    IonRefresherContent,
     IonSkeletonText,
     NgIf,
     IonBackdrop,
@@ -75,7 +89,9 @@ import { FilmViewBigComponent } from 'src/app/shared/components/film-view-big/fi
     IonDatetime,
     IonFooter,
     IonRefresher,
-    FilmViewMediumComponent, FilmViewBigComponent],
+    FilmViewMediumComponent,
+    FilmViewBigComponent,
+  ],
 })
 export class FilmOverviewPage implements OnInit, OnDestroy {
   @ViewChild(IonModal) modal!: IonModal;
@@ -142,13 +158,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     this.checkTimes();
     this.startPeriodicCheck();
 
-
     this.route.queryParams.subscribe((params) => {
       if (params['search']) {
         this.isSearchOpen = true;
       }
-    }
-    );
+    });
   }
 
   startPeriodicCheck() {

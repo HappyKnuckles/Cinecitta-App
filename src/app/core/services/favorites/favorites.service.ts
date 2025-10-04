@@ -13,15 +13,10 @@ export class FavoritesService {
   readonly favoriteFilms = this.#favoriteFilms.asReadonly();
 
   readonly favoriteIds = computed(() => {
-    return new Set(
-      this.#favoriteFilms().map(f => f.system_id || f.film_system_id)
-    );
+    return new Set(this.#favoriteFilms().map((f) => f.system_id || f.film_system_id));
   });
 
-  constructor(
-    private storageService: StorageService,
-    private toastService: ToastService
-  ) {
+  constructor(private storageService: StorageService, private toastService: ToastService) {
     this.getFavoriteFilms();
   }
 
@@ -41,36 +36,24 @@ export class FavoritesService {
     const favorites = [...this.#favoriteFilms(), film];
     await this.storageService.save(this.FAVORITES_KEY, favorites);
     this.#favoriteFilms.set(favorites);
-    this.toastService.showToast(
-      `${film.film_titel} zu Favoriten hinzugefügt.`,
-      'checkmark-outline',
-      false
-    );
+    this.toastService.showToast(`${film.film_titel} zu Favoriten hinzugefügt.`, 'checkmark-outline', false);
   }
 
   async removeFromFavorites(filmId: string): Promise<void> {
     const favorites = this.#favoriteFilms();
 
-    const filmToRemove = favorites.find(film =>
-      this.getFilmId(film) === filmId
-    );
+    const filmToRemove = favorites.find((film) => this.getFilmId(film) === filmId);
 
     if (!filmToRemove) {
-      return; 
+      return;
     }
 
-    const updatedFavorites = favorites.filter(film =>
-      this.getFilmId(film) !== filmId
-    );
+    const updatedFavorites = favorites.filter((film) => this.getFilmId(film) !== filmId);
 
     await this.storageService.save(this.FAVORITES_KEY, updatedFavorites);
     this.#favoriteFilms.set(updatedFavorites);
 
-    this.toastService.showToast(
-      `${filmToRemove.film_titel} aus Favoriten entfernt.`,
-      'remove-outline',
-      false
-    );
+    this.toastService.showToast(`${filmToRemove.film_titel} aus Favoriten entfernt.`, 'remove-outline', false);
   }
 
   async toggleFavorite(film: Film | NewFilm): Promise<boolean> {

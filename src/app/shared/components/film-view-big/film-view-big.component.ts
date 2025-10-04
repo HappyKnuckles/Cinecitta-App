@@ -1,6 +1,21 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
-import { IonGrid, IonRow, IonCol, IonButton, IonIcon, IonPopover, IonImg, IonSkeletonText, IonContent, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons } from "@ionic/angular/standalone";
+import {
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonButton,
+  IonIcon,
+  IonPopover,
+  IonImg,
+  IonSkeletonText,
+  IonContent,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+} from '@ionic/angular/standalone';
 import { Film, Leinwand, Theater } from 'src/app/core/models/film.model';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { OpenWebsiteService } from 'src/app/core/services/website/open-website.service';
@@ -18,7 +33,28 @@ import { Kino, KINOS } from 'src/app/core/models/kino';
   templateUrl: './film-view-big.component.html',
   styleUrls: ['./film-view-big.component.scss'],
   standalone: true,
-  imports: [IonContent, IonSkeletonText, TransformTimePipe, ExtractTextPipe, IonImg, NgFor, NgStyle, NgIf, IonPopover, IonIcon, IonButton, IonCol, IonRow, IonGrid, DoubleClickLikeDirective, IonModal, IonHeader, IonToolbar, IonTitle, IonButtons]
+  imports: [
+    IonContent,
+    IonSkeletonText,
+    TransformTimePipe,
+    ExtractTextPipe,
+    IonImg,
+    NgFor,
+    NgStyle,
+    NgIf,
+    IonPopover,
+    IonIcon,
+    IonButton,
+    IonCol,
+    IonRow,
+    IonGrid,
+    DoubleClickLikeDirective,
+    IonModal,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+  ],
 })
 export class FilmViewBigComponent {
   loadingService = inject(LoadingService);
@@ -28,13 +64,18 @@ export class FilmViewBigComponent {
   i = input.required<number>();
   isTimesOpen = false;
   showTrailer = false;
-  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map(film => film.system_id || film.film_system_id)));
+  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map((film) => film.system_id || film.film_system_id)));
   selectedKino: Kino | null = null;
   isKinoModalOpen = false;
   kinos = KINOS;
 
   film = input.required<Film | null>();
-  constructor(private website: OpenWebsiteService, private toastService: ToastService, private favoritesService: FavoritesService, private hapticService: HapticService) { }
+  constructor(
+    private website: OpenWebsiteService,
+    private toastService: ToastService,
+    private favoritesService: FavoritesService,
+    private hapticService: HapticService
+  ) {}
 
   async openExternalWebsite(url: string): Promise<void> {
     try {
@@ -121,7 +162,7 @@ export class FilmViewBigComponent {
 
   openKinoModal(kinoName: string): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-    const kino = this.kinos.find(k => k.name === kinoName);
+    const kino = this.kinos.find((k) => k.name === kinoName);
     if (kino) {
       this.selectedKino = kino;
       this.isKinoModalOpen = true;

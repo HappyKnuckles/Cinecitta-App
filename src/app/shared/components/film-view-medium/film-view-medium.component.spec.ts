@@ -9,8 +9,8 @@ describe('FilmViewMediumComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ FilmViewMediumComponent ],
-      imports: [IonicModule.forRoot()]
+      declarations: [FilmViewMediumComponent],
+      imports: [IonicModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilmViewMediumComponent);

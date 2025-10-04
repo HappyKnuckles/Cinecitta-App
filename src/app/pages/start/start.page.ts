@@ -1,25 +1,53 @@
-import { Component, ViewChildren, QueryList, ViewChild, OnInit, computed } from "@angular/core";
-import { ImpactStyle } from "@capacitor/haptics";
-import { IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid } from "@ionic/angular/standalone";
-import { NgFor, NgIf } from "@angular/common";
+import { Component, ViewChildren, QueryList, ViewChild, OnInit, computed } from '@angular/core';
+import { ImpactStyle } from '@capacitor/haptics';
+import {
+  IonRefresherContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonRefresher,
+  IonButton,
+  IonIcon,
+  IonModal,
+  IonButtons,
+  IonGrid,
+} from '@ionic/angular/standalone';
+import { NgFor, NgIf } from '@angular/common';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { heart, close } from 'ionicons/icons';
-import { HapticService } from "src/app/core/services/haptic/haptic.service";
-import { LoadingService } from "src/app/core/services/loader/loading.service";
-import { ToastService } from "src/app/core/services/toast/toast.service";
-import { FavoritesService } from "src/app/core/services/favorites/favorites.service";
-import { FilmSelectComponent } from "src/app/shared/components/film-select/film-select.component";
-import { Film, NewFilm } from "src/app/core/models/film.model";
-import * as Filtertags from "src/app/core/constants/filtertags.constants";
-import { FilmViewMediumComponent } from "src/app/shared/components/film-view-medium/film-view-medium.component";
+import { HapticService } from 'src/app/core/services/haptic/haptic.service';
+import { LoadingService } from 'src/app/core/services/loader/loading.service';
+import { ToastService } from 'src/app/core/services/toast/toast.service';
+import { FavoritesService } from 'src/app/core/services/favorites/favorites.service';
+import { FilmSelectComponent } from 'src/app/shared/components/film-select/film-select.component';
+import { Film, NewFilm } from 'src/app/core/models/film.model';
+import * as Filtertags from 'src/app/core/constants/filtertags.constants';
+import { FilmViewMediumComponent } from 'src/app/shared/components/film-view-medium/film-view-medium.component';
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'start.page.html',
   styleUrls: ['start.page.scss'],
   standalone: true,
-  imports: [IonRefresherContent, IonHeader, IonToolbar, IonTitle, IonContent, IonRefresher, IonButton, IonIcon, IonModal, IonButtons, IonGrid, NgFor, NgIf, FilmSelectComponent, FilmViewMediumComponent],
+  imports: [
+    IonRefresherContent,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonRefresher,
+    IonButton,
+    IonIcon,
+    IonModal,
+    IonButtons,
+    IonGrid,
+    NgFor,
+    NgIf,
+    FilmSelectComponent,
+    FilmViewMediumComponent,
+  ],
 })
 export class StartPage implements OnInit {
   @ViewChildren(FilmSelectComponent)
@@ -31,12 +59,8 @@ export class StartPage implements OnInit {
   leinwandHighlights = Filtertags.leinwandHighlights;
   extras = Filtertags.extras;
 
-  upcomingFavorites = computed(() =>
-    this.favoritesService.favoriteFilms().filter(film => this.isFilmUpcoming(film))
-  );
-  currentFavorites = computed(() =>
-    this.favoritesService.favoriteFilms().filter(film => !this.isFilmUpcoming(film))
-  );
+  upcomingFavorites = computed(() => this.favoritesService.favoriteFilms().filter((film) => this.isFilmUpcoming(film)));
+  currentFavorites = computed(() => this.favoritesService.favoriteFilms().filter((film) => !this.isFilmUpcoming(film)));
   presentingElement!: HTMLElement | null;
 
   constructor(
@@ -44,7 +68,7 @@ export class StartPage implements OnInit {
     private toastService: ToastService,
     private hapticService: HapticService,
     private favoritesService: FavoritesService,
-    private router: Router,
+    private router: Router
   ) {
     addIcons({ heart, close });
   }

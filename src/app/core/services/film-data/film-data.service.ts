@@ -18,7 +18,7 @@ export class FilmDataService {
   };
   filmData: Film[] = [];
 
-  constructor(private http: HttpClient, private webScrapingService: WebscraperService) { }
+  constructor(private http: HttpClient, private webScrapingService: WebscraperService) {}
 
   async fetchNewFilms(): Promise<NewFilm[]> {
     this.params.com = 'anzeigen_vorankuendigungen';

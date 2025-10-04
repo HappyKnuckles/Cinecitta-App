@@ -16,16 +16,18 @@
               <div class="new">NEU</div>
             </div>
           </ion-col>
-          <ion-col class="ion-text-right"
-            style="display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+          <ion-col class="ion-text-right" style="display: flex; justify-content: flex-end; align-items: center; gap: 8px">
             <ion-button fill="clear" size="small">
-              <ion-icon [name]="favoriteFilmIds().has(film()!.system_id) ? 'heart' : 'heart-outline'"
-                (click)="toggleFavorite($event, film()!)" style="font-size: 29px; margin-bottom: 1px;" slot="icon-only" class="info-btn">
+              <ion-icon
+                [name]="favoriteFilmIds().has(film()!.system_id) ? 'heart' : 'heart-outline'"
+                (click)="toggleFavorite($event, film()!)"
+                style="font-size: 29px; margin-bottom: 1px"
+                slot="icon-only"
+                class="info-btn">
               </ion-icon>
             </ion-button>
             <ion-button fill="clear" size="small">
-              <ion-icon slot="icon-only" class="info-btn" [id]="'popover' + film()!.system_id"
-                name="information-circle-outline"></ion-icon>
+              <ion-icon slot="icon-only" class="info-btn" [id]="'popover' + film()!.system_id" name="information-circle-outline"></ion-icon>
             </ion-button>
           </ion-col>
 
@@ -56,8 +58,7 @@
                   </ion-row>
                   <ion-row *ngIf="film()!.film_tags">
                     <ion-col>
-                      <span *ngFor="let tag of film()!.film_tags; let isLast = last"> {{ tag.text }}<span *ngIf="!isLast">,
-                        </span> </span>
+                      <span *ngFor="let tag of film()!.film_tags; let isLast = last"> {{ tag.text }}<span *ngIf="!isLast">, </span> </span>
                     </ion-col>
                   </ion-row>
                   <ion-row *ngIf="film()!.film_centerstart_zeit">
@@ -84,18 +85,21 @@
           </ion-popover>
         </ion-row>
       </ion-grid>
-      <ion-button *ngIf="showTrailer" (click)="showTrailers(film()!)" fill="clear"
-        style="position: absolute; z-index: 10; margin-top: -5px">
+      <ion-button *ngIf="showTrailer" (click)="showTrailers(film()!)" fill="clear" style="position: absolute; z-index: 10; margin-top: -5px">
         <ion-icon name="chevron-back"></ion-icon>
       </ion-button>
       <!-- TODO find good unit for height-->
-      <video *ngIf="showTrailer" controls style="height: 120.3vmin; width: 85vw"
-        poster="{{film()!.trailerPreviewUrl}}">
-        <source src="{{film()!.trailerUrl}}" />
+      <video *ngIf="showTrailer" controls style="height: 120.3vmin; width: 85vw" poster="{{ film()!.trailerPreviewUrl }}">
+        <source src="{{ film()!.trailerUrl }}" />
       </video>
-      <img style="height: 119vmin" *ngIf="!showTrailer" src="{{film()!.film_cover_src}}"
-        (click)="showTrailers(film()!)" alt="Film Cover von {{film()!.film_titel}}" loading="lazy" />
-      <span class="description">{{film()!.film_beschreibung | extractText}}</span>
+      <img
+        style="height: 119vmin"
+        *ngIf="!showTrailer"
+        src="{{ film()!.film_cover_src }}"
+        (click)="showTrailers(film()!)"
+        alt="Film Cover von {{ film()!.film_titel }}"
+        loading="lazy" />
+      <span class="description">{{ film()!.film_beschreibung | extractText }}</span>
     </div>
     <!-- TODO ab hier nur accordion anstatt opentimes -->
     <div (click)="openTimes(i())" style="display: flex; margin-top: 10px; justify-content: center">
@@ -111,7 +115,9 @@
       <ng-container *ngFor="let theater of film()!.theater">
         <ng-container *ngIf="hasScreeningsForTheater(theater)">
           <ion-row class="theater-row">
-            <ion-col><span class="theater-name">{{ theater.theater_name }}</span></ion-col>
+            <ion-col
+              ><span class="theater-name">{{ theater.theater_name }}</span></ion-col
+            >
           </ion-row>
           <ng-container *ngFor="let leinwand of theater.leinwaende">
             <ng-container *ngIf="hasScreeningsForLeinwand(leinwand)">
@@ -130,14 +136,20 @@
                       <ng-container *ngIf="leinwand.vorstellungen">
                         <div *ngFor="let vorstellung of leinwand.vorstellungen">
                           <ng-container
-                            *ngIf="vorstellung.tag_der_woche === weekday.tag_der_woche && startTime() <= vorstellung.uhrzeit && formattedEndTime() >= vorstellung.uhrzeit">
-                            <div *ngIf="!vorstellung.deaktiviert && !vorstellung.ausgegraut; else greyVorstellung"
+                            *ngIf="
+                              vorstellung.tag_der_woche === weekday.tag_der_woche &&
+                              startTime() <= vorstellung.uhrzeit &&
+                              formattedEndTime() >= vorstellung.uhrzeit
+                            ">
+                            <div
+                              *ngIf="!vorstellung.deaktiviert && !vorstellung.ausgegraut; else greyVorstellung"
                               (click)="openExternalWebsite(vorstellung.href!)"
-                              [ngStyle]="{'color': getColor(vorstellung.belegung_ampel)}" class="times">
+                              [ngStyle]="{ color: getColor(vorstellung.belegung_ampel) }"
+                              class="times">
                               {{ vorstellung.uhrzeit }}
                             </div>
                             <ng-template #greyVorstellung>
-                              <div [ngStyle]="{'color': 'grey'}" class="times">{{ vorstellung.uhrzeit }}</div>
+                              <div [ngStyle]="{ color: 'grey' }" class="times">{{ vorstellung.uhrzeit }}</div>
                             </ng-template>
                           </ng-container>
                           <!-- TODO Überlegen ob Zeiten ausgrauen oder entfernen-->
@@ -197,7 +209,7 @@
           </ion-row>
           <ion-row>
             <ion-col size="5"><strong>Digital 3D:</strong></ion-col>
-            <ion-col>{{ selectedKino.digital3D ? 'Ja' : 'Nein' }}</ion-col>
+            <ion-col>{{ selectedKino.digital3D ? "Ja" : "Nein" }}</ion-col>
           </ion-row>
         </ion-grid>
       </div>
@@ -206,17 +218,17 @@
 </ion-modal>
 
 } @else {
-    <section class="film-container">
-      <div class="border">
-        <div class="film-specific">
-          <ion-skeleton-text animated style="height: 120.3vmin; width: 85vw"></ion-skeleton-text>
-          <span class="description">
-            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
-            <ion-skeleton-text animated style="width: 40%; height: 20px"></ion-skeleton-text>
-          </span>
-        </div>
-      </div>
-    </section>
+<section class="film-container">
+  <div class="border">
+    <div class="film-specific">
+      <ion-skeleton-text animated style="height: 120.3vmin; width: 85vw"></ion-skeleton-text>
+      <span class="description">
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 100%; height: 20px"></ion-skeleton-text>
+        <ion-skeleton-text animated style="width: 40%; height: 20px"></ion-skeleton-text>
+      </span>
+    </div>
+  </div>
+</section>
 }

@@ -17,12 +17,12 @@ import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-l
   templateUrl: './film-view-medium.component.html',
   styleUrls: ['./film-view-medium.component.scss'],
   standalone: true,
-  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe, DoubleClickLikeDirective]
+  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe, DoubleClickLikeDirective],
 })
-export class FilmViewMediumComponent{
+export class FilmViewMediumComponent {
   loadingService = inject(LoadingService);
   film = input.required<Film | NewFilm | null>();
-  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map(film => film.system_id || film.film_system_id)));
+  favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map((film) => film.system_id || film.film_system_id)));
 
   showFull = false;
   isNewFilm = input.required<boolean>();
@@ -31,7 +31,7 @@ export class FilmViewMediumComponent{
     return film ? (film as Film).film_neu === 'NEU' : false;
   });
   constructor(private website: OpenWebsiteService, private hapticService: HapticService, private favoritesService: FavoritesService) {
-    addIcons({ heartOutline, })
+    addIcons({ heartOutline });
   }
 
   async openExternalWebsite(url: string): Promise<void> {
@@ -51,5 +51,4 @@ export class FilmViewMediumComponent{
     this.hapticService.vibrate(ImpactStyle.Light, 100);
     await this.favoritesService.toggleFavorite(film);
   }
-
 }

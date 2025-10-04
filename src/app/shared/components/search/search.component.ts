@@ -50,44 +50,46 @@ export class SearchComponent implements OnInit, OnDestroy {
   ) {
     addIcons({ filterOutline, search });
 
-    effect(() => {
-      const currentFormData = this.formData();
-      // Guard clause: Do not proceed if formData is not yet available.
-      if (!currentFormData && !this.isNewFilms) {
-        return;
-      }
+    effect(
+      () => {
+        const currentFormData = this.formData();
+        // Guard clause: Do not proceed if formData is not yet available.
+        if (!currentFormData && !this.isNewFilms) {
+          return;
+        }
 
-      (async () => {
-        await this.loadData(currentFormData, this.isReload);
-        // After data is loaded based on formData, apply the current text search.
-        this.filterFilms();
-      })();
-    }, { allowSignalWrites: true });
+        (async () => {
+          await this.loadData(currentFormData, this.isReload);
+          // After data is loaded based on formData, apply the current text search.
+          this.filterFilms();
+        })();
+      },
+      { allowSignalWrites: true }
+    );
   }
 
   ngOnInit() {
     this.sub.add(
-      this.searchSubject.pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(() => {
+      this.searchSubject.pipe(debounceTime(300), distinctUntilChanged()).subscribe(() => {
         this.filterFilms();
       })
     );
 
     if (!this.isNewFilms) {
       this.sub.add(
-        this.route.queryParams.pipe(
-          map(params => params['search']?.trim().toLowerCase() ?? ''),
-          filter(search => search.length > 0),
-          distinctUntilChanged()
-        ).subscribe((search) => {
-          this.searchQuery = search;
-          this.filterFilms();
+        this.route.queryParams
+          .pipe(
+            map((params) => params['search']?.trim().toLowerCase() ?? ''),
+            filter((search) => search.length > 0),
+            distinctUntilChanged()
+          )
+          .subscribe((search) => {
+            this.searchQuery = search;
+            this.filterFilms();
 
-          const url = this.location.path().split('?')[0];
-          this.location.replaceState(url);
-        })
+            const url = this.location.path().split('?')[0];
+            this.location.replaceState(url);
+          })
       );
     }
   }

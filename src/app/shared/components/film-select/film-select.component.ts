@@ -45,14 +45,13 @@ export class FilmSelectComponent implements OnInit {
     private storageService: StorageService,
     public toastService: ToastService,
     private router: Router
-  ) {
-  }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     if (this.items && this.items.length > 0) {
       this.selectedItem = this.items[0].id;
     }
-    await this.getFilmsByFilter(this.selectedItem)
+    await this.getFilmsByFilter(this.selectedItem);
   }
 
   async loadData(isReload?: boolean): Promise<boolean> {

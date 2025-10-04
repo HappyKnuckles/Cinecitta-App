@@ -1,9 +1,13 @@
 <div class="alphabet-scrollwheel" *ngIf="shouldShow">
   <div class="alphabet-container" [class.dragging]="isDragging">
     <ng-container *ngFor="let letter of alphabet">
-      <div *ngIf="isLetterAvailable(letter)" class="alphabet-letter"
-        [class.highlighted]="currentHighlightedLetter === letter" (click)="onLetterClick(letter)"
-        (touchstart)="onLetterTouchStart($event, letter)" (mousedown)="onLetterMouseDown($event, letter)">
+      <div
+        *ngIf="isLetterAvailable(letter)"
+        class="alphabet-letter"
+        [class.highlighted]="currentHighlightedLetter === letter"
+        (click)="onLetterClick(letter)"
+        (touchstart)="onLetterTouchStart($event, letter)"
+        (mousedown)="onLetterMouseDown($event, letter)">
         <span>{{ letter }}</span>
       </div>
     </ng-container>
