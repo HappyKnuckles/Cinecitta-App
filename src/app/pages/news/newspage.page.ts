@@ -1,5 +1,5 @@
 import { NgIf, NgFor, NgStyle, NgClass } from '@angular/common';
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ImpactStyle } from '@capacitor/haptics';
 import { IonRefresherContent, IonText, IonHeader, IonToolbar, IonTitle, IonButton, IonIcon, IonContent, IonRefresher, IonGrid, IonButtons } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
@@ -49,6 +49,7 @@ export class NewsPage implements OnInit {
     public loadingService: LoadingService,
     private hapticService: HapticService,
     private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef,
   ) {
     addIcons({ search, heart, heartOutline });
   }
@@ -83,10 +84,11 @@ export class NewsPage implements OnInit {
   openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
-      // Use requestAnimationFrame to focus after the next render cycle
-      requestAnimationFrame(() => {
+      // Trigger change detection first, then focus in the next frame
+      this.cdr.detectChanges();
+      setTimeout(() => {
         this.searchComponent.focusInput();
-      });
+      }, 0);
     } else {
       this.searchComponent.blurInput();
     }

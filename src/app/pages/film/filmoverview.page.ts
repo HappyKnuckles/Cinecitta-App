@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import {
   ActionSheetController,
   IonContent,
@@ -116,7 +116,8 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
     private toastService: ToastService,
     private hapticService: HapticService,
     private route: ActivatedRoute,
-    private favoritesService: FavoritesService
+    private favoritesService: FavoritesService,
+    private cdr: ChangeDetectorRef,
   ) {
     addIcons({
       ellipsisVertical,
@@ -310,10 +311,11 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
-      // Use requestAnimationFrame to focus after the next render cycle
-      requestAnimationFrame(() => {
+      // Trigger change detection first, then focus in the next frame
+      this.cdr.detectChanges();
+      setTimeout(() => {
         this.searchInput.focusInput();
-      });
+      }, 0);
     } else {
       this.searchInput.blurInput();
     }
