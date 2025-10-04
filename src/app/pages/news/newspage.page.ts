@@ -83,10 +83,10 @@ export class NewsPage implements OnInit {
   openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
-      // Small delay to allow toolbar to start expanding before focusing
-      setTimeout(() => {
+      // Use requestAnimationFrame to focus after the next render cycle
+      requestAnimationFrame(() => {
         this.searchComponent.focusInput();
-      }, 100);
+      });
     } else {
       this.searchComponent.blurInput();
     }
