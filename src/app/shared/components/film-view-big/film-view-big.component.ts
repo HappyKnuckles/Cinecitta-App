@@ -162,7 +162,8 @@ export class FilmViewBigComponent {
 
   openKinoModal(kinoName: string): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
-    const kino = this.kinos.find((k) => k.name === kinoName);
+    // Find a cinema where the stored name is fully contained in the incoming name
+    const kino = this.kinos.find((k) => kinoName.includes(k.name));
     if (kino) {
       this.selectedKino = kino;
       this.isKinoModalOpen = true;
