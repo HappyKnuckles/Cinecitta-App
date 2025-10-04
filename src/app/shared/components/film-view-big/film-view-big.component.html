@@ -118,7 +118,12 @@
               <ion-row>
                 <ion-col>
                   <ion-row class="saal-name">
-                    <ion-col>{{ leinwand.leinwand_name }} <span *ngIf="hasFlagName(leinwand, 'mU')">mU</span></ion-col>
+                    <ion-col>
+                      <span class="clickable-kino-name" (click)="openKinoModal(leinwand.leinwand_name)">
+                        {{ leinwand.leinwand_name }}
+                      </span>
+                      <span *ngIf="hasFlagName(leinwand, 'mU')">mU</span>
+                    </ion-col>
                   </ion-row>
                   <ion-row>
                     <ion-col *ngFor="let weekday of film()!.film_wochentage">
@@ -156,6 +161,50 @@
     </ion-grid>
   </div>
 </section>
+
+<!-- Kino Modal -->
+<ion-modal [isOpen]="isKinoModalOpen" (didDismiss)="closeKinoModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>{{ selectedKino?.name }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeKinoModal()">
+            <ion-icon name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div *ngIf="selectedKino" class="kino-info-container">
+        <ion-img [src]="selectedKino.image" [alt]="selectedKino.name + ' Bild'" class="kino-image"></ion-img>
+        <ion-grid class="kino-details">
+          <ion-row>
+            <ion-col size="5"><strong>Leinwand:</strong></ion-col>
+            <ion-col>{{ selectedKino.leinwand }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="5"><strong>Plätze:</strong></ion-col>
+            <ion-col>{{ selectedKino.plaetze }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="5"><strong>Ton:</strong></ion-col>
+            <ion-col [innerHTML]="selectedKino.ton"></ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="5"><strong>Projektion:</strong></ion-col>
+            <ion-col>{{ selectedKino.projektion }}</ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="5"><strong>Digital 3D:</strong></ion-col>
+            <ion-col>{{ selectedKino.digital3D ? 'Ja' : 'Nein' }}</ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
 } @else {
     <section class="film-container">
       <div class="border">
