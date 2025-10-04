@@ -310,10 +310,10 @@ export class FilmOverviewPage implements OnInit, OnDestroy {
   openSearch(): void {
     this.isSearchOpen = !this.isSearchOpen;
     if (this.isSearchOpen) {
-      // Delay focus to allow toolbar animation to complete (0.4s transition)
+      // Small delay to allow toolbar to start expanding before focusing
       setTimeout(() => {
         this.searchInput.focusInput();
-      }, 450);
+      }, 100);
     } else {
       this.searchInput.blurInput();
     }
