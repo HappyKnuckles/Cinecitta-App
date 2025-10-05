@@ -24,7 +24,7 @@ import { FavoritesService } from 'src/app/core/services/favorites/favorites.serv
 import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
 import { ImpactStyle } from '@capacitor/haptics';
-import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-like/double-click-like.directive';
+import { DoubleTapDirective } from 'src/app/core/directives/double-tap/double-tap.directive';
 import { Kino, KINOS } from 'src/app/core/models/kino';
 
 @Component({
@@ -47,7 +47,7 @@ import { Kino, KINOS } from 'src/app/core/models/kino';
     IonCol,
     IonRow,
     IonGrid,
-    DoubleClickLikeDirective,
+    DoubleTapDirective,
     IonModal,
     IonHeader,
     IonToolbar,
@@ -163,7 +163,11 @@ export class FilmViewBigComponent implements OnInit {
     await this.favoritesService.toggleFavorite(film);
   }
 
-  openKinoModal(kinoName: string): void {
+  openKinoModal(kinoName: string, theaterName: string): void {
+    if(theaterName !== "CINECITTA'"){
+      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-circle', true);
+      return;
+    }
     const kino = this.kinos.find((k) => kinoName.includes(k.name));
     if (kino) {
       this.selectedKino = kino;

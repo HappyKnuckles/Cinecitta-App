@@ -4,16 +4,16 @@ import { Directive, EventEmitter, HostListener, Output } from '@angular/core';
   selector: '[appDoubleClickLike]',
   standalone: true
 })
-export class DoubleClickLikeDirective {
-  @Output() doubleClickLike = new EventEmitter<Event>();
-  
+export class DoubleTapDirective {
+  @Output() doubleTap = new EventEmitter<Event>();
+
   private lastTapTime = 0;
-  private readonly DOUBLE_TAP_DELAY = 300; // milliseconds
+  private readonly DOUBLE_TAP_DELAY = 75; // milliseconds
 
   @HostListener('dblclick', ['$event'])
   onDoubleClick(event: MouseEvent): void {
     event.stopPropagation();
-    this.doubleClickLike.emit(event);
+    this.doubleTap.emit(event);
   }
 
   @HostListener('touchend', ['$event'])
@@ -24,7 +24,7 @@ export class DoubleClickLikeDirective {
     if (tapLength < this.DOUBLE_TAP_DELAY && tapLength > 0) {
       event.preventDefault();
       event.stopPropagation();
-      this.doubleClickLike.emit(event);
+      this.doubleTap.emit(event);
       this.lastTapTime = 0;
     } else {
       this.lastTapTime = currentTime;

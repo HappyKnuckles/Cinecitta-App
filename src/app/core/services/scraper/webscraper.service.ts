@@ -37,4 +37,23 @@ export class WebscraperService {
       return undefined;
     }
   }
+
+  async scrapeOcupationData(id: string): Promise<any> {
+    const destination = 'https://proxy-server-rho-pearl.vercel.app/api/vorstellung';
+    const url = `${destination}?id=${id}`;
+
+    try {
+      const response = await fetch(url);
+      if (response.status === 200) {
+        const data = await response.text();
+        return data;
+      } else {
+        console.error('Error fetching Data: Status', response.status);
+        return undefined;
+      }
+    } catch (error) {
+      console.error('Error fetching Data:', error);
+      return undefined;
+    }
+  }
 }

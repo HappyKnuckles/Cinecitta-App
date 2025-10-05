@@ -10,16 +10,16 @@ import { FavoritesService } from 'src/app/core/services/favorites/favorites.serv
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
 import { heartOutline } from 'ionicons/icons';
 import { addIcons } from 'ionicons';
-import { DoubleClickLikeDirective } from 'src/app/core/directives/double-click-like/double-click-like.directive';
+import { DoubleTapDirective } from 'src/app/core/directives/double-tap/double-tap.directive';
 
 @Component({
   selector: 'app-film-view-medium',
   templateUrl: './film-view-medium.component.html',
   styleUrls: ['./film-view-medium.component.scss'],
   standalone: true,
-  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe, DoubleClickLikeDirective]
+  imports: [IonSkeletonText, IonIcon, IonImg, IonRow, IonCol, NgIf, ExtractTextPipe, DoubleTapDirective]
 })
-export class FilmViewMediumComponent{
+export class FilmViewMediumComponent {
   loadingService = inject(LoadingService);
   film = input.required<Film | NewFilm | null>();
   favoriteFilmIds = computed(() => new Set(this.favoritesService.favoriteFilms().map(film => film.system_id || film.film_system_id)));
