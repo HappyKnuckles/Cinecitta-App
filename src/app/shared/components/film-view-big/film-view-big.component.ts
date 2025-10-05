@@ -1,5 +1,5 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, OnInit } from '@angular/core';
 import {
   IonGrid,
   IonRow,
@@ -14,7 +14,6 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonButtons,
 } from '@ionic/angular/standalone';
 import { Film, Leinwand, Theater } from 'src/app/core/models/film.model';
 import { LoadingService } from 'src/app/core/services/loader/loading.service';
@@ -53,10 +52,9 @@ import { Kino, KINOS } from 'src/app/core/models/kino';
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonButtons,
   ],
 })
-export class FilmViewBigComponent {
+export class FilmViewBigComponent implements OnInit {
   loadingService = inject(LoadingService);
   content = input.required<IonContent>();
   startTime = input.required<string>();
@@ -68,6 +66,7 @@ export class FilmViewBigComponent {
   selectedKino: Kino | null = null;
   isKinoModalOpen = false;
   kinos = KINOS;
+  presentingElement!: HTMLElement | null;
 
   film = input.required<Film | null>();
   constructor(
@@ -75,7 +74,11 @@ export class FilmViewBigComponent {
     private toastService: ToastService,
     private favoritesService: FavoritesService,
     private hapticService: HapticService
-  ) {}
+  ) { }
+
+  ngOnInit(): void {
+    this.presentingElement = document.querySelector('.ion-page');
+  }
 
   async openExternalWebsite(url: string): Promise<void> {
     try {
@@ -161,8 +164,6 @@ export class FilmViewBigComponent {
   }
 
   openKinoModal(kinoName: string): void {
-    this.hapticService.vibrate(ImpactStyle.Light, 100);
-    // Find a cinema where the stored name is fully contained in the incoming name
     const kino = this.kinos.find((k) => kinoName.includes(k.name));
     if (kino) {
       this.selectedKino = kino;

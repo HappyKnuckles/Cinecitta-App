@@ -16,7 +16,7 @@ export const KINOS: Kino[] = [
     projektion: 'Sony Quad 4k',
     plaetze: 524,
     digital3D: true,
-    image: '/assets/images/cinemagnum.jpg',
+    image: '/assets/images/kinos/cinemagnum.png',
   },
   {
     name: 'Kino 1',
@@ -25,7 +25,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital Laser 4k',
     plaetze: 544,
     digital3D: true,
-    image: '/assets/images/kino1.jpg',
+    image: '/assets/images/kinos/kino1.png',
   },
   {
     name: 'Kino 2',
@@ -34,7 +34,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 319,
     digital3D: true,
-    image: '/assets/images/kino2.jpg',
+    image: '/assets/images/kinos/kino2.png',
   },
   {
     name: 'Kino 3',
@@ -43,7 +43,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 467,
     digital3D: true,
-    image: '/assets/images/kino3.jpg',
+    image: '/assets/images/kinos/kino3.png',
   },
   {
     name: 'Kino 4',
@@ -52,7 +52,7 @@ export const KINOS: Kino[] = [
     projektion: 'Sony Dual 4K',
     plaetze: 317,
     digital3D: true,
-    image: '/assets/images/kino4.jpg',
+    image: '/assets/images/kinos/kino4.png',
   },
   {
     name: 'Kino 5',
@@ -61,7 +61,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 208,
     digital3D: true,
-    image: '/assets/images/kino5.jpg',
+    image: '/assets/images/kinos/kino5.png',
   },
   {
     name: 'Kino 6',
@@ -70,7 +70,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 105,
     digital3D: false,
-    image: '/assets/images/kino6.jpg',
+    image: '/assets/images/kinos/kino6.png',
   },
   {
     name: 'Kino 7',
@@ -79,7 +79,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k Sony',
     plaetze: 173,
     digital3D: false,
-    image: '/assets/images/kino7.jpg',
+    image: '/assets/images/kinos/kino7.png',
   },
   {
     name: 'Kino 8',
@@ -88,7 +88,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 141,
     digital3D: false,
-    image: '/assets/images/kino8.jpg',
+    image: '/assets/images/kinos/kino8.png',
   },
   {
     name: 'Kino 9',
@@ -97,7 +97,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 139,
     digital3D: false,
-    image: '/assets/images/kino9.jpg',
+    image: '/assets/images/kinos/kino9.png',
   },
   {
     name: 'Kino 10',
@@ -106,7 +106,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 186,
     digital3D: true,
-    image: '/assets/images/kino10.jpg',
+    image: '/assets/images/kinos/kino10.png',
   },
   {
     name: 'Deluxe 1',
@@ -115,7 +115,7 @@ export const KINOS: Kino[] = [
     projektion: 'Sony Dual 4k',
     plaetze: 120,
     digital3D: true,
-    image: '/assets/images/deluxe1.jpg',
+    image: '/assets/images/kinos/deluxe1.png',
   },
   {
     name: 'Deluxe 2',
@@ -124,7 +124,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 105,
     digital3D: true,
-    image: '/assets/images/deluxe2.jpg',
+    image: '/assets/images/kinos/deluxe2.png',
   },
   {
     name: 'Deluxe 3',
@@ -133,7 +133,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 49,
     digital3D: true,
-    image: '/assets/images/deluxe3.jpg',
+    image: '/assets/images/kinos/deluxe3.png',
   },
   {
     name: 'Deluxe 4',
@@ -142,7 +142,7 @@ export const KINOS: Kino[] = [
     projektion: 'Samsung Onyx LED',
     plaetze: 63,
     digital3D: false,
-    image: '/assets/images/deluxe4.jpg',
+    image: '/assets/images/kinos/deluxe4.png',
   },
   {
     name: 'Deluxe 5',
@@ -151,7 +151,7 @@ export const KINOS: Kino[] = [
     projektion: 'DLP 4K Laser',
     plaetze: 31,
     digital3D: true,
-    image: '/assets/images/deluxe5.jpg',
+    image: '/assets/images/kinos/deluxe5.png',
   },
   {
     name: 'Deluxe 6',
@@ -160,7 +160,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 112,
     digital3D: false,
-    image: '/assets/images/deluxe6.jpg',
+    image: '/assets/images/kinos/deluxe6.png',
   },
   {
     name: 'Deluxe 7',
@@ -169,7 +169,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 60,
     digital3D: false,
-    image: '/assets/images/deluxe7.jpg',
+    image: '/assets/images/kinos/deluxe7.png',
   },
   {
     name: 'Deluxe 8',
@@ -178,7 +178,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 64,
     digital3D: true,
-    image: '/assets/images/deluxe8.jpg',
+    image: '/assets/images/kinos/deluxe8.png',
   },
   {
     name: 'Deluxe 9',
@@ -187,7 +187,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 64,
     digital3D: true,
-    image: '/assets/images/deluxe9.jpg',
+    image: '/assets/images/kinos/deluxe9.png',
   },
   {
     name: 'Deluxe 10',
@@ -196,7 +196,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital Laser 4k',
     plaetze: 162,
     digital3D: true,
-    image: '/assets/images/deluxe10.jpg',
+    image: '/assets/images/kinos/deluxe10.png',
   },
   {
     name: 'Studio 1',
@@ -205,7 +205,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 2k',
     plaetze: 33,
     digital3D: false,
-    image: '/assets/images/studio1.jpg',
+    image: '/assets/images/kinos/studio1.png',
   },
   {
     name: 'Studio 2',
@@ -214,7 +214,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 47,
     digital3D: false,
-    image: '/assets/images/studio2.jpg',
+    image: '/assets/images/kinos/studio2.png',
   },
   {
     name: 'Studio 3',
@@ -223,7 +223,7 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 4k',
     plaetze: 43,
     digital3D: true,
-    image: '/assets/images/studio3.jpg',
+    image: '/assets/images/kinos/studio3.png',
   },
   {
     name: 'Open Air',
@@ -232,6 +232,6 @@ export const KINOS: Kino[] = [
     projektion: 'Digital 2k',
     plaetze: 101,
     digital3D: false,
-    image: '/assets/images/openair.jpg',
+    image: '/assets/images/kinos/openair.png',
   },
 ];

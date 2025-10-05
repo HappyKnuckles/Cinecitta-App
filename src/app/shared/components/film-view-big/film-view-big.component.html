@@ -175,16 +175,11 @@
 </section>
 
 <!-- Kino Modal -->
-<ion-modal [isOpen]="isKinoModalOpen" (didDismiss)="closeKinoModal()">
+<ion-modal [isOpen]="isKinoModalOpen" (didDismiss)="closeKinoModal()" [presentingElement]="presentingElement">
   <ng-template>
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ selectedKino?.name }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button (click)="closeKinoModal()">
-            <ion-icon name="close"></ion-icon>
-          </ion-button>
-        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">

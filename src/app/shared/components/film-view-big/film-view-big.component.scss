@@ -127,7 +127,6 @@
 
       .clickable-kino-name {
         cursor: pointer;
-        text-decoration: underline;
         &:hover {
           opacity: 0.8;
         }
@@ -169,6 +168,9 @@
   .kino-image {
     width: 100%;
     margin-bottom: 20px;
+  }
+
+  ion-img::part(image) {
     border-radius: 8px;
   }
 
