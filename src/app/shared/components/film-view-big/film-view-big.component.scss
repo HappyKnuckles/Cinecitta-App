@@ -124,6 +124,13 @@
     .saal-name {
       color: #a3d9d5;
       margin: 10px 0;
+
+      .clickable-kino-name {
+        cursor: pointer;
+        &:hover {
+          opacity: 0.8;
+        }
+      }
     }
 
     .times {
@@ -154,5 +161,32 @@
     color: #333;
     text-transform: uppercase;
     display: table-cell;
+  }
+}
+
+.kino-info-container {
+  .kino-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  ion-img::part(image) {
+    border-radius: 8px;
+  }
+
+  .kino-details {
+    ion-row {
+      margin-bottom: 10px;
+      border-bottom: 1px solid rgba(163, 217, 213, 0.3);
+      padding-bottom: 5px;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    ion-col {
+      padding: 5px;
+    }
   }
 }
