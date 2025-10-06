@@ -8,7 +8,7 @@ export class DoubleTapDirective {
   @Output() doubleTap = new EventEmitter<Event>();
 
   private lastTapTime = 0;
-  private readonly DOUBLE_TAP_DELAY = 75; // milliseconds
+  private readonly DOUBLE_TAP_DELAY = 300; // milliseconds
 
   @HostListener('dblclick', ['$event'])
   onDoubleClick(event: MouseEvent): void {
