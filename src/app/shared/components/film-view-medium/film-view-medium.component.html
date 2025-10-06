@@ -1,5 +1,5 @@
 @if(!loadingService.isLoading && film()) {
-<section class="film-container" appDoubleClickLike (doubleClickLike)="toggleFavorite($event)">
+<section class="film-container" appDoubleClickLike (doubleTap)="toggleFavorite($event)">
   <div class="border">
     <ion-row style="position: relative;">
       <ion-col style="text-align: left; margin-left: 12px;">
