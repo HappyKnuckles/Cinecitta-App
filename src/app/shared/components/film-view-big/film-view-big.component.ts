@@ -26,6 +26,8 @@ import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.p
 import { ImpactStyle } from '@capacitor/haptics';
 import { DoubleTapDirective } from 'src/app/core/directives/double-tap/double-tap.directive';
 import { Kino, KINOS } from 'src/app/core/models/kino';
+import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-film-view-big',
@@ -73,7 +75,9 @@ export class FilmViewBigComponent implements OnInit {
     private website: OpenWebsiteService,
     private toastService: ToastService,
     private favoritesService: FavoritesService,
-    private hapticService: HapticService
+    private hapticService: HapticService,
+    private scraper: WebscraperService,
+    private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -147,15 +151,79 @@ export class FilmViewBigComponent implements OnInit {
       this.content().scrollToPoint(0, scrollPosition, 500);
     }
   }
-  openTimes(i: number): void {
+  // vorstellungAuslastung: any;
+  openTimes(i: number, film: Film): void {
     this.hapticService.vibrate(ImpactStyle.Light, 100);
     this.isTimesOpen = !this.isTimesOpen;
+
+    // Start scraping asynchronously (non-blocking)
+    // this.startScrapingOccupationData(film);
+
     if (this.isTimesOpen) {
       setTimeout(() => {
         this.scrollToGrid(i);
       }, 300);
     }
   }
+
+  // private startScrapingOccupationData(film: Film): void {
+  //   const vorstellungIds: string[] = [];
+  //   for (const theater of film.theater) {
+  //     for (const leinwand of theater.leinwaende) {
+  //       for (const vorstellung of leinwand.vorstellungen) {
+  //         const id = vorstellung.vorstellung_id;
+  //         if (id) {
+  //           vorstellungIds.push(id);
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   // Run all requests simultaneously in the background
+  //   const promises = vorstellungIds.map(async (id) => {
+  //     try {
+  //       return await this.scraper.scrapeOcupationData(id);
+  //     } catch (error) {
+  //       console.error(`Failed to load occupation data for ID ${id}:`, error);
+  //       return null;
+  //     }
+  //   });
+
+  //   Promise.all(promises).then(results => {
+  //     console.log(results);
+  //     const filteredResults = results.filter(data => data != null);
+
+  //     // Store bypassed HTML in each result object
+  //     this.vorstellungAuslastung = filteredResults.map(data => ({
+  //       ...data,
+  //       bypassedHtml: this.sanitizer.bypassSecurityTrustHtml(data.html),
+  //       // Keep original html if needed
+  //       html: data.html,
+  //       css: data.css
+  //     }));
+
+  //     if (this.vorstellungAuslastung.length > 0) {
+  //       // Inject CSS from first result
+  //       this.injectCSS(this.vorstellungAuslastung[0].css);
+  //     }
+  //   }).catch(error => {
+  //     console.error('Error in occupation data scraping:', error);
+  //   });
+  // }
+
+  // private injectCSS(css: string): void {
+  //   // Remove existing cinema CSS if any
+  //   const existingStyle = document.getElementById('cinema-seatplan-css');
+  //   if (existingStyle) {
+  //     existingStyle.remove();
+  //   }
+
+  //   // Create and inject new CSS
+  //   const style = document.createElement('style');
+  //   style.id = 'cinema-seatplan-css';
+  //   style.textContent = css;
+  //   document.head.appendChild(style);
+  // }
 
   async toggleFavorite(event: Event, film: Film): Promise<void> {
     event.stopPropagation();
@@ -164,7 +232,7 @@ export class FilmViewBigComponent implements OnInit {
   }
 
   openKinoModal(kinoName: string, theaterName: string): void {
-    if(theaterName !== "CINECITTA'"){
+    if (theaterName !== "CINECITTA'") {
       this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-circle', true);
       return;
     }

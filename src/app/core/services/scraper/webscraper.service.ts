@@ -38,15 +38,26 @@ export class WebscraperService {
     }
   }
 
-  async scrapeOcupationData(id: string): Promise<any> {
+  async scrapeOcupationData(id: string): Promise<any> {    
     const destination = 'https://proxy-server-rho-pearl.vercel.app/api/vorstellung';
     const url = `${destination}?id=${id}`;
-
+    const data = localStorage.getItem(`sitzplan-${id}`);
+    if (data) {
+      const parsedData = JSON.parse(data);
+      return {
+        html: parsedData.html.html,
+        css: parsedData.html.css
+      };
+    }
     try {
       const response = await fetch(url);
       if (response.status === 200) {
-        const data = await response.text();
-        return data;
+        const data = await response.json();
+        localStorage.setItem(`sitzplan-${id}`, JSON.stringify(data));
+        return {
+          html: data.html.html,
+          css: data.html.css
+        };
       } else {
         console.error('Error fetching Data: Status', response.status);
         return undefined;

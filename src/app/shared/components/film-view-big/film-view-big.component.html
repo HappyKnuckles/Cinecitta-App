@@ -99,7 +99,7 @@
       <span class="description">{{ film()!.film_beschreibung | extractText }}</span>
     </div>
     <!-- TODO ab hier nur accordion anstatt opentimes -->
-    <div (click)="openTimes(i())" style="display: flex; margin-top: 10px; justify-content: center">
+    <div (click)="openTimes(i(), film()!)" style="display: flex; margin-top: 10px; justify-content: center">
       <ion-icon *ngIf="!isTimesOpen" name="chevron-down"></ion-icon>
       <ion-icon *ngIf="isTimesOpen" name="chevron-up"></ion-icon>
     </div>
