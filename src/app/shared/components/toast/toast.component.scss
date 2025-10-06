@@ -3,6 +3,10 @@ ion-toast.customToast {
   --color: var(--ion-color-light);
 }
 
+ion-toast {
+  --max-height: 50px;
+}
+
 ion-toast.error {
   --background: var(--ion-color-danger);
 }
