@@ -25,9 +25,10 @@ import { HapticService } from 'src/app/core/services/haptic/haptic.service';
 import { TransformTimePipe } from '../../pipes/time-transformer/transform-time.pipe';
 import { ImpactStyle } from '@capacitor/haptics';
 import { DoubleTapDirective } from 'src/app/core/directives/double-tap/double-tap.directive';
-import { Kino, KINOS } from 'src/app/core/models/kino';
+import { Kino, KINOS } from 'src/app/core/constants/kino.constants';
 import { WebscraperService } from 'src/app/core/services/scraper/webscraper.service';
 import { DomSanitizer } from '@angular/platform-browser';
+import { addIcons } from 'ionicons';
 
 @Component({
   selector: 'app-film-view-big',
@@ -78,7 +79,8 @@ export class FilmViewBigComponent implements OnInit {
     private hapticService: HapticService,
     private scraper: WebscraperService,
     private sanitizer: DomSanitizer
-  ) { }
+  ) { 
+  }
 
   ngOnInit(): void {
     this.presentingElement = document.querySelector('.ion-page');
@@ -233,15 +235,15 @@ export class FilmViewBigComponent implements OnInit {
 
   openKinoModal(kinoName: string, theaterName: string): void {
     if (theaterName !== "CINECITTA'") {
-      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-circle', true);
+      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-outline', true);
       return;
     }
-    const kino = this.kinos.find((k) => kinoName.includes(k.name));
+    const kino = this.kinos.find((k) => kinoName.toLowerCase().includes(k.name.toLowerCase()));
     if (kino) {
       this.selectedKino = kino;
       this.isKinoModalOpen = true;
     } else {
-      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-circle', true);
+      this.toastService.showToast(`Keine Informationen für ${kinoName} verfügbar`, 'information-outline', true);
     }
   }
 

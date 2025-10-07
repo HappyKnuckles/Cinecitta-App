@@ -10,7 +10,7 @@ export interface Kino {
 
 export const KINOS: Kino[] = [
   {
-    name: 'CINEMAGNUM',
+    name: 'Cinemagnum',
     ton: '7.1 & Dolby Atmos',
     leinwand: 'ca. 610 m²',
     projektion: 'Sony Quad 4k',
